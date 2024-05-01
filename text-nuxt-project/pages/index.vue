@@ -1,7 +1,5 @@
 <script setup>
 
-import Checkbox from 'primevue/checkbox';
-
 const loading =  ref(false);
 
 const form = ref({
@@ -19,9 +17,6 @@ async function handleLogin() {
 
 <template>
     <div>
-        
-        <Checkbox v-model="checked" :binary="true" />
-
         
         <div v-if="loading" class="min-h-screen w-full bg-black bg-opacity-[.3] flex items-center fixed">
             <div class="w-12 mx-auto"><img alt="loading..." src="/spinner.gif"></div>
