@@ -1,0 +1,42 @@
+/* width */
+::-webkit-scrollbar {
+    width: 9px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    background: #ddd;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #bfbebe;
+    border-radius: 3px;
+}
+ 
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #0c0a0a;
+}
+
+
+
+ .product_window::-webkit-scrollbar {
+    width: 5px; /* Set the width of the scrollbar */
+    background-color: #F5F5F5; /* Set the background color of the scrollbar */
+    position: absolute;
+    right: 0; /* Position the scrollbar on the right of the element*/
+ }
+
+/* .router-link-exact-active {
+    background-color: #eaebeca6;
+} */
+
+.sidebar_menu .p-panelmenu-panel {
+    margin-bottom : 0 !important;
+    padding: 0 !important
+} 
+
+.sidebar_menu .p-panelmenu-header-content {
+    border-radius: 0 !important;
+}

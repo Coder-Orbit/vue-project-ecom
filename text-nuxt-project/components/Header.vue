@@ -7,6 +7,7 @@ import Menu from 'primevue/menu';
 import { ref } from "vue";
 
 const menu = ref();
+const notice = ref();
 const items = ref([
     {
         label: 'Options',
@@ -46,21 +47,50 @@ const items = ref([
     }
 ]);
 
+const noteces = ref([
+    {
+        label: 'Options',
+        items: [
+            {
+                label: 'Username',
+                icon: 'pi pi-refresh'
+            },
+            {
+                label: 'Email',
+                icon: 'pi pi-refresh'
+            },
+            {
+                label: 'Pin',
+                icon: 'pi pi-refresh'
+            },
+            
+        ]
+    }
+]);
+
 const toggle = (event) => {
     menu.value.toggle(event);
+};
+const getNotice = (event) => {
+    notice.value.toggle(event);
 };
 </script>
 
 <template>
-    <div class="w-full border-b flex justify-between px-3">
+    <div class="w-full flex justify-between px-3 bg-white border-b">
         <div>
-            01
+            <h1 class="text-2xl font-semibold mt-1">Admin Panel</h1>
         </div>
-        <div>
-            <div class="card flex justify-content-center">
-                <img alt="logo" src="/logo.png" class="w-6 h-6 border rounded-full cursor-pointer" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">
+        
+            <div class="card flex justify-content-center p-2 relative">
+                <div class="cursor-pointer mr-3 w-8 h-8 " @click="getNotice" aria-haspopup="true" aria-controls="overlay_menu">
+                    <Icon class="cursor-pointer mt-1" name="codicon:bell-dot" width="1.4em" height="1.4em" color="#2bff00" />
+                </div>
+                <Menu ref="notice" id="overlay_menu" :model="noteces" :popup="true" />
+                
+                <img alt="logo" src="/logo.png" class="w-8 h-8 border rounded-full cursor-pointer" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">
                 <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
             </div>
-        </div>
+        
     </div>
 </template>
