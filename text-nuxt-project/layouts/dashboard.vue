@@ -5,7 +5,7 @@
         <div class="w-full flex">
             <div class="w-1/6 bg-white mt-[3rem] shadow-[0_0px_4px_1px_rgba(0,0,0,0.3)]"><Sidebar/></div>
             <div class="w-5/6 mt-14">
-                <div class="min-h-[calc(100vh-5rem)]">
+                <div class="min-h-[calc(100vh-5.23rem)]">
                     <NuxtLoadingIndicator />
                     <slot />
                 </div>
