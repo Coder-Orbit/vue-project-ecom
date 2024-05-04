@@ -31,12 +31,3 @@
 /* .router-link-exact-active {
     background-color: #eaebeca6;
 } */
-
-.sidebar_menu .p-panelmenu-panel {
-    margin-bottom : 0 !important;
-    padding: 0 !important
-} 
-
-.sidebar_menu .p-panelmenu-header-content {
-    border-radius: 0 !important;
-}
