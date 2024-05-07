@@ -10,6 +10,22 @@
 
     },
     {
+        label: 'Category',
+        icon: 'heroicons:square-3-stack-3d-20-solid',
+        items: [
+            {
+                label: 'Lists',
+                icon: 'mingcute:menu-line',
+                route: 'category'
+            },
+            {
+                label: 'Add',
+                icon: 'ph:list-plus-bold',
+                route: 'category/create'
+            }
+        ]
+    },
+    {
         label: 'Files',
         icon: 'pi pi-file',
         items: [
