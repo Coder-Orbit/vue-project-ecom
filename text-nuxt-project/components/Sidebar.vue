@@ -16,12 +16,12 @@
             {
                 label: 'Lists',
                 icon: 'mingcute:menu-line',
-                route: 'category'
+                route: '/category'
             },
             {
                 label: 'Add',
                 icon: 'ph:list-plus-bold',
-                route: 'category/create'
+                route: '/category/create'
             }
         ]
     },

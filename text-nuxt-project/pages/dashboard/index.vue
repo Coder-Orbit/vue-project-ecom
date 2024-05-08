@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 import Chart from 'primevue/chart';
 import Card from 'primevue/card';
 

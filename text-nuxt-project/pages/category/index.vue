@@ -1,11 +1,15 @@
-<script setup lang="ts">
+<script setup>
     import InputGroup from 'primevue/inputgroup';
     import InputGroupAddon from 'primevue/inputgroupaddon';
+    import Sidebar from 'primevue/sidebar';
+
 
     const router = useRouter();
     definePageMeta({
         layout: "dashboard",
     })
+
+    const visibleRight = ref(false);
 
 </script>
 <template>
@@ -13,21 +17,21 @@
             <div class="w-full px-3 mt-1">
 
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
-                    <div class="flex w-full justify-between bg-opacity-20 bg-red-600">
+                    <div class="flex w-full justify-between bg-gray-400 text-white">
                         
                         <div class="font-semibold mt-1 ml-3">Category</div>
-                        <div class="font-semibold mt-1 ml-1 flex">
-                            <button @click="$router.back()" class="bg-gray-600 hover:bg-gray-500 text-gray-100 hover:text-black px-2 py-1 text-sm rounded-md transition delay-100">
-                                <i class="fa-regular fa-arrow-left mr-1"></i>
+                        <div class="font-semibold ml-1 flex">
+                            <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
+                                <Icon name="gg:arrow-left-o"></Icon>
                                 Back
                             </button>
 
-                            <button class="bg-gray-600 hover:bg-gray-500 text-gray-100 transform  hover:text-black mx-2 px-2 py-1 text-sm rounded-md">
-                                <i class="fa-regular fa-filter mr-1"></i>
+                            <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm " @click="visibleRight = true">
+                                <Icon name="iconoir:filter-solid"></Icon>
                                 Filter
                             </button>
-                            <NuxtLink to="brand/add" class="bg-gray-600 hover:bg-gray-500 text-gray-100 hover:text-black px-2 py-1 text-sm rounded-md">
-                                <i class="fa-regular fa-plus mr-1"></i>
+                            <NuxtLink to="category/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
+                                <Icon name="zondicons:add-outline"></Icon>
                                 Add
                             </NuxtLink>
                         </div>
@@ -35,7 +39,7 @@
                     </div>
 
                     <!-- Table list goes here -->
-                    <div class=" h-[calc(100vh-10.4rem)] overflow-y-auto border-b p-3">
+                    <div class=" h-[calc(100vh-10.4rem)] overflow-y-auto border-b px-3 pt-3">
                         <table class="table-fixed w-full">
                             <thead>
                                 <tr class="w-full bg-gray-300 text-sm">
@@ -266,7 +270,7 @@
                         </table>
                     </div>
                     <div class="order_title text-sm flex justify-between h-full ">
-                        <div class="mt-1 ml-3 ">
+                        <div class="mt-[2px] ml-3 ">
                             <InputGroup>
                                 <input type="number" class="border border-r-0 p-1 focus:outline-none"  placeholder="Pagen Number" />
                                 <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" />
@@ -285,6 +289,10 @@
                         </div>
                     </div>
                 </div>
+
+                <Sidebar v-model:visible="visibleRight" header="Category Filter" position="right">
+                    <p></p>
+                </Sidebar>
             </div>
         </NuxtLayout>
 
