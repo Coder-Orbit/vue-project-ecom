@@ -25,17 +25,33 @@
             fieldValue: "",
         }
     ]);
+
+    // Add extra field function goes here
+    const addMoreField = () => {
+        extraFields.value = [
+            ...extraFields.value, {
+                fieldName: "",
+                fieldValue: "",
+            }
+        ];
+    }
+
+    // Remove extra field
+    const removeMoreField = (index) => {
+        extraFields.value.splice(index, 1);
+    }
+
     const categories = ref([
-        { name: 'Australia', code: 'AU' },
-        { name: 'Brazil', code: 'BR' },
-        { name: 'China', code: 'CN' },
-        { name: 'Egypt', code: 'EG' },
-        { name: 'France', code: 'FR' },
-        { name: 'Germany', code: 'DE' },
-        { name: 'India', code: 'IN' },
-        { name: 'Japan', code: 'JP' },
-        { name: 'Spain', code: 'ES' },
-        { name: 'United States', code: 'US' }
+        { name: 'Mobile', code: 'AU' },
+        { name: 'Frez', code: 'BR' },
+        { name: 'TV', code: 'CN' },
+        { name: 'AC', code: 'EG' },
+        { name: 'T-Shirt', code: 'FR' },
+        { name: 'Pants', code: 'DE' },
+        { name: 'Three PCs', code: 'IN' },
+        { name: 'Shoe', code: 'JP' },
+        { name: 'Panjabi', code: 'ES' },
+        { name: 'Shree', code: 'US' }
     ]);
 
 
@@ -175,21 +191,22 @@
                         }">
                         <template #legend>
                             <div class="flex align-items-center pl-2">
-                                <div class="m-1 border rounded-md px-2 text-xs pt-2 bg-cyan-500 text-white cursor-pointer">Add More <Icon name="mdi:table-add" width="1.4em" height="1.4em"></Icon></div>
+                                <div class="m-1 border rounded-md px-2 text-xs pt-2 bg-cyan-500 text-white cursor-pointer" @click="addMoreField">Add More <Icon name="mdi:table-add" width="1.4em" height="1.4em"></Icon></div>
                                 <span class="font-bold">Extra Props</span>
                             </div>
                         </template>
                             
-                            <div class="grid grid-cols-2 gap-2" v-for="(extra, index) in extraFields" :key="index">
+                            <div class="flex w-full px-2 py-1" v-for="(extra, index) in extraFields" :key="index">
                                 
-                                <div class="w-full">
+                                <div class="w-full mr-2">
                                     <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Field Name <Icon name="clarity:info-solid"></Icon></label>
                                     <input type="text" v-model="extra.fieldName"  class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
                                 </div>
-                                <div class="w-full">
+                                <div class="w-full mr-2">
                                     <label for="dd-citye" class="text-sm w-full"> Field Value</label>
                                     <input type="text" v-model="extra.fieldValue" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
                                 </div>
+                                <div class="bg-red-500 h-8 flex place-items-center p-2 rounded-md mt-[1.4rem] cursor-pointer" @click="removeMoreField(index)"><Icon class="text-white" name="humbleicons:times"></Icon></div>
                                 
                             </div>
 
@@ -198,8 +215,11 @@
                         
                         
                     </div>
+                    <div class="place-content-end flex w-full">
+                        <button class="bg-green-500 mt-2 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">Add <Icon name="fa-solid:paper-plane"></Icon></button>
+                    </div>
 
-                    <button type="submit">sadf</button>
+                    
                 </form>
             </div>
 
