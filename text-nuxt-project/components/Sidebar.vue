@@ -26,6 +26,32 @@
         ]
     },
     {
+        label: 'Product',
+        icon: 'fluent:box-16-filled',
+        items: [
+            {
+                label: 'Lists',
+                icon: 'mingcute:menu-line',
+                route: '/product'
+            },
+            {
+                label: 'Add',
+                icon: 'ph:list-plus-bold',
+                route: '/product/create'
+            },
+            {
+                label: 'Active',
+                icon: 'mingcute:menu-line',
+                route: '/product/Active'
+            },
+            {
+                label: 'Inactive',
+                icon: 'mingcute:menu-line',
+                route: '/product/inactive'
+            }
+        ]
+    },
+    {
         label: 'Files',
         icon: 'pi pi-file',
         items: [

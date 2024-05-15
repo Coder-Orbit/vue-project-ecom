@@ -13,13 +13,13 @@
 
 </script>
 <template>
-        <NuxtLayout :name="layout">
+    <NuxtLayout :name="layout">
             <div class="w-full px-3 mt-1">
 
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                     <div class="flex w-full justify-between bg-gray-400 text-white">
                         
-                        <div class="font-semibold mt-1 ml-3">Category</div>
+                        <div class="font-semibold mt-1 ml-3">Product</div>
                         <div class="font-semibold ml-1 flex">
                             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
                                 <Icon name="gg:arrow-left-o"></Icon>
@@ -318,5 +318,4 @@
                 </Sidebar>
             </div>
         </NuxtLayout>
-
 </template>
