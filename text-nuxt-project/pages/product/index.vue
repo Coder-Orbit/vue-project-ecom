@@ -16,6 +16,8 @@
     <NuxtLayout :name="layout">
             <div class="w-full px-3 mt-1">
 
+                <editor-js />
+
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                     <div class="flex w-full justify-between bg-gray-400 text-white">
                         
