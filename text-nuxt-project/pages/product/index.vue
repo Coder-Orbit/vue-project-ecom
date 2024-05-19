@@ -2,6 +2,16 @@
     import InputGroup from 'primevue/inputgroup';
     import InputGroupAddon from 'primevue/inputgroupaddon';
     import Sidebar from 'primevue/sidebar';
+    import TabMenu from 'primevue/tabmenu';
+
+    import { ref } from "vue";
+
+    const items = ref([
+        { label: 'Dashboard', icon: 'pi pi-home' },
+        { label: 'Transactions', icon: 'pi pi-chart-line' },
+        { label: 'Products', icon: 'pi pi-list' },
+        { label: 'Messages', icon: 'pi pi-inbox' }
+    ]);
 
 
     const router = useRouter();
@@ -19,7 +29,7 @@
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                     <div class="flex w-full justify-between bg-gray-400 text-white">
                         
-                        <div class="font-semibold mt-1 ml-3">Product</div>
+                        <div class="font-semibold mt-1 ml-3">Products</div>
                         <div class="font-semibold ml-1 flex">
                             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
                                 <Icon name="gg:arrow-left-o"></Icon>
@@ -30,7 +40,7 @@
                                 <Icon name="iconoir:filter-solid"></Icon>
                                 Filter
                             </button>
-                            <NuxtLink to="category/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
+                            <NuxtLink to="product/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
                                 <Icon name="zondicons:add-outline"></Icon>
                                 Add
                             </NuxtLink>
@@ -40,50 +50,54 @@
 
                     <!-- Table list goes here -->
                     <div class=" h-[calc(100vh-10.4rem)] overflow-y-auto border-b px-3 pt-3">
-                        <table class="table-fixed w-full">
+                        <table class=" w-full table-auto">
                             <thead>
                                 <tr class="w-full bg-gray-300 text-sm">
                                     <th class="p-1 text-left text-sm w-8">SL</th>
                                     <th class="p-1 text-left text-sm w-12">Icon</th>
-                                    <th class="p-1 text-left text-sm">Comission</th>
+                                    <th class="p-1 text-left text-sm">Product Name</th>
+                                    <th class="p-1 text-left text-sm">Price</th>
+                                    <th class="p-1 text-left text-sm">Stock</th>
                                     <th class="p-1 text-left text-sm">Category</th>
-                                    <th class="p-1 text-left text-sm">Sub Category</th>
-                                    <th class="p-1 text-left text-sm w-48">Description</th>
+                                    <th class="p-1 text-left text-sm">Color</th>
+                                    <th class="p-1 text-left text-sm">Size</th>
+                                    <th class="p-1 text-left text-sm">Vendor</th>
                                     <th class="p-1 text-left">Status</th>
-                                    <th class="p-1 text-left">Created Date</th>
-                                    <th class="p-1 text-center">Created By</th>
                                     <th class="p-1 text-center w-24">...</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
                                 </tr>
-
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">2</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
@@ -91,15 +105,17 @@
                                 </tr>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">3</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
@@ -107,15 +123,17 @@
                                 </tr>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">4</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
@@ -123,15 +141,17 @@
                                 </tr>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">5</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
@@ -139,15 +159,17 @@
                                 </tr>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">6</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
@@ -155,15 +177,17 @@
                                 </tr>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">7</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
@@ -171,15 +195,17 @@
                                 </tr>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">8</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
@@ -187,15 +213,17 @@
                                 </tr>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">9</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
@@ -203,63 +231,17 @@
                                 </tr>
                                 <tr class="bg-white odd:bg-gray-100">
                                     <td class="p-1 text-center text-xs">10</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-left text-xs"><img class="h-8" src="/default.png"/></td>
+                                    <td class="p-1 text-left text-xs"><p class="w-72"></p>Al-nassr half sleeve most popular premium quality embroidery jersey -comfortable for summer</td>
+                                    <td class="p-1 text-left text-xs">120</td>
+                                    <td class="p-1 text-left text-xs">12</td>
+                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve</td>
+                                    <td class="p-1 text-left text-xs">Red,Blue,Orange,Gray</td>
+                                    <td class="p-1 text-center text-xs">M,L,XL,2xl</td>
+                                    <td class="p-1 text-center text-xs">Supper Shop</td>
+                                    <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">11</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">12</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">13</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
+                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>

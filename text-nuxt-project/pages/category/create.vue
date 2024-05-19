@@ -85,7 +85,7 @@
         
     </div>
     <!-- Body Content goes here -->
-    <div class=" h-[calc(100vh-8rem)] overflow-y-auto border-b px-3 pt-3">
+    <div class=" h-[calc(100vh-8rem)] overflow-y-auto border-b px-3 pt-2">
         <div class="flex w-full justify-center">
             <div class="w-1/2">
                 <form  @submit.prevent="dataSubmit">
@@ -213,10 +213,16 @@
 
                         </Fieldset>
                         
-                        
                     </div>
+
+
+                    <div class="w-full mt-1">
+                        <label for="dd-city" class="text-sm w-full">Description</label>
+                        <textarea class="w-full border rounded-md"></textarea>
+                    </div>
+
                     <div class="place-content-end flex w-full">
-                        <button class="bg-green-500 mt-2 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">Add <Icon name="fa-solid:paper-plane"></Icon></button>
+                        <button class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">Add <Icon name="fa-solid:paper-plane"></Icon></button>
                     </div>
 
                     
