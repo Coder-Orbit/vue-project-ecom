@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+
 export default defineNuxtConfig({
     devtools: { enabled: true },
 
@@ -46,7 +48,7 @@ export default defineNuxtConfig({
     sanctum: {
         baseUrl: 'https://ecom.coderorbit.com/public/api',
         redirect: {
-        onLogin : '/dashboard',
+        onLogin : 'dashboard',
         }
     },
 
