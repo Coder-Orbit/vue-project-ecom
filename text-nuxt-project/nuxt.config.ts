@@ -23,6 +23,7 @@ export default defineNuxtConfig({
         '@pinia/nuxt',
         'nuxt-icon',
         '@pinia-plugin-persistedstate/nuxt',
+        'nuxt-editorjs',
         ['@nuxtjs/google-fonts', {
             families: {
               Roboto: true,
@@ -51,11 +52,14 @@ export default defineNuxtConfig({
 
     vite: {
         server:{
-        host: true,
-        port: 3000,
-        watch: {
-            usePolling: true,
-        }
-        }
+            host: true,
+            port: 3000,
+            watch: {
+                usePolling: true,
+            }
+        },
+        optimizeDeps: {
+            include: ['@editorjs/editorjs'],
+        },
     }
 })
