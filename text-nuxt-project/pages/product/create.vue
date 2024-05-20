@@ -19,7 +19,6 @@
     import InlineCode from '@editorjs/inline-code';
 
     const uploadEditorJS = () => import('@editorjs/editorjs')
-    const jsData = '../../stores/editor'
 
     const Editor = ref(null)
     const oldData = ref(null)
@@ -128,9 +127,7 @@
     <NuxtLayout :name="layout">
             <div class="w-full px-3 mt-1">
 
-                <div @keyup="getDataEditor" id="editorjs"></div>
-
-                <!-- <editor-js v-model="dat" /> -->
+                <!-- <div @keyup="getDataEditor" id="editorjs"></div> -->
                 
 
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
@@ -147,22 +144,27 @@
                     </div>
 
                     <!-- Table list goes here -->
-                    <div class="h-full overflow-y-auto p-3 w-full">
-                        <div class="flex w-full">
-                            <div class="w-2/12">
-                                <Button @click="active = 0" rounded label="header one" class=" p-0" :outlined="active !== 0" />
-                                <Button @click="active = 1" rounded label="2" class=" p-0" :outlined="active !== 1" />
-                                <Button @click="active = 2" rounded label="3" class="p-0" :outlined="active !== 2" />
+                    <div class="h-full overflow-y-auto w-full max-h-[calc(100vh-8.2rem)] flex flex-col">
+                        <div class="relative flex flex-grow">
+                            <div class="w-2/12 border-r relative overflow-hidden">
+                                <div class="fixed flex-grow w-[13.55%] -z-1 cursor-pointer">                                
+                                    <div @click="active = 0" :class="`${active == 0 ? 'border-l-4 border-l-red-600 bg-gray-100' : ''}`" class="w-full border-b border-t py-1 text-left pl-3 mt-3 text-sm hover:bg-gray-100"  >Basic Information</div>
+                                    <div @click="active = 1" :class="`${active == 1 ? 'border-l-4 border-l-red-600 bg-gray-100' : ''}`" class="w-full border-b py-1 text-left pl-3 text-sm hover:bg-gray-100">Attributes/Additional</div>
+                                    <div @click="active = 2" :class="`${active == 2 ? 'border-l-4 border-l-red-600 bg-gray-100' : ''}`" class="w-full border-b py-1 text-left pl-3 text-sm hover:bg-gray-100">Stock Managment</div>
+                                    <div @click="active = 3" :class="`${active == 3 ? 'border-l-4 border-l-red-600 bg-gray-100' : ''}`" class="w-full border-b py-1 text-left pl-3 text-sm hover:bg-gray-100">Galleries</div>
+                                    <div @click="active = 4" :class="`${active == 4 ? 'border-l-4 border-l-red-600 bg-gray-100' : ''}`" class="w-full border-b py-1 text-left pl-3 text-sm hover:bg-gray-100">Shipping Information</div>
+                                    <div @click="active = 5" :class="`${active == 5 ? 'border-l-4 border-l-red-600 bg-gray-100' : ''}`" class="w-full border-b py-1 text-left pl-3 text-sm hover:bg-gray-100">SEO</div>
+                                    <div @click="active = 6" :class="`${active == 6 ? 'border-l-4 border-l-red-600 bg-gray-100' : ''}`" class="w-full border-b py-1 text-left pl-3 text-sm hover:bg-gray-100">Payment Method</div>
+                                </div>
+
                             </div>
-                            <div class="w-10/12">
+                            <div class="w-10/12 h-full pb-8 py-2 pl-4">
                                 <TabView unstyled v-model:activeIndex="active">
-                                    <TabPanel >
-                                        <p class="m-0">
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                                        </p>
-                                    </TabPanel>
+                                    <TabPanel>dsfasdf</TabPanel>
+                                    <TabPanel>Div</TabPanel>
+                                    <TabPanel>Tab 3</TabPanel>
                                 </TabView>
+                                
                             </div>
 
                             </div>
