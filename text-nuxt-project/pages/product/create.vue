@@ -23,6 +23,9 @@
     import Dropdown from 'primevue/dropdown';
     import FileUpload from 'primevue/fileupload';
     import Fieldset from 'primevue/fieldset';
+    
+    import RadioButton from 'primevue/radiobutton';
+
 
     import MultiSelect from 'primevue/multiselect';
     
@@ -110,6 +113,10 @@
     const selectedDistrict = ref();
     const selectedPolice = ref();
     const selectedStatus = ref();
+    const colors = ref("White,Black");
+    const sizes = ref('S,M,L');
+    const flat_rate = ref(null);
+    const selectedPayment = ref([]);
    
     const categories = ref([
         { name: 'Mobile', code: 'AU' },
@@ -154,19 +161,67 @@
     ]);
 
 
+    const payments = ref([
+        { name: 'Cash Delivery', code: 'COD', image: '/cod.jpg' },
+        { name: 'Bkash Pay', code: 'bkash', image: '/bkash.jpg' },
+        { name: 'Nagad Pay', code: 'nagad', image: '/nagad.png' },
+        { name: 'Rocket Pay', code: 'rocket', image: '/rocket.png' },
+        { name: 'Wallet Pay', code: 'wallet', image: '/wallet.jpg' },
+        { name: 'Fund Pay', code: 'fund', image: '/fund.png' },
+        { name: 'SSL Commerze', code: 'ssl', image: '/ssl.png' }
+        
+    ]);
+
+
 
     const visibleRight = ref(false);
 
     const getDataEditor = (data) => {
+
         console.table(Editor.value);
         console.table(Editor.value.render());
+
         Editor.value.save().then((outputData) => {
             Editor.value = outputData;
 
-        console.log('Article data: ', outputData)
+            console.log('Article data: ', outputData)
         }).catch((error) => {
-        console.log('Saving failed: ', error)
-});
+            console.log('Saving failed: ', error)
+        });
+    }
+
+    const selectedShipping = ref('area');
+    const shippings = ref([
+        { name: 'Area Wise', key: 'area' },
+        { name: 'Flat Rate', key: 'flat' },
+        { name: 'Free Shipping', key: 'Free' }
+
+    ]);
+
+    const extraFields = ref([
+        {
+            fieldName: "",
+            fieldValue: "",
+        },
+        {
+            fieldName: "",
+            fieldValue: "",
+        }
+    ]);
+
+    // Add extra field function goes here
+    const addMoreField = () => {
+        extraFields.value = [
+            ...extraFields.value, {
+                fieldName: "",
+                fieldValue: "",
+            }
+        ];
+    }
+
+    // Remove extra field
+    const removeMoreField = (index) => {
+        extraFields.value.splice(index, 1);
     }
     
 </script>
@@ -268,136 +323,101 @@
                                             <label for="dd-city" class="text-sm w-full">Product Description</label>
                                             <div id="editorjs" class="w-full bg-white text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" ></div>
                                         </div>
-
-                                        
-                                            
-                                        
                                     </TabPanel> 
                                     <!-- Basic Information -->
+
                                     <TabPanel>
                                         <div class="grid grid-rows-2 gap-2">
                                             <div class="w-1/2 pr-1">
                                                 <label for="dd-city" class="text-sm w-full pl-1">Color</label>
-                                                <input class="w-full text-sm border py-1 px-2 outline-none focus:border-green-200 rounded-md" type="text" placeholder="Example: White,Black" />
+                                                <input v-model="colors" class="w-full text-sm border py-1 px-2 outline-none focus:border-green-200 rounded-md" type="text" placeholder="Example: White,Black" />
                                                 <div class="text-[10px] text-red-400 pl-1">Color name must be comma (,) separator</div>
                                             </div>
                                             <div class="w-1/2">
                                                 <label for="dd-city" class="text-sm w-full">Size</label>
-                                                <input class="w-full text-sm border py-1 px-2 outline-none focus:border-green-200 rounded-md" type="text" placeholder="Example: S,M" />
+                                                <input v-model="sizes" class="w-full text-sm border py-1 px-2 outline-none focus:border-green-200 rounded-md" type="text" placeholder="Example: S,M" />
                                                 <div class="text-[10px] text-red-400 pl-1">Size name must be comma (,) separator</div>
                                             </div>
                                         </div>
-                                        
+
+                                        <div class="grid grid-col gap-2 mt-2">
+                                            <Fieldset legend="Extra Props" :pt="{
+                                                root: {
+                                                    class: 'border p-2'
+                                                },
+                                                legend:{
+                                                    class: 'p-0 m-0'
+                                                },
+                                                togglerIcon:{
+
+                                                }
+                                            }">
+                                            <template #legend>
+                                                <div class="flex align-items-center pl-2">
+                                                    <div class="m-1 border rounded-md px-2 text-xs pt-2 bg-cyan-500 text-white cursor-pointer" @click="addMoreField">Add More <Icon name="mdi:table-add" width="1.4em" height="1.4em"></Icon></div>
+                                                    <span class="font-bold">Extra Props</span>
+                                                </div>
+                                            </template>
+                                                
+                                                <div class="flex w-full px-2 py-1" v-for="(extra, index) in extraFields" :key="index">
+                                                    
+                                                    <div class="w-full mr-2">
+                                                        <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Field Name <Icon name="clarity:info-solid"></Icon></label>
+                                                        <input type="text" v-model="extra.fieldName"  class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
+                                                    </div>
+                                                    <div class="w-full mr-2">
+                                                        <label for="dd-citye" class="text-sm w-full"> Field Value</label>
+                                                        <input type="text" v-model="extra.fieldValue" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
+                                                    </div>
+                                                    <div class="bg-red-500 h-8 flex place-items-center p-2 rounded-md mt-[1.4rem] cursor-pointer" @click="removeMoreField(index)"><Icon class="text-white" name="humbleicons:times"></Icon></div>
+                                                    
+                                                </div>
+
+
+                                            </Fieldset>
+                                            
+                                        </div>
 
                                     </TabPanel>
                                     <!-- Additional Information -->
                                     <TabPanel>
-                                        <div class="mt-1 grid grid-cols-3 gap-2">
-                                            <ProductCard/>
-                                            <ProductCard/>
-                                            <ProductCard/>
-                                            <ProductCard/>
+                                        <div class="mb-2 mt-1 grid grid-cols-3 gap-2 " v-for="color in colors.split(',')" :key="color">
+                                            <ProductCard v-for="size in sizes.split(',')" :key="size" :size="size" :color="color"/>
                                         </div>
                                         
                                     </TabPanel>
                                     <!-- Stock Management -->
                                     <TabPanel>
-                                        <Fieldset legend="Extra Props" :pt="{
-                                                root: {
-                                                    class: 'border p-2 mb-2'
-                                                },
-                                                legend:{
-                                                    class: 'p-0 m-0'
-                                                },
-                                                togglerIcon:{
-
-                                                }
-                                            }">
-                                            <template #legend>
-                                                <div class="flex align-items-center pl-2 border-t">
-                                                    
-                                                    <span class="font-bold">Color: White</span>
-                                                </div>
-                                            </template>
-                                                
-                                            <div class="flex w-full px-2 py-1">
-                                                <div class="w-full mr-2">
-                                                    <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Color Icon </label>
-                                                    <FileUpload :pt="{
-                                                            chooseButton: {
-                                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                                            },
-                                                            
-                                                            
-                                                        }" mode="basic" name="banner" accept="image/*" />
-                                                </div>
-                                                <div class="w-full mr-2">
-                                                    <label for="dd-citye" class="text-sm w-full"> Color Thumbnails</label>
-                                                    <FileUpload :pt="{
-                                                            chooseButton: {
-                                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                                            },
-                                                        }" mode="basic" name="banner" accept="image/*" />
-                                                </div>
-                                                <div class="w-full mr-2">
-                                                    <label for="dd-citye" class="text-sm w-full"> Color Galleries</label>
-                                                    <FileUpload :pt="{
-                                                            chooseButton: {
-                                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                                            },
-                                                        }" mode="basic" name="banner" accept="image/*" />
-                                                </div>
-                                            </div>
-
-                                        </Fieldset>
-                                        <Fieldset legend="Extra Props" :pt="{
-                                                root: {
-                                                    class: 'border p-2  mb-2'
-                                                },
-                                                legend:{
-                                                    class: 'p-0 m-0'
-                                                },
-                                                togglerIcon:{
-
-                                                }
-                                            }">
-                                            <template #legend>
-                                                <div class="flex align-items-center pl-2 border-t">
-                                                    
-                                                    <span class="font-bold">Color: Black</span>
-                                                </div>
-                                            </template>
-                                                
-                                            <div class="flex w-full px-2 py-1">
-                                                <div class="w-full mr-2">
-                                                    <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Color Icon </label>
-                                                    <FileUpload :pt="{
-                                                            chooseButton: {
-                                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                                            },
-                                                        }" mode="basic" name="banner" accept="image/*" />
-                                                </div>
-                                                <div class="w-full mr-2">
-                                                    <label for="dd-citye" class="text-sm w-full"> Color Thumbnails</label>
-                                                    <FileUpload :pt="{
-                                                            chooseButton: {
-                                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                                            },
-                                                        }" mode="basic" name="banner" accept="image/*" />
-                                                </div>
-                                                <div class="w-full mr-2">
-                                                    <label for="dd-citye" class="text-sm w-full"> Color Galleries</label>
-                                                    <FileUpload :pt="{
-                                                            chooseButton: {
-                                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                                            },
-                                                        }" mode="basic" name="banner" accept="image/*" />
-                                                </div>
-                                            </div>
-
-                                        </Fieldset>
+                                        <ProductGalleries v-for="color in colors.split(',')" :key="color" :color="color"/>
                                     </TabPanel>
                                     <!-- Galleries Information -->
+                                    <TabPanel>
+                                        <div class="mt-1">
+                                            <div v-for="shipping in shippings" :key="shipping.key" class="flex mb-3 align-items-center">
+                                                <RadioButton v-model="selectedShipping" :inputId="shipping.key" name="dynamic" :value="shipping.key" />
+                                                <label :for="shipping.key" class="ml-2">{{ shipping.name }}</label>
+                                            </div>
+
+                                            <input class="py-1 px-4 rounded-md outline-none focus:border-green-200 border" v-model="flat_rate" placeholder="1.00" type="text" v-if="'flat' == selectedShipping">
+                                        </div>
+                                    </TabPanel>
+                                    <!-- Shipping Information -->
+
+                                    <TabPanel>
+                                        <div class="mt-1 flex-col flex">
+                                            <label for="seo_meta" class="text-sm w-3/5">SEO Tag</label>
+                                            <input class="w-3/5 py-1 px-4 rounded-md outline-none focus:border-green-200 border"  placeholder="Title" type="text">
+                                            <div class="text-[10px] text-red-400 pl-1">Tag name must be comma (,) separator</div>
+                                        </div>
+                                        <div class="mt-3 flex-col flex">
+                                            <label for="seo_meta" class="text-sm w-3/5">SEO Short Decription</label>
+                                            <textarea rows="6" class="w-3/5 resize-none py-1 px-4 rounded-md outline-none focus:border-green-200 border" placeholder="SEO Short Decription"/>
+                                        </div>
+                                    </TabPanel>
+                                    <!-- SEO Information -->
+                                    <TabPanel>
+                                        <ProductPay :payments="payments" />
+                                    </TabPanel>
                                 </TabView>
                                 
                             </div>

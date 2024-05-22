@@ -1,10 +1,24 @@
 <script setup>
     import Card from 'primevue/card';
+    const props = defineProps({
+        color: {
+            type: String,
+            required: true,
+        },
+        
+        size: {
+            type: String,
+            required: true,
+        },
+    });
+
+    const { color, size } = props;
+
 </script>
 <template>
     <Card class="w-full rounded-md overflow-hidden product_stock">
         <template #header>
-            <div class=" bg-gray-300 p-1 text-center text-black font-semibold">Stock: White | M</div>
+            <div class=" bg-gray-300 p-1 text-center text-black font-semibold">Stock: {{ color }} | {{ size }}</div>
         </template>
         <template #content >
 
