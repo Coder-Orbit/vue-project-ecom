@@ -84,8 +84,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -102,8 +106,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -120,8 +128,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -138,8 +150,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -156,8 +172,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -174,8 +194,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -192,8 +216,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -210,8 +238,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -228,8 +260,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
@@ -246,8 +282,12 @@
                                     <td class="p-1 text-center text-xs">Supper Shop</td>
                                     <td class="p-1 text-center text-xs">Active</td>
                                     <td class="p-1 text-center text-xs flex">
-                                        <button class="rounded-md bg-red-600 p-1 text-white mr-1" title="Product Attribute"><Icon name="fluent:box-multiple-20-filled" width="1.4em" height="1.4em" /></button>
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View">
+                                            <NuxtLink to="/product/details">
+                                                <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                                            </NuxtLink>
+                                        </div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>

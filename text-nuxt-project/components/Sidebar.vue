@@ -6,7 +6,7 @@
     {
         label: 'Dashboard',
         icon: 'mage:dashboard-fill',
-        route: 'dashboard'
+        route: '/dashboard'
 
     },
     {
