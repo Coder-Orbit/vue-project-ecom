@@ -7,7 +7,6 @@
         label: 'Dashboard',
         icon: 'mage:dashboard-fill',
         route: '/dashboard'
-
     },
     {
         label: 'Category',
@@ -52,43 +51,18 @@
         ]
     },
     {
-        label: 'Files',
-        icon: 'pi pi-file',
+        label: 'Slide',
+        icon: 'material-symbols:transition-slide',
         items: [
             {
-                label: 'Documents',
-                icon: 'pi pi-file',
-                items: [
-                    {
-                        label: 'Invoices',
-                        icon: 'pi pi-file-pdf',
-                        items: [
-                            {
-                                label: 'Pending',
-                                icon: 'pi pi-stop',
-                                route: 'dashboard'
-                            },
-                            {
-                                label: 'Paid',
-                                icon: 'pi pi-check-circle'
-                            }
-                        ]
-                    },
-                    {
-                        label: 'Clients',
-                        icon: 'pi pi-users'
-                    }
-                ]
+                label: 'List',
+                icon: 'mingcute:menu-line',
+                route: '/slide'
             },
             {
-                label: 'Images',
-                icon: 'pi pi-image',
-                items: [
-                    {
-                        label: 'Logos',
-                        icon: 'pi pi-image'
-                    }
-                ]
+                label: 'Add',
+                icon: 'ph:list-plus-bold',
+                route: '/slide/create'
             }
         ]
     },
