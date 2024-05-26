@@ -19,7 +19,7 @@
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                     <div class="flex w-full justify-between bg-gray-400 text-white">
                         
-                        <div class="font-semibold mt-1 ml-3">slide</div>
+                        <div class="font-semibold mt-1 ml-3">Brand</div>
                         <div class="font-semibold ml-1 flex">
                             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
                                 <Icon name="gg:arrow-left-o"></Icon>
@@ -48,6 +48,8 @@
                                     <th class="p-1 text-left text-sm">Name</th>
                                     <th class="p-1 text-left text-sm">Thumbnails</th>
                                     <th class="p-1 text-left text-sm">Banner</th>
+                                    <th class="p-1 text-left text-sm">Commission</th>
+                                    <th class="p-1 text-left text-sm">Commission Type</th>
                                     <th class="p-1 text-left text-sm w-48">Description</th>
                                     <th class="p-1 text-left">Status</th>
                                     <th class="p-1 text-left">Created Date</th>
@@ -62,6 +64,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -78,6 +82,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -94,6 +100,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -110,6 +118,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -126,6 +136,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -142,6 +154,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -158,6 +172,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -174,6 +190,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -190,6 +208,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -206,6 +226,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -222,38 +244,8 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">Commission</td>
+                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
@@ -291,10 +283,10 @@
                     </div>
                 </div>
 
-                <Sidebar v-model:visible="visibleRight" header="Slide Filter" position="right">
+                <Sidebar v-model:visible="visibleRight" header="Brand Filter" position="right">
                     <div class="w-full">
-                        <label for="dd-city" class="text-sm w-full">Slide Name</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Slide Name"/>
+                        <label for="dd-city" class="text-sm w-full">Brand Name</label>
+                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
