@@ -15,6 +15,7 @@
     import Warning from '@editorjs/warning';
     import CodeTool from '@editorjs/code';
     import RawTool from '@editorjs/raw';
+    // import ImageTool from '@editorjs/image';
 
     import Marker from '@editorjs/marker';
     import InlineCode from '@editorjs/inline-code';
@@ -33,35 +34,36 @@
     
 
     const uploadEditorJS = () => import('@editorjs/editorjs')
-
+    const ImageTool = window.ImageTool;
     const Editor = ref(null)
-    const oldData = ref(null)
+    const editorOldData = ref(null)
+    const editorUpdateData = ref(null)
 
     onMounted( async () => {
         try {
             await fetch("/api/jsonEditor")
                 .then((response) => response.json())
                 .then((data) => {
-                    oldData.value = data;
+                    editorOldData.value = data;
             });
         
             const editor = await uploadEditorJS()
             Editor.value = new editor.default({
                 placeholder: "write samething here...",
                 holder: 'editorjs',
-                data: oldData.value,
+                data: editorOldData.value,
                 tools: {
 
-                    quote: Quote,
-                    embed: Embed,
-                    delimiter: Delimiter,
-                    code: CodeTool,
-                    raw: RawTool,
-
+                    
                     inlineCode: {
                         class: InlineCode,
                         shortcut: 'CMD+SHIFT+M',
                     },
+
+                    Embed: Embed,
+                    CodeTool: CodeTool,
+                    RawTool: RawTool,
+                    Delimiter: Delimiter,
 
                     Marker: {
                         class: Marker,
@@ -81,8 +83,17 @@
                     list: {
                         class: NestedList,
                         inlineToolbar: true,
+                        title: 'Bulleted',
                         config: {
                             defaultStyle: 'unordered'
+                        },
+                    },
+
+                    ordered: {
+                        class: NestedList,
+                        inlineToolbar: true,
+                        config: {
+                            defaultStyle: 'ordered'
                         },
                     },
 
@@ -94,7 +105,9 @@
                     header: {
                         class: Header,
                         inlineToolbar: true,
-                    } 
+                    },
+
+                    
 
                 }
             })
@@ -180,13 +193,12 @@
 
     const visibleRight = ref(false);
 
-    const getDataEditor = (data) => {
+    const getDataEditor = () => {
 
-        console.table(Editor.value);
-        console.table(Editor.value.render());
+        console.table(Editor);
 
         Editor.value.save().then((outputData) => {
-            Editor.value = outputData;
+            editorOldData.value = outputData;
 
             console.log('Article data: ', outputData)
         }).catch((error) => {
@@ -327,7 +339,7 @@
 
                                                 <div class="w-full mt-2">
                                                     <label for="dd-city" class="text-sm w-full">Product Description</label>
-                                                    <div id="editorjs" class="w-full bg-white text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" ></div>
+                                                    <div id="editorjs" @keyup="getDataEditor()" class="w-full bg-white text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" ></div>
                                                 </div>
                                             </TabPanel> 
                                             <!-- Basic Information -->

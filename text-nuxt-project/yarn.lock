@@ -431,7 +431,7 @@
 
 "@editorjs/list@^1.7.0", "@editorjs/list@^1.9.0":
   version "1.9.0"
-  resolved "https://registry.npmjs.org/@editorjs/list/-/list-1.9.0.tgz"
+  resolved "https://registry.yarnpkg.com/@editorjs/list/-/list-1.9.0.tgz#5242095d0cee38671d852b02aa02293f54400f2c"
   integrity sha512-BQEvZW4vi0O0dBvGNljiKxiE89vMSHoM2Tu2OzKUndoj7pY9AxqpgCh1qvwIVsJAlG4Lbt/vBFQilnoStMmI6A==
   dependencies:
     "@codexteam/icons" "^0.0.4"
@@ -910,7 +910,7 @@
     which "^3.0.1"
     ws "^8.16.0"
 
-"@nuxt/kit@3.11.2", "@nuxt/kit@^3.0.0-rc.4", "@nuxt/kit@^3.10.3", "@nuxt/kit@^3.11.1", "@nuxt/kit@^3.11.2", "@nuxt/kit@^3.5.0", "@nuxt/kit@^3.7.3", "@nuxt/kit@^3.8.0", "@nuxt/kit@^3.9.0":
+"@nuxt/kit@3.11.2", "@nuxt/kit@^3.0.0-rc.4", "@nuxt/kit@^3.10.3", "@nuxt/kit@^3.11.1", "@nuxt/kit@^3.11.2", "@nuxt/kit@^3.5.0", "@nuxt/kit@^3.7.3", "@nuxt/kit@^3.8.0":
   version "3.11.2"
   resolved "https://registry.npmjs.org/@nuxt/kit/-/kit-3.11.2.tgz"
   integrity sha512-yiYKP0ZWMW7T3TCmsv4H8+jEsB/nFriRAR8bKoSqSV9bkVYWPE36sf7JDux30dQ91jSlQG6LQkB3vCHYTS2cIg==
@@ -4381,14 +4381,6 @@ nuxi@^3.11.1:
   optionalDependencies:
     fsevents "~2.3.3"
 
-nuxt-auth-sanctum@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.npmjs.org/nuxt-auth-sanctum/-/nuxt-auth-sanctum-0.2.3.tgz"
-  integrity sha512-Lu12K/UkzP+3uKQb3IUoLEHUDQi7u6ZH4BuzFRkytz/jrg6cQ/YZsvGK7OcSw5+UWKWnI1P6dyl49XTIwHg1tw==
-  dependencies:
-    "@nuxt/kit" "^3.9.0"
-    defu "^6.1.4"
-
 nuxt-editorjs@^1.0.4:
   version "1.0.4"
   resolved "https://registry.npmjs.org/nuxt-editorjs/-/nuxt-editorjs-1.0.4.tgz"
@@ -5407,6 +5399,11 @@ simple-git@^3.24.0:
     "@kwsites/file-exists" "^1.1.1"
     "@kwsites/promise-deferred" "^1.1.1"
     debug "^4.3.4"
+
+simple-image-editorjs@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/simple-image-editorjs/-/simple-image-editorjs-1.4.0.tgz#2b7492b3aeecb105dfc0bc01b6c2079535390a4e"
+  integrity sha512-XSjWtf6HzzxWR4Fk0PTr3tpvw5OxCTHXJYEhMc0e8+uIa79H9M6Ct55ujWQctt6XP0IoXuhshCdPKFrcyUNtnw==
 
 sirv@^2.0.4:
   version "2.0.4"

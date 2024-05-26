@@ -20,7 +20,6 @@ export default defineNuxtConfig({
     },
 
     modules : [
-        'nuxt-auth-sanctum',
         'nuxt-primevue',
         '@pinia/nuxt',
         'nuxt-icon',
@@ -44,13 +43,6 @@ export default defineNuxtConfig({
             }
         }],    
     ],
-
-    sanctum: {
-        baseUrl: 'https://ecom.coderorbit.com/public/api',
-        redirect: {
-        onLogin : 'dashboard',
-        }
-    },
 
     vite: {
         server:{
