@@ -38,16 +38,16 @@ const items = ref([
         icon: "ph:list-plus-bold",
         route: "/product/create",
       },
-      {
-        label: "Active",
-        icon: "mingcute:menu-line",
-        route: "/product/Active",
-      },
-      {
-        label: "Inactive",
-        icon: "mingcute:menu-line",
-        route: "/product/inactive",
-      },
+    //   {
+    //     label: "Active",
+    //     icon: "mingcute:menu-line",
+    //     route: "/product/Active",
+    //   },
+    //   {
+    //     label: "Inactive",
+    //     icon: "mingcute:menu-line",
+    //     route: "/product/inactive",
+    //   },
     ],
   },
   {
@@ -82,22 +82,22 @@ const items = ref([
       },
     ],
   },
-  {
-    label: "Vendor",
-    icon: "solar:shop-2-bold",
-    items: [
-      {
-        label: "List",
-        icon: "mingcute:menu-line",
-        route: "/vendor",
-      },
-      {
-        label: "Add",
-        icon: "ph:list-plus-bold",
-        route: "/vendor/create",
-      },
-    ],
-  },
+//   {
+//     label: "Vendor",
+//     icon: "solar:shop-2-bold",
+//     items: [
+//       {
+//         label: "List",
+//         icon: "mingcute:menu-line",
+//         route: "/vendor",
+//       },
+//       {
+//         label: "Add",
+//         icon: "ph:list-plus-bold",
+//         route: "/vendor/create",
+//       },
+//     ],
+//   },
 ]);
 </script>
 <template>
@@ -108,7 +108,6 @@ const items = ref([
           v-if="item.route"
           v-slot="{ href, navigate }"
           :to="item.route"
-          custom
         >
           <NuxtLink
             class="flex align-items-center cursor-pointer text-color px-3 py-2"

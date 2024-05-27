@@ -5,7 +5,7 @@
     import TabView from 'primevue/tabview';
     import TabPanel from 'primevue/tabpanel';
 
-    const oldData = ref(null)
+    const oldData = ref([])
     const customTabStyle = ref(
         {
             headerTitle: {
@@ -18,18 +18,7 @@
 
         }
     )
-
-    onBeforeMount( async () => {
-        try {
-            await fetch("/api/jsonEditor")
-                .then((response) => response.json())
-                .then((data) => {
-                    oldData.value = data;
-            });
-        }catch (err) {
-            console.log(err)
-        }
-    })
+    const { data, eroor } = await useFetch('/api/jsonEditor');
 
 
     
@@ -225,47 +214,49 @@
                             <TabView >
                                 <TabPanel header="Details" :pt="customTabStyle">
 
-                                    <div class="w-full" v-for="(block, label, indexKey) in oldData.blocks" :key="indexKey">
-                                        <div v-if="block.type == 'header' && block.data.level == '1'">
-                                            <h1 class="font-bold text-xl">{{ block.data.text }} </h1>
+                                    {{ data.blocks }}
+
+                                    <div class="w-full" v-for="(item, label, indexKey) in data.blocks" :key="indexKey">
+                                        <div v-if="item.type == 'header' && item.data.level == '1'">
+                                            <h1 class="font-bold text-xl">{{ item.data.text }} </h1>
                                         </div>
-                                        <div v-else-if="block.type == 'header' && block.data.level == '2'">
-                                            <h2 class="font-bold text-lg">{{ block.data.text }} </h2>
+                                        <div v-else-if="item.type == 'header' && item.data.level == '2'">
+                                            <h2 class="font-bold text-lg">{{ item.data.text }} </h2>
                                         </div>
-                                        <div v-else-if="block.type == 'header' && block.data.level == '3'">
-                                            <h3 class="font-bold text-md">{{ block.data.text }} </h3>
+                                        <div v-else-if="item.type == 'header' && item.data.level == '3'">
+                                            <h3 class="font-bold text-md">{{ item.data.text }} </h3>
                                         </div>
-                                        <div v-else-if="block.type == 'header' && block.data.level == '4'">
-                                            <h4 class="font-bold text-sm">{{ block.data.text }} </h4>
+                                        <div v-else-if="item.type == 'header' && item.data.level == '4'">
+                                            <h4 class="font-bold text-sm">{{ item.data.text }} </h4>
                                         </div>
-                                        <div v-else-if="block.type == 'header' && block.data.level == '5'">
-                                            <h5 class="font-bold text-xs">{{ block.data.text }} </h5>
+                                        <div v-else-if="item.type == 'header' && item.data.level == '5'">
+                                            <h5 class="font-bold text-xs">{{ item.data.text }} </h5>
                                         </div>
-                                        <div v-else-if="block.type == 'header' && block.data.level == '6'">
-                                            <h6 class="font-semibold text-xs">{{ block.data.text }} </h6>
+                                        <div v-else-if="item.type == 'header' && item.data.level == '6'">
+                                            <h6 class="font-semibold text-xs">{{ item.data.text }} </h6>
                                         </div>
 
-                                        <p class="mb-3" v-else-if="block.type == 'paragraph'" v-html="block.data.text"></p>
+                                        <p class="mb-3" v-else-if="item.type == 'paragraph'" v-html="item.data.text"></p>
 
-                                        <ol class="mb-3 list-decimal pl-6" v-else-if="block.type == 'list' && block.data.style == 'ordered'">
-                                            <li class="mb-1" v-for="(list, index) in block.data.items" :key="index">
+                                        <ol class="mb-3 list-decimal pl-6" v-else-if="item.type == 'list' && item.data.style == 'ordered'">
+                                            <li class="mb-1" v-for="(list, index) in item.data.items" :key="index">
                                                 {{ list }}
                                             </li>
                                         </ol>
 
-                                        <ul class="mb-3 list-disc pl-6" v-else-if="block.type == 'list' && block.data.style == 'unordered'">
-                                            <li class="mb-1" v-for="(list, index) in block.data.items" :key="index">
+                                        <ul class="mb-3 list-disc pl-6" v-else-if="item.type == 'list' && item.data.style == 'unordered'">
+                                            <li class="mb-1" v-for="(list, index) in item.data.items" :key="index">
                                                 {{ list }}
                                             </li>
                                         </ul>
 
-                                        <table class="mb-3 list-disc pl-6 table w-full table-auto border-collapse border border-slate-400" v-else-if="block.type == 'table'">
-                                            <tr class="mb-1" v-for="(contents, index) in block.data.content" :key="index">
+                                        <table class="mb-3 list-disc pl-6 table w-full table-auto border-collapse border border-slate-400" v-else-if="item.type == 'table'">
+                                            <tr class="mb-1" v-for="(contents, index) in item.data.content" :key="index">
                                                 <td class="border border-slate-300 py-1 px-3" v-for="(content, index) in contents" :key="index">{{ content }}</td>
                                             </tr>
                                         </table>
                                         
-                                        <iframe v-if="block.type == 'Embed'" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" frameborder="0" :width="block.data.width" :height="block.data.height" :src="block.data.embed"></iframe>
+                                        <iframe v-if="item.type == 'Embed'" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" frameborder="0" :width="item.data.width" :height="item.data.height" :src="item.data.embed"></iframe>
                                        
                                     </div>
                                     
