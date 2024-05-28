@@ -4,8 +4,12 @@
 
     import TabView from 'primevue/tabview';
     import TabPanel from 'primevue/tabpanel';
+    
+    import Rating from 'primevue/rating';
+
 
     const oldData = ref([])
+    const rattingsValue = ref(4)
     const customTabStyle = ref(
         {
             headerTitle: {
@@ -214,8 +218,6 @@
                             <TabView >
                                 <TabPanel header="Details" :pt="customTabStyle">
 
-                                    {{ data.blocks }}
-
                                     <div class="w-full" v-for="(item, label, indexKey) in data.blocks" :key="indexKey">
                                         <div v-if="item.type == 'header' && item.data.level == '1'">
                                             <h1 class="font-bold text-xl">{{ item.data.text }} </h1>
@@ -262,10 +264,47 @@
                                     
                                 </TabPanel>
                                 <TabPanel header="Feedback" :pt="customTabStyle">
-                                    <p class="m-0">
-                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
-                                        ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Consectetur, adipisci velit, sed quia non numquam eius modi.
-                                    </p>
+                                    
+                                    <div class="card border w-full p-3 rounded-md mb-3">
+                                        <div class="flex flex-col gap-1">
+                                                <div class="flex">
+                                                    <Avatar icon="pi pi-user" class="mr-2" size="large" />
+                                                    <div class="w-full">
+                                                        <h2 class="font-bold text-lg">Md Majadul Islam</h2>
+                                                        <Rating v-model="rattingsValue" :pt="{
+                                                            onIcon: {
+                                                                class: 'text-yellow-400'
+                                                            }
+                                                        }" readonly :cancel="false" />
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="w-full flex">
+                                                    <p class="text-sm text-black text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor autem aliquam quas explicabo quis ipsum, pariatur numquam sequi nemo. Eligendi obcaecati consectetur assumenda illum, possimus nostrum nulla in commodi alias itaque quam error voluptatum mollitia dignissimos et numquam, molestias culpa quod labore neque atque doloremque dolore. Laudantium inventore soluta accusamus modi alias quis, aliquam est voluptate sed reprehenderit obcaecati neque! Sint voluptas natus, non error enim et vel alias  -> <i class="text-xs text-gray-400">on December 2023</i></p> 
+                                                </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card border w-full p-3 rounded-md ">
+                                        <div class="flex flex-col gap-1">
+                                                <div class="flex">
+                                                    <Avatar icon="pi pi-user" class="mr-2" size="large" />
+                                                    <div class="w-full">
+                                                        <h2 class="font-bold text-lg">Md Majadul Islam</h2>
+                                                        <Rating v-model="rattingsValue" :pt="{
+                                                            onIcon: {
+                                                                class: 'text-yellow-400'
+                                                            }
+                                                        }" readonly :cancel="false" />
+                                                        
+                                                    </div>
+                                                </div>
+                                                <div class="w-full flex">
+                                                    <p class="text-sm text-black text-justify">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor autem aliquam quas explicabo quis ipsum, pariatur numquam sequi nemo. Eligendi obcaecati consectetur assumenda illum, possimus nostrum nulla in commodi alias itaque quam error voluptatum mollitia dignissimos et numquam, molestias culpa quod labore neque atque doloremque dolore. Laudantium inventore soluta accusamus modi alias quis, aliquam est voluptate sed reprehenderit obcaecati neque! Sint voluptas natus, non error enim et vel alias  -> <i class="text-xs text-gray-400">on December 2023</i></p> 
+                                                </div>
+                                        </div>
+                                    </div>
+
                                 </TabPanel>
                                 
                             </TabView>
