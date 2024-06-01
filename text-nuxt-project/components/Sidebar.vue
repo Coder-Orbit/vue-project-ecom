@@ -82,6 +82,22 @@ const items = ref([
       },
     ],
   },
+  {
+    label: "Permission",
+    icon: "teenyicons:password-solid",
+    items: [
+      {
+        label: "Role Permission",
+        icon: "ooui:user-contributions-ltr",
+        route: "/permission/role",
+      },
+      {
+        label: "User Permission",
+        icon: "mdi:user-lock",
+        route: "/permission/user",
+      },
+    ],
+  },
 //   {
 //     label: "Vendor",
 //     icon: "solar:shop-2-bold",
