@@ -1,12 +1,19 @@
 <script setup>
-import Tree from 'primevue/tree';
+import Dropdown from 'primevue/dropdown';
 import { ref } from 'vue';
     
+definePageMeta({
+    layout: "dashboard",
+})
 
 const router = useRouter();
-const selectedKey = ref(null);
+
 const opened = ref(false);
-const dropdown_list = ref('');
+const checkboxSelected = ref(false);
+const menus = ref([]);
+
+const exits = ref(true);
+const roles = ref([]);
 const nodes = ref(
     {
         "roles": [
@@ -852,37 +859,113 @@ const nodes = ref(
     }
 );
 
+const userSelected = ref();
+const users = ref([
+    { name: 'Md Majadul Islam', id: '2' },
+    { name: 'Shoahgh Islam', id: '3' },
+    { name: 'Rabbi Hasan', id: '4' },
+    { name: 'Roton Mia', id: '5' }
+]);
 
+// toggle function goes here for sub menu open
 const toggle = (itemIndex) => {
 
-    // console.table(nodes.value.access[itemIndex]);
-
-    nodes.value.access = {
-        
-        ...nodes.value.access,
-        
-        [itemIndex] : { ...nodes.value.access[itemIndex], "opened" : !nodes.value.access[itemIndex].opened }
-
+    nodes.value.access[itemIndex] = {
+        ...nodes.value.access[itemIndex],
+        "opened" : !nodes.value.access[itemIndex].opened
     }
+
+}
+
+
+// Multiple checkbox function goes here for sub menu open
+const multipleCheck = (itemIndex) => {
+
+    nodes.value.access[itemIndex].children.forEach((item, index) => {
+
+        nodes.value.access[itemIndex].children[index] = {
+            ...nodes.value.access[itemIndex].children[index],
+            "checked" : !nodes.value.access[itemIndex].children[index].checked
+        }
+        
+    })
+
     
 
-    console.table(nodes.value.access);
-    // (event.target.className == "rotate-90" ) ? event.target.classList.remove("rotate-90") : event.target.classList.add("rotate-90");
+}
 
-    // console.log(event.target.className == "rotate-90");
 
- }
+
+// Multiple checkbox function goes here for sub menu open
+const singleCheck = (itemIndex, childeIndex, $event) => {
+
+
+    nodes.value.access[itemIndex].children[childeIndex] = {
+        ...nodes.value.access[itemIndex].children[childeIndex],
+        "checked" : !nodes.value.access[itemIndex].children[childeIndex].checked
+    }
+
+
+    for (let i = 0; i < nodes.value.access[itemIndex].children.length; i++) {
+
+        if(nodes.value.access[itemIndex].children[i].checked == false ){
+            nodes.value.access[itemIndex] = {
+                ...nodes.value.access[itemIndex],
+                "indeterminate" : true
+            }
+
+            break;
+        }else{
+            nodes.value.access[itemIndex] = {
+                ...nodes.value.access[itemIndex],
+                "indeterminate" : false
+            }
+
+        }
+    }
+
+}
+
+
+// Update Function goes here
+
+const updateRoles = (e) => {
+
+
+    for (let i = 0; i < nodes.value.access.length; i++) {
+
+        for (let j = 0; j < nodes.value.access[i].children.length; j++) {
+
+            if(nodes.value.access[i].children[j].checked) {
+                let childId = nodes.value.access[i].children[j].action_id;
+                menus.value = {
+                    ...menus[nodes.value.access[i].id] = {  ...menus[nodes.value.access[i].id], [childId] : childId }
+                }
+            }
+
+        }
+    }
+
+    console.log( menus);
+
+
+    roles.value = {
+        "exits" : exits,
+    }
+    console.log();
+}
+
+
+
 
     
-definePageMeta({
-    layout: "dashboard",
-})
+
 
 </script>
 
 <template>
     <NuxtLayout :name="layout">
-            <div class="w-full px-3 mt-1">
+            <form class="w-full px-3 mt-1" @submit.prevent="updateRoles">
 
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                     <div class="flex w-full justify-between bg-gray-400 text-white">
@@ -900,25 +983,32 @@ definePageMeta({
                     <!-- Table list goes here -->
                     <div class=" h-[calc(100vh-10.4rem)] overflow-y-auto border-b px-3 pt-3">
 
+                        <Dropdown :pt="{
+                            root: {
+                                class: 'md:ml-4'
+                            }
+                        }" v-model="userSelected" editable :options="users" optionValue="id" optionLabel="name" placeholder="Select Roles" class="w-full md:w-1/3" />
+
+
+
                         <ul  class="w-full pl-4 ">
 
                             <li v-for="(item, index) in nodes.access" :key="index">
-                                <!-- <Icon name="iconamoon:arrow-right-2" class="ease-in duration-300 text-2xl" :ref="opened" @click="opened = !opened"></Icon> -->
+                                
                                 <div class="p-1 cursor-pointer flex ">
                                     <div @click="toggle(index)" class="w-6 h-8 text-center ease-in duration-300">
                                         <Icon name="iconamoon:arrow-right-2" :class="`${item.opened ? 'rotate-90' : ''}`" class="ease-in duration-300 text-2xl"></Icon>
                                     </div>
                                     <div class="-mt-[2px] flex">
-                                        <input class="mr-2 " type="checkbox" name="menus[]" id="menu">
+                                        <input class="mr-2" v-bind="item.id" :checked="item.indeterminate != false ? false : true" :indeterminate="item.indeterminate" type="checkbox" @click="multipleCheck(index)"  id="menu">
                                         <div class="text-md mt-1">{{ item.name }}</div>
                                     </div>
                                 </div>
-                                
-                                <!-- <ul class="ml-12 border-l pl-2 w-fit ease-in duration-300" :class="`${item.opened ? 'h-fit' : 'h-0'}`" v-if="item.children && item.opened"> -->
-                                <ul class="ml-12 border-l pl-2 w-fit ease-in duration-300 overflow-hidden bg-red-500 transition-all" :class="`${item.opened ? 'h-6' : 'h-[0px]'}`" v-if="item.children">
-                                    <li v-for="(child, lavel, index) in item.children" :key="index">
+
+                                <ul class="ml-12 border-l pl-2 w-fit ease-in duration-300 overflow-hidden  transition-all" :class="`${item.opened ? 'h-full' : 'h-[0px]'}`" v-if="item.children">
+                                    <li v-for="(child, childKey) in item.children" :key="childKey">
                                         <div class="mt-1 flex">
-                                            <input class="mr-2 " type="checkbox" name="menus[]" id="menu">
+                                            <input class="mr-2" name="actions[]" value="child.id" @click="singleCheck(index, childKey, $event)" :checked="child.checked" type="checkbox" id="menu">
                                             <div class="text-md -mt-[2px]">{{ child.action.name }}</div>
                                         </div>
                                     </li>
@@ -926,13 +1016,20 @@ definePageMeta({
                             </li>
                         </ul>
                         
-                        <!-- <Tree v-model:selectionKeys="selectedKey"  :value="nodes" selectionMode="checkbox" class="w-full md:w-30rem"></Tree> -->
                     </div>
-                    asdfsadf
-                </div>
+                    <div class="flex">
+                        <div class="" >
+                            <button type="submit" class="bg-yellow-500 px-4 py-2 text-white items-center">Update</button>
+                        </div>
+                        <div class="flex ml-4">
 
+                            <input id="exit" v-model="exits" type="checkbox" />
+                            <label class="ml-2 mt-1" for="exit">This will effect on existing users</label>
+                        </div>
+                    </div>
+                </div>
                 
-            </div>
+            </form>
         </NuxtLayout>
 </template>
 
