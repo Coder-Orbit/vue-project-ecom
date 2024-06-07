@@ -952,7 +952,7 @@ const updateRoles = (e) => {
     roles.value = {
         "exits" : exits,
     }
-    console.log();
+
 }
 
 
