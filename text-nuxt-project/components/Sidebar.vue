@@ -70,16 +70,16 @@ const items = ref([
     label: "Brand",
     icon: "material-symbols:emoji-food-beverage-rounded",
     items: [
-      {
-        label: "List",
-        icon: "mingcute:menu-line",
-        route: "/brand",
-      },
-      {
-        label: "Add",
-        icon: "ph:list-plus-bold",
-        route: "/brand/create",
-      },
+        {
+            label: "List",
+            icon: "mingcute:menu-line",
+            route: "/brand",
+        },
+        {
+            label: "Add",
+            icon: "ph:list-plus-bold",
+            route: "/brand/create",
+        },
     ],
   },
   {
@@ -98,6 +98,23 @@ const items = ref([
       },
     ],
   },
+  {
+    label: "Permission",
+    icon: "teenyicons:password-solid",
+    items: [
+        {
+            label: "Role Permission",
+            icon: "ooui:user-contributions-ltr",
+            route: "/permission/role",
+        },
+        {
+            label: "User Permission",
+            icon: "mdi:user-lock",
+            route: "/permission/user",
+        },
+    ],
+  },
+
 //   {
 //     label: "Vendor",
 //     icon: "solar:shop-2-bold",
@@ -114,6 +131,20 @@ const items = ref([
 //       },
 //     ],
 //   },
+
+    {
+        label: "Mail Configuration",
+        icon: "fluent:mail-settings-16-filled",
+        route: "/mail",
+    },
+
+    {
+        label: "Web Settings",
+        icon: "mingcute:settings-6-fill",
+        route: "/settings",
+    }
+
+    
 ]);
 </script>
 <template>
