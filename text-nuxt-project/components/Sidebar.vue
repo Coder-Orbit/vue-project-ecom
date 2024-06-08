@@ -83,6 +83,22 @@ const items = ref([
     ],
   },
   {
+    label: "Vendor",
+    icon: "solar:shop-2-bold",
+    items: [
+      {
+        label: "List",
+        icon: "mingcute:menu-line",
+        route: "/Vendor",
+      },
+      {
+        label: "Add",
+        icon: "ph:list-plus-bold",
+        route: "/Vendor/create",
+      },
+    ],
+  },
+  {
     label: "Permission",
     icon: "teenyicons:password-solid",
     items: [
@@ -98,6 +114,7 @@ const items = ref([
       },
     ],
   },
+
   {
     label: "Permission",
     icon: "teenyicons:password-solid",
@@ -115,23 +132,6 @@ const items = ref([
     ],
   },
 
-//   {
-//     label: "Vendor",
-//     icon: "solar:shop-2-bold",
-//     items: [
-//       {
-//         label: "List",
-//         icon: "mingcute:menu-line",
-//         route: "/vendor",
-//       },
-//       {
-//         label: "Add",
-//         icon: "ph:list-plus-bold",
-//         route: "/vendor/create",
-//       },
-//     ],
-//   },
-
     {
         label: "Mail Configuration",
         icon: "fluent:mail-settings-16-filled",
@@ -144,7 +144,6 @@ const items = ref([
         route: "/settings",
     }
 
-    
 ]);
 </script>
 <template>
