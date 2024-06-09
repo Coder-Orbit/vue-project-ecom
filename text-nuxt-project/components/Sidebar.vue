@@ -51,6 +51,21 @@ const items = ref([
     ],
   },
   {
+    label: "Orders",
+    icon: "fa-solid:shopping-basket",
+    items: [
+      {
+        label: "Lists",
+        icon: "mingcute:menu-line",
+        route: "/order",
+      },
+      
+   
+    ],
+  },
+
+  
+  {
     label: "Slide",
     icon: "material-symbols:transition-slide",
     items: [
@@ -68,7 +83,7 @@ const items = ref([
   },
   {
     label: "Brand",
-    icon: "material-symbols:emoji-food-beverage-rounded",
+    icon: "pajamas:labels",
     items: [
         {
             label: "List",
@@ -84,7 +99,7 @@ const items = ref([
   },
   {
     label: "Vendor",
-    icon: "solar:shop-2-bold",
+    icon: "teenyicons:shop-solid",
     items: [
       {
         label: "List",
@@ -150,7 +165,7 @@ const items = ref([
             @click="navigate"
           >
             <Icon :name="item.icon" width="1.4em" height="1.4em" />
-            <span class="ml-2 text-color">{{ item.label }} 1</span>
+            <span class="ml-2 text-color">{{ item.label }}</span>
           </NuxtLink>
         </NuxtLink>
         <NuxtLink
@@ -160,7 +175,7 @@ const items = ref([
           :target="item.target"
         >
           <Icon :name="item.icon" width="1.4em" height="1.4em" />
-          <span class="ml-2">{{ item.label }} 2</span>
+          <span class="ml-2">{{ item.label }}</span>
           <span
             v-if="item.items"
             class="pi pi-angle-down text-primary ml-auto"

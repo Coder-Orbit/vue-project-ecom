@@ -2,16 +2,14 @@
     import InputGroup from 'primevue/inputgroup';
     import InputGroupAddon from 'primevue/inputgroupaddon';
     import Sidebar from 'primevue/sidebar';
-    
-    import Calendar from 'primevue/calendar';
 
 
 
 
     import { ref } from "vue";
 
-
     const router = useRouter();
+
     definePageMeta({
         layout: "dashboard",
     })
@@ -30,7 +28,7 @@
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                     <div class="flex w-full justify-between bg-gray-400 text-white">
                         
-                        <div class="font-semibold mt-1 ml-3">Products</div>
+                        <div class="font-semibold mt-1 ml-3">Transaction</div>
                         <div class="font-semibold ml-1 flex">
                             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
                                 <Icon name="gg:arrow-left-o"></Icon>
