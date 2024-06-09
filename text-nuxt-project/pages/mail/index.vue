@@ -41,19 +41,7 @@
         extraFields.value.splice(index, 1);
     }
 
-    const categories = ref([
-        { name: 'Mobile', code: 'AU' },
-        { name: 'Frez', code: 'BR' },
-        { name: 'TV', code: 'CN' },
-        { name: 'AC', code: 'EG' },
-        { name: 'T-Shirt', code: 'FR' },
-        { name: 'Pants', code: 'DE' },
-        { name: 'Three PCs', code: 'IN' },
-        { name: 'Shoe', code: 'JP' },
-        { name: 'Panjabi', code: 'ES' },
-        { name: 'Shree', code: 'US' }
-    ]);
-
+    
 
     const dataSubmit = () => {
 

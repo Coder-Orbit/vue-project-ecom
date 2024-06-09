@@ -13,11 +13,12 @@
     })
 
 
-    const selectedCategory = ref();
-    const extraProps = ref([]);
-    const field_name = ref([]);
-    const group = ref([]);
-    const value = ref([]);
+    const extraProps = ref({
+        field_name: "",
+        field_value: "",
+        field_group: ""
+    });
+
     const extraFields = ref([
         {
             fieldName: "",
@@ -37,6 +38,7 @@
             ...extraFields.value, {
                 fieldName: "",
                 fieldValue: "",
+                fieldGroup: "",
             }
         ];
     }
@@ -51,16 +53,38 @@
 
     const dataSubmit = () => {
 
-        extraFields.value.forEach((item, index) => {
+        extraFields.value.forEach((field, index) => ({
 
-            ...field_name.value = item.fieldName,
-            ...group.value = item.fieldGroup,
-            ...value.value = item.value,
+            ...extraProps.value.field_name = [
+                ...extraProps.value.field_name,
+                field.fieldName
+            ],
 
-            // extraProps.value = {...extraProps.value, [item.fieldName] : item.fieldValue, "group": item.fieldGroup };
-        })
+            ...extraProps.value.field_value = [
+                ...extraProps.value.field_value,
+                field.fieldValue
+            ],
 
-        console.log(extraProps)
+            ...extraProps.value.field_group = [
+                ...extraProps.value.field_group,
+                field.fieldGroup
+            ]
+
+            
+
+        }))
+
+        // for (let i = 0; i < extraFields.value.length; i++) {
+        //     extraProps.value = [
+        //         {
+        //             [i] : i, ...extraProps.value[i]
+        //         }
+                
+        //     ]
+        // }
+
+
+        console.log(extraProps);
 
     }
 

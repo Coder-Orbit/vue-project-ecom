@@ -102,23 +102,6 @@ const items = ref([
     label: "Permission",
     icon: "teenyicons:password-solid",
     items: [
-      {
-        label: "Role Permission",
-        icon: "ooui:user-contributions-ltr",
-        route: "/permission/role",
-      },
-      {
-        label: "User Permission",
-        icon: "mdi:user-lock",
-        route: "/permission/user",
-      },
-    ],
-  },
-
-  {
-    label: "Permission",
-    icon: "teenyicons:password-solid",
-    items: [
         {
             label: "Role Permission",
             icon: "ooui:user-contributions-ltr",
@@ -142,6 +125,12 @@ const items = ref([
         label: "Web Settings",
         icon: "mingcute:settings-6-fill",
         route: "/settings",
+    },
+
+    {
+        label: "Transactions",
+        icon: "tdesign:money",
+        route: "/transaction",
     }
 
 ]);
