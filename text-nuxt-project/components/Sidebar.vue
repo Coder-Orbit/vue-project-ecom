@@ -98,6 +98,22 @@ const items = ref([
     ],
   },
   {
+    label: "Coupon",
+    icon: "mingcute:coupon-fill",
+    items: [
+      {
+        label: "List",
+        icon: "mingcute:menu-line",
+        route: "/Coupon",
+      },
+      {
+        label: "Add",
+        icon: "ph:list-plus-bold",
+        route: "/Coupon/create",
+      },
+    ],
+  },
+  {
     label: "Vendor",
     icon: "teenyicons:shop-solid",
     items: [

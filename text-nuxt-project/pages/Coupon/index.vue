@@ -19,7 +19,7 @@
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                     <div class="flex w-full justify-between bg-gray-400 text-white">
                         
-                        <div class="font-semibold mt-1 ml-3">Brand</div>
+                        <div class="font-semibold mt-1 ml-3">Coupon</div>
                         <div class="font-semibold ml-1 flex">
                             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
                                 <Icon name="gg:arrow-left-o"></Icon>
@@ -30,7 +30,7 @@
                                 <Icon name="iconoir:filter-solid"></Icon>
                                 Filter
                             </button>
-                            <NuxtLink to="brand/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
+                            <NuxtLink to="Coupon/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
                                 <Icon name="zondicons:add-outline"></Icon>
                                 Add
                             </NuxtLink>
@@ -46,13 +46,17 @@
                                     <th class="p-1 text-left text-sm w-8">SL</th>
                                     <th class="p-1 text-left text-sm w-12">Icon</th>
                                     <th class="p-1 text-left text-sm">Name</th>
-                                    <th class="p-1 text-left text-sm">Thumbnails</th>
+                                    <th class="p-1 text-left text-sm w-24">Thumbnails</th>
                                     <th class="p-1 text-left text-sm">Banner</th>
-                                    <th class="p-1 text-left text-sm">Commission</th>
-                                    <th class="p-1 text-left text-sm">Commission Type</th>
-                                    <th class="p-1 text-left text-sm w-48">Description</th>
+                                    <th class="p-1 text-left text-sm">Max Amount</th>
+                                    <th class="p-1 text-left text-sm">Use Limit</th>
+                                    <th class="p-1 text-left text-sm">Start Offer</th>
+                                    <th class="p-1 text-left text-sm">End Offer</th>
+                                    <th class="p-1 text-left text-sm  w-24">Commission</th>
+                                    <th class="p-1 text-left text-sm  w-28">Commission Type</th>
+                                    <th class="p-1 text-left text-sm w-32">Description</th>
                                     <th class="p-1 text-left">Status</th>
-                                    <th class="p-1 text-left">Created Date</th>
+                                    <th class="p-1 text-left w-24">Created Date</th>
                                     <th class="p-1 text-center">Created By</th>
                                     <th class="p-1 text-center w-24">...</th>
                                 </tr>
@@ -64,6 +68,10 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">150.00</td>
+                                    <td class="p-1 text-left text-xs">1</td>
+                                    <td class="p-1 text-left text-xs">12/05/24</td>
+                                    <td class="p-1 text-left text-xs">02/06/24</td>
                                     <td class="p-1 text-left text-xs">Commission</td>
                                     <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
@@ -82,6 +90,10 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">150.00</td>
+                                    <td class="p-1 text-left text-xs">1</td>
+                                    <td class="p-1 text-left text-xs">12/05/24</td>
+                                    <td class="p-1 text-left text-xs">02/06/24</td>
                                     <td class="p-1 text-left text-xs">Commission</td>
                                     <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
@@ -100,6 +112,10 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">150.00</td>
+                                    <td class="p-1 text-left text-xs">1</td>
+                                    <td class="p-1 text-left text-xs">12/05/24</td>
+                                    <td class="p-1 text-left text-xs">02/06/24</td>
                                     <td class="p-1 text-left text-xs">Commission</td>
                                     <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
@@ -118,6 +134,10 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">150.00</td>
+                                    <td class="p-1 text-left text-xs">1</td>
+                                    <td class="p-1 text-left text-xs">12/05/24</td>
+                                    <td class="p-1 text-left text-xs">02/06/24</td>
                                     <td class="p-1 text-left text-xs">Commission</td>
                                     <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
@@ -136,6 +156,10 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">150.00</td>
+                                    <td class="p-1 text-left text-xs">1</td>
+                                    <td class="p-1 text-left text-xs">12/05/24</td>
+                                    <td class="p-1 text-left text-xs">02/06/24</td>
                                     <td class="p-1 text-left text-xs">Commission</td>
                                     <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
@@ -154,6 +178,10 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">150.00</td>
+                                    <td class="p-1 text-left text-xs">1</td>
+                                    <td class="p-1 text-left text-xs">12/05/24</td>
+                                    <td class="p-1 text-left text-xs">02/06/24</td>
                                     <td class="p-1 text-left text-xs">Commission</td>
                                     <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
@@ -172,6 +200,10 @@
                                     <td class="p-1 text-left text-xs">Name</td>
                                     <td class="p-1 text-left text-xs">Thumbnails</td>
                                     <td class="p-1 text-left text-xs">Banner</td>
+                                    <td class="p-1 text-left text-xs">150.00</td>
+                                    <td class="p-1 text-left text-xs">1</td>
+                                    <td class="p-1 text-left text-xs">12/05/24</td>
+                                    <td class="p-1 text-left text-xs">02/06/24</td>
                                     <td class="p-1 text-left text-xs">Commission</td>
                                     <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
@@ -184,78 +216,7 @@
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
                                 </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
+
 
 
                                 
@@ -285,8 +246,8 @@
 
                 <Sidebar v-model:visible="visibleRight" header="Brand Filter" position="right">
                     <div class="w-full">
-                        <label for="dd-city" class="text-sm w-full">Brand Name</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
+                        <label for="dd-city" class="text-sm w-full">Coupon Name</label>
+                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Coupon Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
