@@ -134,6 +134,11 @@ const items = ref([
     icon: "teenyicons:password-solid",
     items: [
         {
+            label: "Role",
+            icon: "game-icons:house-keys",
+            route: "/permission",
+        },
+        {
             label: "Role Permission",
             icon: "ooui:user-contributions-ltr",
             route: "/permission/role",
