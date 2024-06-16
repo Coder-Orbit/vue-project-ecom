@@ -81,7 +81,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -131,7 +131,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -156,7 +156,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -181,7 +181,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -206,7 +206,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -231,7 +231,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -256,7 +256,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -281,7 +281,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -306,7 +306,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -331,7 +331,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -356,7 +356,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -381,7 +381,7 @@
                                             <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -448,9 +448,8 @@
                         
                     </div>
 
-
-
                 </Sidebar>
             </div>
         </NuxtLayout>
 </template>
+
