@@ -130,6 +130,17 @@ const items = ref([
     ],
   },
   {
+    label: "Feedback",
+    icon: "material-symbols:reviews-rounded",
+    items: [
+      {
+        label: "All Feedback",
+        icon: "mingcute:menu-line",
+        route: "/feedback",
+      },
+    ],
+  },
+  {
     label: "Permission",
     icon: "teenyicons:password-solid",
     items: [
