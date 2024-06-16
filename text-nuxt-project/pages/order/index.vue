@@ -78,7 +78,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -103,10 +103,10 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
-                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/product/details">
+                                            <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/details">
                                                 <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                         </div>
@@ -128,7 +128,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -153,7 +153,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -178,7 +178,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -203,7 +203,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -228,7 +228,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -253,7 +253,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -278,7 +278,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -303,7 +303,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -328,7 +328,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -353,7 +353,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
@@ -378,7 +378,7 @@
                                     <td class="p-1 text-center text-xs">Pending</td>
                                     <td class="p-1 text-xs grid text-center  justify-items-center">
                                         <div class="flex">
-                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/product/details">
+                                            <NuxtLink  class=" bg-cyan-400 p-1 text-white rounded" to="/order/details">
                                                 <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                             </NuxtLink>
                                             <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" to="/order/paymentinfo">
