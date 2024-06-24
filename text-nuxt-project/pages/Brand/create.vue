@@ -94,6 +94,13 @@
                             <label for="dd-city" class="text-sm w-full">Brand Name</label>
                             <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
                         </div>
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Status</label>
+                            <select name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                                <option value="1"> Active</option>
+                                <option value="0"> Inactive</option>
+                            </select>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-3 gap-2 mt-2">
@@ -130,7 +137,7 @@
                     </div>
 
                     <!-- comission tab -->
-                    <div class="grid grid-cols-3 gap-2 mt-2">
+                    <div class="grid grid-cols-2 gap-2 mt-2">
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Commission</label>
                             <input type="number" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Commission"/>
@@ -140,13 +147,6 @@
                             <select name="commission_type" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                                 <option value="fixed"> Fixed</option>
                                 <option value="parcentage"> Parcentage</option>
-                            </select>
-                        </div>
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Status</label>
-                            <select name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
-                                <option value="1"> Active</option>
-                                <option value="0"> Inactive</option>
                             </select>
                         </div>
                     </div>

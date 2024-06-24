@@ -68,203 +68,187 @@
                                     <td class="p-1 text-center text-xs">admin</td>
                                     <td class="p-1 text-center text-xs flex">
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
+                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    </td>
+                                </tr>
+                                <tr class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">1</td>
+                                    <td class="p-1 text-left text-xs"></td>
+                                    <td class="p-1 text-left text-xs">10%</td>
+                                    <td class="p-1 text-left text-xs">Mobile</td>
+                                    <td class="p-1 text-left text-xs">-</td>
+                                    <td class="p-1 text-left text-xs">Description</td>
+                                    <td class="p-1 text-left text-xs">Active</td>
+                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
+                                    <td class="p-1 text-center text-xs">admin</td>
+                                    <td class="p-1 text-center text-xs flex">
+                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                        <div class="rounded-md mx-1 cursor-pointer bg-yellow-500 p-1 text-white" title="Edit"><nuxt-link to="/category/edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link></div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
                                 </tr>
 
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">2</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">3</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">4</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">5</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">6</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">7</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">8</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">9</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">10</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">11</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">12</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">13</td>
-                                    <td class="p-1 text-left text-xs"></td>
-                                    <td class="p-1 text-left text-xs">10%</td>
-                                    <td class="p-1 text-left text-xs">Mobile</td>
-                                    <td class="p-1 text-left text-xs">-</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
                                 
                             </tbody>
                         </table>

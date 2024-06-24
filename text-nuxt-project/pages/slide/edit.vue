@@ -75,7 +75,7 @@
 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
     <div class="flex w-full justify-between  bg-gray-400 text-white">
         
-        <div class="font-semibold mt-1 ml-3">Create Vendor</div>
+        <div class="font-semibold mt-1 ml-3">Edit Slide</div>
         <div class="font-semibold ml-1 flex">
             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-tr-sm">
                 <Icon name="gg:arrow-left-o"></Icon>
@@ -91,8 +91,8 @@
                 <form  @submit.prevent="dataSubmit">
                     <div class="grid grid-cols-2 gap-2">
                         <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Vendor Name</label>
-                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
+                            <label for="dd-city" class="text-sm w-full">Slide Name</label>
+                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Category Name"/>
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Status</label>
@@ -103,9 +103,9 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div class="grid grid-cols-3 gap-2 mt-2">
                         <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Vendor Icon</label>
+                            <label for="dd-city" class="text-sm w-full">Slide Icon</label>
                             <FileUpload :pt="{
                                 chooseButton: {
                                     class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
@@ -115,7 +115,7 @@
                             }" mode="basic" name="icon" accept="image/*"/>
                         </div>
                         <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Vendor Banner</label>
+                            <label for="dd-city" class="text-sm w-full">Slide Banner</label>
                             <FileUpload :pt="{
                                 chooseButton: {
                                     class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
@@ -124,7 +124,26 @@
                                 
                             }" mode="basic" name="banner" accept="image/*" />
                         </div>
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Slide Thumbnail</label>
+                            <FileUpload :pt="{
+                                chooseButton: {
+                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                },
+                                
+                                
+                            }" mode="basic" name="thumbnail" accept="image/*"/>
+                        </div>
                     </div>
+
+                    <!-- comission tab -->
+                    <div class="grid grid-cols-1 gap-2 mt-2">
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Description</label>
+                            <textarea type="number" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Description"/>
+                        </div>
+                    </div>
+
                     <!-- dynamic field -->
                     <div class="grid grid-col gap-2 mt-2">
                         <Fieldset legend="Extra Props" :pt="{

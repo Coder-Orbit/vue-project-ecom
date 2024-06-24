@@ -46,17 +46,13 @@
                                     <th class="p-1 text-left text-sm w-8">SL</th>
                                     <th class="p-1 text-left text-sm w-12">Icon</th>
                                     <th class="p-1 text-left text-sm">Name</th>
-                                    <th class="p-1 text-left text-sm w-24">Thumbnails</th>
-                                    <th class="p-1 text-left text-sm">Banner</th>
                                     <th class="p-1 text-left text-sm">Max Amount</th>
                                     <th class="p-1 text-left text-sm">Use Limit</th>
                                     <th class="p-1 text-left text-sm">Start Offer</th>
                                     <th class="p-1 text-left text-sm">End Offer</th>
-                                    <th class="p-1 text-left text-sm  w-24">Commission</th>
-                                    <th class="p-1 text-left text-sm  w-28">Commission Type</th>
                                     <th class="p-1 text-left text-sm w-32">Description</th>
                                     <th class="p-1 text-left">Status</th>
-                                    <th class="p-1 text-left w-24">Created Date</th>
+                                    <th class="p-1 text-left w-24">Created At</th>
                                     <th class="p-1 text-center">Created By</th>
                                     <th class="p-1 text-center w-24">...</th>
                                 </tr>
@@ -66,153 +62,21 @@
                                     <td class="p-1 text-center text-xs">1</td>
                                     <td class="p-1 text-left text-xs">Icon</td>
                                     <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
                                     <td class="p-1 text-left text-xs">150.00</td>
                                     <td class="p-1 text-left text-xs">1</td>
                                     <td class="p-1 text-left text-xs">12/05/24</td>
                                     <td class="p-1 text-left text-xs">02/06/24</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
                                     <td class="p-1 text-left text-xs">Description</td>
                                     <td class="p-1 text-left text-xs">Active</td>
                                     <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
                                     <td class="p-1 text-center text-xs">admin</td>
                                     <td class="p-1 text-center text-xs flex">
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">150.00</td>
-                                    <td class="p-1 text-left text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">12/05/24</td>
-                                    <td class="p-1 text-left text-xs">02/06/24</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">150.00</td>
-                                    <td class="p-1 text-left text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">12/05/24</td>
-                                    <td class="p-1 text-left text-xs">02/06/24</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">150.00</td>
-                                    <td class="p-1 text-left text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">12/05/24</td>
-                                    <td class="p-1 text-left text-xs">02/06/24</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">150.00</td>
-                                    <td class="p-1 text-left text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">12/05/24</td>
-                                    <td class="p-1 text-left text-xs">02/06/24</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">150.00</td>
-                                    <td class="p-1 text-left text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">12/05/24</td>
-                                    <td class="p-1 text-left text-xs">02/06/24</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">Thumbnails</td>
-                                    <td class="p-1 text-left text-xs">Banner</td>
-                                    <td class="p-1 text-left text-xs">150.00</td>
-                                    <td class="p-1 text-left text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">12/05/24</td>
-                                    <td class="p-1 text-left text-xs">02/06/24</td>
-                                    <td class="p-1 text-left text-xs">Commission</td>
-                                    <td class="p-1 text-left text-xs">Commission Type</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></div>
+                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
+                                            <NuxtLink to="/coupon/edit">
+                                                <Icon name="subway:pencil" width="1.4em" height="1.4em" />
+                                            </NuxtLink>
+                                        </div>
                                         <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
                                 </tr>

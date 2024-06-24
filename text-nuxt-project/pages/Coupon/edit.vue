@@ -66,7 +66,7 @@
         console.log(extraProps)
 
     }
-
+    const icondisplay = ref();
 </script>
 <template>
     <NuxtLayout :name="layout">
@@ -75,7 +75,7 @@
 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
     <div class="flex w-full justify-between  bg-gray-400 text-white">
         
-        <div class="font-semibold mt-1 ml-3">Create Vendor</div>
+        <div class="font-semibold mt-1 ml-3">Edit Coupon</div>
         <div class="font-semibold ml-1 flex">
             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-tr-sm">
                 <Icon name="gg:arrow-left-o"></Icon>
@@ -89,10 +89,79 @@
         <div class="flex w-full justify-center">
             <div class="w-1/2">
                 <form  @submit.prevent="dataSubmit">
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="grid grid-cols-3 gap-2">
                         <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Vendor Name</label>
-                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
+                            <label for="dd-city" class="text-sm w-full">Coupon Name</label>
+                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Coupon Name"/>
+                        </div>
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Max Amount</label>
+                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Max Amount"/>
+                        </div>
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Use Limit</label>
+                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Use Limit"/>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div class="w-full">
+              
+            <label for="icondisplay" class="text-sm w-full"> Start Offer </label>
+            <Calendar v-model="icondisplay" showIcon iconDisplay="input" class="w-full focus:outline-none text-sm border py-1 px-2 focus:border-red-200 rounded-md" placeholder="Pick a Date" inputId="icondisplay" />
+   
+                        </div>
+                        <div class="w-full">
+                            <label for="icondisplay" class="text-sm w-full"> End Offer </label>
+                            <Calendar v-model="icondisplay" showIcon iconDisplay="input" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Pick a Date" inputId="icondisplay" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 mt-2">
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Coupon Icon</label>
+                            <FileUpload :pt="{
+                                chooseButton: {
+                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                },
+                                
+                                
+                            }" mode="basic" name="icon" accept="image/*"/>
+                        </div>
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Coupon Banner</label>
+                            <FileUpload :pt="{
+                                chooseButton: {
+                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                },
+                                
+                                
+                            }" mode="basic" name="banner" accept="image/*" />
+                        </div>
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Coupon Thumbnail</label>
+                            <FileUpload :pt="{
+                                chooseButton: {
+                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                },
+                                
+                                
+                            }" mode="basic" name="thumbnail" accept="image/*"/>
+                        </div>
+                    </div>
+
+                    <!-- comission tab -->
+                    <div class="grid grid-cols-3 gap-2 mt-2">
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Commission</label>
+                            <input type="number" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Commission"/>
+                        </div>
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Commission Type</label>
+                            <select name="commission_type" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                                <option value="fixed"> Fixed</option>
+                                <option value="parcentage"> Parcentage</option>
+                            </select>
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Status</label>
@@ -103,28 +172,6 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Vendor Icon</label>
-                            <FileUpload :pt="{
-                                chooseButton: {
-                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                },
-                                
-                                
-                            }" mode="basic" name="icon" accept="image/*"/>
-                        </div>
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Vendor Banner</label>
-                            <FileUpload :pt="{
-                                chooseButton: {
-                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                },
-                                
-                                
-                            }" mode="basic" name="banner" accept="image/*" />
-                        </div>
-                    </div>
                     <!-- dynamic field -->
                     <div class="grid grid-col gap-2 mt-2">
                         <Fieldset legend="Extra Props" :pt="{
@@ -188,3 +235,8 @@
 </div>
     </NuxtLayout>
 </template>
+<style >
+#icondisplay {
+	outline: none !important;
+}
+</style>
