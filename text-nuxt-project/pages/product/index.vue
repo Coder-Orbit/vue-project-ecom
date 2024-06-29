@@ -273,27 +273,47 @@ const colors = ref([
           </div>
           <div></div>
         </div>
-        <!-- size & Color-->
+        <!-- Brand & Vendors-->
         <div class="w-full grid grid-cols-2 gap-2 mt-2">
           <div>
             <label for="dd-city" class="text-sm w-full">Brand</label>
-            <Dropdown
-              v-model="selectedSize"
-              :options="sizes"
-              optionLabel="name"
-              placeholder="Select Size"
-              class=""
-            />
+            <Dropdown v-model="selectedSize" :options="sizes" filter optionLabel="name" placeholder="Select a Country" class="w-full md:w-14rem">
+            <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex align-items-center">
+                    <img :alt="slotProps.value.label" src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png" :class="`mr-2 flag flag-${slotProps.value.code.toLowerCase()}`" style="width: 18px" />
+                    <div>{{ slotProps.value.name }}</div>
+                </div>
+                <span v-else>
+                    {{ slotProps.placeholder }}
+                </span>
+            </template>
+            <template #option="slotProps">
+                <div class="flex align-items-center">
+                    <img :alt="slotProps.option.label" src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png" :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`" style="width: 18px" />
+                    <div>{{ slotProps.option.name }}</div>
+                </div>
+            </template>
+            </Dropdown>
           </div>
           <div>
             <label for="dd-city" class="text-sm w-full">Vendor</label>
-            <Dropdown
-              v-model="selectedColor"
-              :options="colors"
-              optionLabel="name"
-              placeholder="Select Size"
-              class=""
-            />
+            <Dropdown v-model="selectedColor" :options="colors" filter optionLabel="name" placeholder="Select a Country" class="w-full md:w-14rem">
+            <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex align-items-center">
+                    <img :alt="slotProps.value.label" src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png" :class="`mr-2 flag flag-${slotProps.value.code.toLowerCase()}`" style="width: 18px" />
+                    <div>{{ slotProps.value.name }}</div>
+                </div>
+                <span v-else>
+                    {{ slotProps.placeholder }}
+                </span>
+            </template>
+            <template #option="slotProps">
+                <div class="flex align-items-center">
+                    <img :alt="slotProps.option.label" src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png" :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`" style="width: 18px" />
+                    <div>{{ slotProps.option.name }}</div>
+                </div>
+            </template>
+            </Dropdown>
           </div>
           <div></div>
         </div>
