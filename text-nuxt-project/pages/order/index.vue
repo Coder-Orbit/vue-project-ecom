@@ -17,12 +17,34 @@ const visibleRight = ref(false);
 const startDate = ref(null);
 
 const endDate = ref(null);
-const selectedStatus = ref();
-const status = ref([
-  { name: "Pending", code: "RM" },
-  { name: "Done", code: "LDN" },
-  { name: "Canceled", code: "IST" },
-  { name: "Processing", code: "PRS" },
+const selectedSize = ref();
+const sizes = ref([
+  { name: "S", code: "RM" },
+  { name: "M", code: "LDN" },
+  { name: "L", code: "IST" },
+  { name: "XL", code: "PRS" },
+]);
+
+const selectedCategory = ref();
+const Categories = ref([
+  { name: "T-shirt", code: "#FF0000" },
+  { name: "Men", code: "#00FF00" },
+  { name: "Woman", code: "#0000FF" },
+  { name: "Kids", code: "#FFFF00" },
+]);
+const selectedBrand = ref();
+const brands = ref([
+  { name: "Samsung", code: "01" },
+  { name: "Opp", code: "02" },
+  { name: "Vivo", code: "03" },
+  { name: "Walton", code: "04" },
+]);
+const selectedVendor = ref();
+const vendors = ref([
+  { name: "Mama Tong", code: "01" },
+  { name: "Arongo", code: "02" },
+  { name: "Halim Biryani", code: "03" },
+  { name: "Tikka Masala", code: "04" },
 ]);
 </script>
 <template>
@@ -572,46 +594,6 @@ const status = ref([
             placeholder="Enter Name"
           />
         </div>
-        <div class="w-full">
-          <label for="dd-city" class="text-sm w-full">Order Id</label>
-          <input
-            type="text"
-            v-model="value"
-            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-            placeholder="Order Id"
-          />
-        </div>
-        <div class="w-full grid grid-cols-2 gap-2">
-          <div>
-            <label for="dd-city" class="text-sm w-full">Contact No.</label>
-            <input
-              type="text"
-              v-model="value"
-              class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-              placeholder="Contact No."
-            />
-          </div>
-          <div>
-            <label for="dd-city" class="text-sm w-full">Status</label>
-            <Dropdown
-              v-model="selectedStatus"
-              :options="status"
-              optionLabel="name"
-              placeholder="Select Size"
-              class="text-sm border m-0 outline-none focus:border-red-200 rounded-md"
-            />
-          </div>
-        </div>
-        <div class="w-full">
-          <label for="dd-city" class="text-sm w-full">Order Id</label>
-          <input
-            type="text"
-            v-model="value"
-            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-            placeholder="Order Id"
-          />
-        </div>
-
         <!-- Date Range-->
         <div class="w-full mt-2">
           <label for="dd-city" class="text-sm w-full">Date Range</label>
@@ -638,6 +620,108 @@ const status = ref([
             />
           </div>
         </div>
+        <!-- size & Category-->
+        <div class="w-full grid grid-cols-2 gap-2 mt-2">
+          <div>
+            <label for="dd-city" class="text-sm w-full">Size</label>
+            <Dropdown
+              v-model="selectedSize"
+              :options="sizes"
+              optionLabel="name"
+              placeholder="Select Category"
+              class="text-sm border m-0 outline-none focus:border-red-200 rounded-md"
+            />
+          </div>
+          <div>
+            <label for="dd-city" class="text-sm w-full">Category</label>
+            <Dropdown
+              v-model="selectedCategory"
+              :options="Categories"
+              optionLabel="name"
+              placeholder="Select Size"
+              class=""
+            />
+          </div>
+          <div></div>
+        </div>
+        <!-- Brand & Vendors-->
+        <div class="w-full grid grid-cols-2 gap-2 mt-2">
+          <div>
+            <label for="dd-city" class="text-sm w-full">Brand</label>
+            <Dropdown
+              v-model="selectedBrand"
+              :options="brands"
+              filter
+              optionLabel="name"
+              placeholder="Select a Country"
+              class="w-full md:w-14rem"
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex align-items-center">
+                  <img
+                    :alt="slotProps.value.label"
+                    src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
+                    :class="`mr-2 flag flag-${slotProps.value.code.toLowerCase()}`"
+                    style="width: 18px"
+                  />
+                  <div>{{ slotProps.value.name }}</div>
+                </div>
+                <span v-else>
+                  {{ slotProps.placeholder }}
+                </span>
+              </template>
+              <template #option="slotProps">
+                <div class="flex align-items-center">
+                  <img
+                    :alt="slotProps.option.label"
+                    src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
+                    :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`"
+                    style="width: 18px"
+                  />
+                  <div>{{ slotProps.option.name }}</div>
+                </div>
+              </template>
+            </Dropdown>
+          </div>
+          <div>
+            <label for="dd-city" class="text-sm w-full">Vendor</label>
+            <Dropdown
+              v-model="selectedVendor"
+              :options="vendors"
+              filter
+              optionLabel="name"
+              placeholder="Select a Country"
+              class="w-full md:w-14rem"
+            >
+              <template #value="slotProps">
+                <div v-if="slotProps.value" class="flex align-items-center">
+                  <img
+                    :alt="slotProps.value.label"
+                    src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
+                    :class="`mr-2 flag flag-${slotProps.value.code.toLowerCase()}`"
+                    style="width: 18px"
+                  />
+                  <div>{{ slotProps.value.name }}</div>
+                </div>
+                <span v-else>
+                  {{ slotProps.placeholder }}
+                </span>
+              </template>
+              <template #option="slotProps">
+                <div class="flex align-items-center">
+                  <img
+                    :alt="slotProps.option.label"
+                    src="https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
+                    :class="`mr-2 flag flag-${slotProps.option.code.toLowerCase()}`"
+                    style="width: 18px"
+                  />
+                  <div>{{ slotProps.option.name }}</div>
+                </div>
+              </template>
+            </Dropdown>
+          </div>
+          <div></div>
+        </div>
 
         <div class="font-semibold flex mt-2 place-content-end">
           <button
@@ -653,16 +737,15 @@ const status = ref([
   </NuxtLayout>
 </template>
 
-<style >
+<style>
 span.p-dropdown-label.p-inputtext.p-placeholder {
-    padding: 0px;
-    margin: 0px;
-
+  padding: 0px;
+  margin: 0px;
 }
 span.p-dropdown-label.p-inputtext {
-    padding: 0px;
-    font-size: 15px;
-    font-weight: 500;
-    color: #767676d1;
+  padding: 0px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #767676d1;
 }
 </style>
