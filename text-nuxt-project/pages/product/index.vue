@@ -118,28 +118,22 @@ const colors = ref([
                 <td class="p-1 text-center text-xs">Supper Shop</td>
                 <td class="p-1 text-center text-xs">Active</td>
                 <td class="p-1 text-center text-xs flex">
-                  <div
-                    class="rounded-md bg-cyan-400 p-1 text-white"
-                    title="View"
-                  >
+
+                
+
+                <div class="rounded-md bg-cyan-400 ml-1 p-1 text-white" title="View">
                     <NuxtLink to="/product/details">
                       <Icon name="mdi:eye" width="1.4em" height="1.4em" />
                     </NuxtLink>
-                  </div>
-                  <div
-                    class="rounded-md mx-1 bg-yellow-500 p-1 text-white"
-                    title="Edit"
-                  >
-                    <nuxt-link to="/product/edit">
-                      <Icon name="subway:pencil" width="1.4em" height="1.4em" />
+                </div>
+                <div class="rounded-md bg-yellow-500 ml-1 p-1 text-white" title="Edit">
+                    <nuxt-link to="/product/1/edit">
+                        <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                     </nuxt-link>
-                  </div>
-                  <button
-                    class="rounded-md bg-red-600 p-1 text-white"
-                    title="Delete"
-                  >
+                </div>
+                <button class="rounded-md bg-red-600 ml-1 p-1 text-white" title="Delete">
                     <Icon name="bxs:trash" width="1.4em" height="1.4em" />
-                  </button>
+                </button>
                 </td>
               </tr>
             </tbody>

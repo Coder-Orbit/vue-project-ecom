@@ -38,19 +38,32 @@
                 </div>
 
                 <div class="w-full flex mb-1">
-                    
-                           
                     <label for="dd-city" class="text-xs w-2/5">Discount Type:</label>
                     <select name="discount_type" id="discount_type" class="w-3/5 text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                         <option value="fixed"> Fixed</option>
                         <option value="parcentage"> Parcentage</option>
                     </select>
-                    
+                </div>
+
+                <div class="w-full flex mb-1">
+                    <label for="dd-city" class="text-xs w-2/5">Status:</label>
+                    <select name="discount_type" id="discount_type" class="w-3/5 text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <option value="1"> Active</option>
+                        <option value="0"> Inactive</option>
+                    </select>
                 </div>
 
                 <div class="w-full flex mb-1">
                     <label for="dd-city" class="text-xs w-2/5">Stock:</label>
                     <input type="number" v-model="value" class="w-3/5 text-xs border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Stock"/>
+                </div>
+
+                <div class="w-full flex mb-1">
+                    <label for="dd-city" class="text-xs w-2/5">Stock Status:</label>
+                    <select name="discount_type" id="discount_type" class="w-3/5 text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <option value="1"> Stock</option>
+                        <option value="0"> Out of Stock</option>
+                    </select>
                 </div>
         </template>
     </Card>

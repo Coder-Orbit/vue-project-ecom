@@ -2,6 +2,37 @@
 import { ref } from "vue";
 import PanelMenu from "primevue/panelmenu";
 
+const orderStatus = ref([
+    {
+        id: 1,
+        name: "Pending"
+    },
+    {
+        id: 2,
+        name: "Confirmed"
+    },
+    {
+        id: 3,
+        name: "Processing"
+    },
+    {
+        id: 4,
+        name: "Ready to Shipped"
+    },
+    {
+        id: 5,
+        name: "Cancel"
+    },
+    {
+        id: 6,
+        name: "Rejected"
+    },
+    {
+        id: 7,
+        name: "Delivered"
+    }
+])
+
 const items = ref([
   {
     id: 1,
@@ -222,8 +253,6 @@ const toggle = (index) => {
 
 }
 
-console.log(router.currentRoute.value.fullPath);
-
 
 </script>
 <template>
@@ -271,10 +300,10 @@ console.log(router.currentRoute.value.fullPath);
             <div exact class="flex border-b py-1">
                 <Icon name="fluent:box-16-filled" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Product </div> 
-                <Icon name="ic:round-keyboard-arrow-right" :class="`${ activeMenu == 'product' || currentPath == '/product' || currentPath == '/product/create' ? 'rotate-90' : ''}`" class="absolute right-0 ease-in duration-300" width="1.2em" height="1.2em"/>
+                <Icon name="ic:round-keyboard-arrow-right" :class="`${ activeMenu == 'product' || currentPath == '/product' || currentPath == '/product/create' || currentPath == '/product/*/edit' ? 'rotate-90' : ''}`" class="absolute right-0 ease-in duration-300" width="1.2em" height="1.2em"/>
             </div>
 
-            <ul :class="`${ activeMenu == 'product' || currentPath == '/product' || currentPath == '/product/create' ? 'block' : 'hidden'}`">
+            <ul :class="`${ activeMenu == 'product' || currentPath == '/product' || currentPath == '/product/create' || currentPath == '/product/*/edit' ? 'block' : 'hidden'}`">
                 <li class="relative">
                     <NuxtLink exact to="/product" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
@@ -297,16 +326,24 @@ console.log(router.currentRoute.value.fullPath);
             <div exact class="flex border-b py-1">
                 <Icon name="fa-solid:shopping-basket" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Orders </div> 
-                <Icon name="ic:round-keyboard-arrow-right" :class="`${ activeMenu == 'order' || currentPath == '/order' ? 'rotate-90' : ''}`" class="absolute right-0 ease-in duration-300" width="1.2em" height="1.2em"/>
+                <Icon name="ic:round-keyboard-arrow-right" :class="`${ activeMenu == 'order' || currentPath == '/order' || currentPath == '/order/*' ? 'rotate-90' : ''}`" class="absolute right-0 ease-in duration-300" width="1.2em" height="1.2em"/>
             </div>
 
-            <ul :class="`${ activeMenu == 'order' || currentPath == '/order' ? 'block' : 'hidden'}`">
+            <ul :class="`${ activeMenu == 'order' || currentPath == '/order' || currentPath == '/order/*' ? 'block' : 'hidden'}`">
                 <li class="relative">
                     <NuxtLink exact to="/order" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
-                        <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
+                        <div class="text-left text-sm ml-1 -mt-[2px]">All Orders</div>
                     </NuxtLink>
                 </li>
+
+                <li v-for="item in orderStatus" class="relative" :key="item.id">
+                    <NuxtLink exact :to="`/order/${item.id}`" class="flex border-b py-1 pl-4">
+                        <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
+                        <div class="text-left text-sm ml-1 -mt-[2px]">{{ item.name }}</div>
+                    </NuxtLink>
+                </li>
+
             </ul>
         </li>
 
