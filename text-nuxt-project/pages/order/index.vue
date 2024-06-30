@@ -65,7 +65,7 @@ const vendors = ref([
             </button>
 
             <button
-              class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm px-4 py-2"
+              class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black text-sm px-4 py-2"
               @click="visibleRight = true"
             >
               <Icon name="iconoir:filter-solid"></Icon>
