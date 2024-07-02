@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-
 export default defineNuxtConfig({
     devtools: { enabled: true },
 
@@ -43,7 +42,6 @@ export default defineNuxtConfig({
             }
         }],    
     ],
-
     vite: {
         server:{
             host: true,
@@ -55,5 +53,18 @@ export default defineNuxtConfig({
         optimizeDeps: {
             include: ['@editorjs/editorjs'],
         },
+    },
+
+    runtimeConfig: {
+        // The private keys which are only available server side
+        apiSecret: process.env.NUXT_API_URL,
+        
+        public : {
+            // this base url for api call 
+            baseURl: process.env.NUXT_API_URL,
+            // This is master key for add access
+            masterToken: process.env.NUXT_API_TOKEN
+        }
+        
     }
 })
