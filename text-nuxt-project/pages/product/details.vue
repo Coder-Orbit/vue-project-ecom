@@ -157,6 +157,7 @@
 
     definePageMeta({
         layout: "dashboard",
+        middleware: "auth",
     })
 
    

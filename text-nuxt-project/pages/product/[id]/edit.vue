@@ -120,6 +120,7 @@
     const router = useRouter();
     definePageMeta({
         layout: "dashboard",
+        middleware: "auth",
     })
     const selectedCategory = ref();
     const selectedBrand = ref();

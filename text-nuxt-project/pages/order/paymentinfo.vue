@@ -1,3 +1,10 @@
+<script lang="ts" setup>
+definePageMeta({
+  layout: "dashboard",
+  middleware: 'auth',
+})
+</script>
+
 <template>
   <div class="max-w-3xl mx-auto p-8 bg-white rounded border-2 shadow-md my-6" id="invoice">
 
@@ -144,10 +151,6 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-definePageMeta({
-  layout: "dashboard",
-})
-</script>
+
 
 <style scoped></style>

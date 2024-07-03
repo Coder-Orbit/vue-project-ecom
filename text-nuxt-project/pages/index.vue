@@ -1,21 +1,26 @@
 <script setup>
 import {useLoginStore} from "../stores/login";
+import { useRouter } from "vue-router";
 
-
+const router = useRouter();
 const store = useLoginStore();
-const loading =  ref(false);
+const form = reactive({
+    email:"majadul.dev@gmail.com",
+    password: "12345678",
+});
+
+definePageMeta({
+    middleware: 'auth'
+})
 
 async function handleLogin() {
-    loading.value = true;
     try {
-        await store.login();
+        await store.login(form);
     } catch (error) {
-        console.error(error);
         // Handle login error
+        console.error(error);
     } finally {
-        loading.value = false;
-        console.log("Login successful");
-        console.log(store.userData);
+        router.push("/dashboard");
     }
 }
 
@@ -40,11 +45,11 @@ async function handleLogin() {
                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-center text-gray-900 dark:text-white">Login</h5>
                 <form @submit.prevent="handleLogin">
                     <label class="block mt-2"><span class="block text-sm font-medium text-slate-700">Email</span>
-                        <input v-model="store.formData.email" type="text" name="email" placeholder="email here" autocomplete="true" class="mt-1 block w-full px-3 py-1 focus:outline-none bg-white border border-slate-300 rounded-md text-sm focus:border-gray-500">
+                        <input v-model="form.email" type="text" name="email" placeholder="email here" autocomplete="true" class="mt-1 block w-full px-3 py-1 focus:outline-none bg-white border border-slate-300 rounded-md text-sm focus:border-gray-500">
                     </label>
                     
                     <label class="block mt-2"><span class="block text-sm font-medium text-slate-700">Password</span>
-                        <input  v-model="store.formData.password" type="password" name="password"  class="mt-1 block w-full px-3 py-1 focus:outline-none bg-white border border-slate-300 rounded-md text-sm focus:border-gray-500 ">
+                        <input  v-model="form.password" type="password" name="password"  class="mt-1 block w-full px-3 py-1 focus:outline-none bg-white border border-slate-300 rounded-md text-sm focus:border-gray-500 ">
                     </label>
 
                     <button type="submit" class="px-3 mt-4 mb-4 py-3 w-full text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-600 focus:outline-none">Login</button>

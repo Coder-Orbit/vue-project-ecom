@@ -1,13 +1,10 @@
 <script setup>
     
     import { ref } from "vue";
-
-
-
-
     const router = useRouter();
     definePageMeta({
         layout: "dashboard",
+        middleware: "auth",
     })
 
 </script>

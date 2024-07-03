@@ -10,14 +10,17 @@ export default defineNuxtConfig({
         'primeicons/primeicons.css'
 
     ],
+    router: {
 
+        middleware: ['auth']
+
+    },
     postcss: {
         plugins: {
         tailwindcss: {},
         autoprefixer: {},
         },
     },
-
     modules : [
         'nuxt-primevue',
         '@pinia/nuxt',

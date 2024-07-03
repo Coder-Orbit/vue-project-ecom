@@ -1,3 +1,10 @@
+<script setup lang="ts">
+definePageMeta({
+    layout: "dashboard",
+    middleware: 'auth',
+})
+</script>
+
 <template>
     <NuxtLayout :name="layout">
         <div class="max-w-5xl mx-auto p-8 bg-white rounded border-2 shadow-md my-6 mt-2" id="invoice">
@@ -161,10 +168,6 @@
     </NuxtLayout>
 </template>
 
-<script setup lang="ts">
-definePageMeta({
-    layout: "dashboard",
-})
-</script>
+
 
 <style scoped></style>
