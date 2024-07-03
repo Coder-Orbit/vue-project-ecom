@@ -1,5 +1,4 @@
 <script setup>
-import {useLoginStore} from "../stores/login";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -10,7 +9,7 @@ const form = reactive({
 });
 
 definePageMeta({
-    middleware: 'auth'
+    middleware: ['auth'],
 })
 
 async function handleLogin() {

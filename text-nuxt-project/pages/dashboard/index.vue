@@ -9,7 +9,7 @@ import { ref, onMounted } from "vue";
 
     definePageMeta({
         layout: "dashboard",
-        middleware: 'auth',
+        middleware: ['auth'],
     })
 
     onMounted(() => {

@@ -1,11 +1,7 @@
 <script setup>
-
-
 import Menu from 'primevue/menu';
-
-
 import { ref } from "vue";
-
+const  store = useTokenStore();
 const menu = ref();
 const notice = ref();
 const items = ref([
@@ -41,7 +37,10 @@ const items = ref([
             },
             {
                 label: 'Logout',
-                icon: 'pi pi-sign-out'
+                icon: 'pi pi-sign-out',
+                command: () => {
+                    store.removeToken();
+                }
             }
         ]
     }

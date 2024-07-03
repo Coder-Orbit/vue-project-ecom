@@ -7,7 +7,7 @@
     const router = useRouter();
     definePageMeta({
         layout: "dashboard",
-        middleware: 'auth',
+        middleware: ['auth'],
     })
 
     const visibleRight = ref(false);

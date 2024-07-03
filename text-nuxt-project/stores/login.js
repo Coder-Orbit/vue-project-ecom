@@ -1,15 +1,11 @@
-interface FormData{
-    email: string,
-    password: string,
-}
+
 export const useLoginStore = defineStore('login',{
 state: () => ({
-    userData: {} as object,
-    loading: false as boolean,
+    userData: {} ,
+    loading: false ,
 }),
-
 actions: {
-    async login(form : FormData){
+    async login(form){
         // replace with actual API endpoint and master key
         const config = useRuntimeConfig();
         const EndPoint = config.public.baseURl;
