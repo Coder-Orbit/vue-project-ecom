@@ -15,17 +15,17 @@ definePageMeta({
 })
 
 async function handleLogin() {
-    try {
-        await store.login(form);
-        if(!store.getToken){
-            toast.add({ severity: 'error', summary: 'Something is Wrong', detail:'Please Check Form & Try Again!', life: 2300 });
-        }
-    } catch (error) {
-        // Handle login error
-        console.error(error);
-    } finally {
-        router.push("/dashboard");
-    }
+  const result = await store.login(form);
+  if (result.success) {
+    router.push('/dashboard');
+  } else {
+    toast.add({
+      severity: 'error',
+      summary: 'Login Failed',
+      detail: result.message,
+      life: 3000,
+    });
+  }
 }
 
 </script>

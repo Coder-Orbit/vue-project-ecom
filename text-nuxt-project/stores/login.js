@@ -3,7 +3,6 @@ export const useLoginStore = defineStore('login',{
 state: () => ({
     userData: {},
     loading: false,
-    getToken: useTokenStore().getToken,
 }),
 actions: {
     async login(form){
@@ -25,12 +24,16 @@ actions: {
                 body: JSON.stringify(formData),
             })
             const data = await res.json();
-            if(data.access_token && data.user_data){
+            if (data.access_token && data.user_data) {
                 token.setToken(data.access_token);
-                this.userData = data.user_data;
-            }
+                this.userData = data.user_data; // store user data in the store
+                return { success: true };
+              } else {
+                return { success: false, message: 'Invalid credentials' };
+              }
         } catch (error) {
-            console.log(error);
+            console.error(error);
+        return { success: false, message: 'An error occurred during login' };
         }finally{
             this.loading = false;
         }
