@@ -5,6 +5,7 @@ export const useSlideStore = defineStore("slide", {
   }),
   getters: {
     status: (state) => state.status,
+    isLoading: (state) => state.loading,
   },
   actions: {
     async addSlide(slideData) {
@@ -26,16 +27,14 @@ export const useSlideStore = defineStore("slide", {
           body: JSON.stringify(formData),
         });
         const data = await res.json();
-        // Update status based on response data
         if (data && data["0"] === "Success") {
-          this.status = 'Success';
+          return { success: true };
         } else {
-          this.status = 'Failed';
+          return { success: false, message: 'Invalid credentials' };
         }
-        console.log(data);
       } catch (error) {
         console.log(error);
-        this.status = 'Failed';
+        return { success: false, message: 'An error occurred during login' };
       } finally {
         this.loading = false;
       }

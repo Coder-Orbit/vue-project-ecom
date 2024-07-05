@@ -1,79 +1,95 @@
 <script setup>
-import FileUpload from 'primevue/fileupload';
-import Fieldset from 'primevue/fieldset';
-import Toast from 'primevue/toast';
-
+import { useToast } from 'primevue/usetoast';
 
 definePageMeta({
-    layout: "dashboard",
-    middleware: "auth",
+  layout: 'dashboard',
+  middleware: 'auth',
 });
+
 const toast = useToast();
 const extraProps = ref([]);
 const extraFields = ref([
-    { fieldName: "", fieldValue: "" },
-    { fieldName: "", fieldValue: "" }
+  { fieldName: '', fieldValue: '' },
+  { fieldName: '', fieldValue: '' }
 ]);
-const slideName = ref("");
-const status = ref("1");
-const description = ref("");
-const slideIcon = ref("");
-const slideBanner = ref("");
-const slideThumbnail = ref("");
+const slideName = ref('');
+const status = ref('1');
+const description = ref('');
+const slideIcon = ref('');
+const slideBanner = ref('');
+const slideThumbnail = ref('');
+const store = useSlideStore();
 
 const addMoreField = () => {
-    extraFields.value.push({ fieldName: "", fieldValue: "" });
+  extraFields.value.push({ fieldName: '', fieldValue: '' });
 };
 
 const removeMoreField = (index) => {
-    extraFields.value.splice(index, 1);
+  extraFields.value.splice(index, 1);
 };
 
 const handleFileUpload = (event, type) => {
-    const file = event.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            if (type === 'icon') slideIcon.value = reader.result;
-            if (type === 'banner') slideBanner.value = reader.result;
-            if (type === 'thumbnail') slideThumbnail.value = reader.result;
-        };
-        reader.readAsDataURL(file);
-    }
+  const file = event.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (type === 'icon') slideIcon.value = reader.result;
+      if (type === 'banner') slideBanner.value = reader.result;
+      if (type === 'thumbnail') slideThumbnail.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
 };
-const store = useSlideStore();
+
 const dataSubmit = async () => {
-    extraProps.value = extraFields.value.reduce((props, item) => {
-        props[item.fieldName] = item.fieldValue;
-        return props;
-    }, {});
-    try {
-        const slideData = reactive({
-            name: slideName.value,
-            status: status.value,
-            description: description.value,
-            icon: slideIcon.value,
-            banner: slideBanner.value,
-            thumbnails: slideThumbnail.value,
-            extend_props: extraProps.value
-        });
-    // Submit the slide data here
-        await store.addSlide(slideData);
-        if(store.status === 'Success') {
-            toast.add({ severity: 'success', summary: 'Success', detail: 'Slide Created Successfully', life: 2000});
-        } else {
-            toast.add({ severity: 'error', summary: 'Error', detail: 'Failed to Create Slide', life: 2000});
-        }
-    } catch (error) {
-        console.error(error);
+  extraProps.value = extraFields.value.reduce((props, item) => {
+    props[item.fieldName] = item.fieldValue;
+    return props;
+  }, {});
+  try {
+    const slideData = reactive({
+      name: slideName.value,
+      status: status.value,
+      description: description.value,
+      icon: slideIcon.value,
+      banner: slideBanner.value,
+      thumbnails: slideThumbnail.value,
+      extend_props: extraProps.value
+    });
+
+    const result = await store.addSlide(slideData);
+    if (result.success) {
+      toast.add({
+        severity: 'success',
+        summary: 'Slide Created',
+        detail: result.message || 'Slide was created successfully.',
+        life: 3000,
+      });
+    } else {
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: result.message || 'An error occurred.',
+        life: 3000,
+      });
     }
+  } catch (error) {
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'An unexpected error occurred.',
+      life: 3000,
+    });
+    console.error(error);
+  }
 };
 </script>
 
+
 <template>
 <NuxtLayout :name="layout">
+    <Toast/>
     <div class="w-full px-3 mt-1">
-        <Toast/>
         <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
             <div class="flex w-full justify-between bg-gray-400 text-white">
                 <div class="font-semibold mt-1 ml-3">Create Slide</div>
@@ -163,7 +179,7 @@ const dataSubmit = async () => {
                             </div>
                             <div class="place-content-end flex w-full">
                                 <button :disabled="store.loading === true" class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">
-                                    <div v-if="store.loading === false">
+                                    <div v-if="store.isLoading === false">
                                         Add <Icon name="fa-solid:paper-plane"></Icon>
                                     </div>
                                     <div v-else>
