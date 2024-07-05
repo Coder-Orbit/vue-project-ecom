@@ -2,12 +2,9 @@ export const useSlideStore = defineStore("slide", {
   state: () => ({
     loading: false,
     status: null,
-    slides: [],
   }),
   getters: {
-    isLoading: (state) => state.loading,
     status: (state) => state.status,
-    slides: (state) => state.slides,
   },
   actions: {
     async addSlide(slideData) {
@@ -30,9 +27,10 @@ export const useSlideStore = defineStore("slide", {
         });
         const data = await res.json();
         // Update status based on response data
-        if (data && data[0] === 'Success') {
-            this.status = 'Success';
-            this.slides.push(data.store_data);
+        if (data && data["0"] === "Success") {
+          this.status = 'Success';
+        } else {
+          this.status = 'Failed';
         }
         console.log(data);
       } catch (error) {

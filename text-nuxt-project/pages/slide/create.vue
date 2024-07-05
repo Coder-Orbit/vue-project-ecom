@@ -41,9 +41,8 @@ const handleFileUpload = (event, type) => {
         reader.readAsDataURL(file);
     }
 };
-
+const store = useSlideStore();
 const dataSubmit = async () => {
-    const store = useSlideStore();
     extraProps.value = extraFields.value.reduce((props, item) => {
         props[item.fieldName] = item.fieldValue;
         return props;
@@ -163,8 +162,13 @@ const dataSubmit = async () => {
                                 </Fieldset>
                             </div>
                             <div class="place-content-end flex w-full">
-                                <button class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">
-                                    Add <Icon name="fa-solid:paper-plane"></Icon>
+                                <button :disabled="store.loading === true" class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">
+                                    <div v-if="store.loading === false">
+                                        Add <Icon name="fa-solid:paper-plane"></Icon>
+                                    </div>
+                                    <div v-else>
+                                        Loading... <Icon name="fa-solid:paper-plane"></Icon>
+                                    </div>
                                 </button>
                             </div>
                         </form>
