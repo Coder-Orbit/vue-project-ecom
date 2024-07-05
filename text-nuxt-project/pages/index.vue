@@ -1,8 +1,10 @@
 <script setup>
 import { useRouter } from "vue-router";
+import { useToast } from "primevue/usetoast";
 
 const router = useRouter();
 const store = useLoginStore();
+const toast = useToast();
 const form = reactive({
     email:"majadul.dev@gmail.com",
     password: "12345678",
@@ -15,6 +17,9 @@ definePageMeta({
 async function handleLogin() {
     try {
         await store.login(form);
+        if(!store.getToken){
+            toast.add({ severity: 'error', summary: 'Something is Wrong', detail:'Please Check Form & Try Again!', life: 2300 });
+        }
     } catch (error) {
         // Handle login error
         console.error(error);
@@ -26,13 +31,12 @@ async function handleLogin() {
 </script>
 
 <template>
+
     <div>
-        
         <div v-if="store.loading" class="min-h-screen w-full bg-black bg-opacity-[.3] flex items-center fixed">
             <div class="w-12 mx-auto"><img alt="loading..." src="/spinner.gif"></div>
         </div>
-        
-
+        <Toast />
         <div class="min-h-screen bg-gray-100 fixed w-full -z-50">
         <div class="place-content-center">
             <div class="p-3 mt-12 w-24 mx-auto"><img alt="logo" src="/logo.png"></div>

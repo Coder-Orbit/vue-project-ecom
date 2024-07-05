@@ -1,8 +1,9 @@
 
 export const useLoginStore = defineStore('login',{
 state: () => ({
-    userData: {} ,
-    loading: false ,
+    userData: {},
+    loading: false,
+    getToken: useTokenStore().getToken,
 }),
 actions: {
     async login(form){
@@ -12,7 +13,6 @@ actions: {
         const MasterKey = config.public.masterToken;
         const formData = form;
         const token = useTokenStore();
-
         this.loading = true;
         try {
             const res = await fetch(`${EndPoint}/login`,{
@@ -25,7 +25,6 @@ actions: {
                 body: JSON.stringify(formData),
             })
             const data = await res.json();
-            console.log(data);
             if(data.access_token && data.user_data){
                 token.setToken(data.access_token);
                 this.userData = data.user_data;
