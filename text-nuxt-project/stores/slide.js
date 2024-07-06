@@ -2,14 +2,25 @@ export const useSlideStore = defineStore("slide", {
   state: () => ({
     loading: false,
     status: null,
+    slides: [],
+    pagination: {
+      currentPage: 1,
+      totalPages: 1,
+      perPage: 15,
+      totalItems: 0,
+    },
   }),
   getters: {
     status: (state) => state.status,
     isLoading: (state) => state.loading,
+    currentPage: (state) => state.pagination.currentPage,
+    totalPages: (state) => state.pagination.totalPages,
+    totalItems: (state) => state.pagination.totalItems,
+    currentPage: (state) => state.pagination.currentPage,
   },
   actions: {
+    //Add Slides In /slide/create Page
     async addSlide(slideData) {
-      // replace with actual API endpoint and master key
       const config = useRuntimeConfig();
       const EndPoint = config.public.baseURl;
       const MasterKey = config.public.masterToken;
@@ -39,5 +50,32 @@ export const useSlideStore = defineStore("slide", {
         this.loading = false;
       }
     },
+    //Show Slides & Paginate In /slide Page
+    async getAllSlides(page = 1) {
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      this.loading = true;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide?page=${page}&limit_per_page=${this.pagination.perPage}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${app_token}`,
+          },
+        });
+        const data = await res.json();
+        this.slides = data.data;
+        this.pagination.currentPage = data.current_page;
+        this.pagination.totalPages = data.last_page;
+        this.pagination.totalItems = data.total;
+      } catch (error) {
+        console.log(error);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
+  persist: true,
 });
