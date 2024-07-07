@@ -2,20 +2,32 @@
 import InputGroup from 'primevue/inputgroup';
 import Sidebar from 'primevue/sidebar';
 import Paginator from 'primevue/paginator';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
-//Define all the Variables
+// Define all the Variables
 const visibleRight = ref(false);
 const pageNumber = ref(1);
 const layout = 'dashboard';
 const store = useSlideStore();
 const slideData = computed(() => store.slides);
 const pagination = computed(() => store.pagination);
+const isLoading = ref(true);
+const deleteModalVisible = ref(false);
+const deleteLoading = ref(false);
+const selectedSlideId = ref(null); // Track the selected slide ID for deletion
 
+// Initialize Toast
+const toast = useToast();
 
-//On Load or Reload Get New Updated Data
+// On Load or Reload Get New Updated Data
 const loadSlides = async () => {
+  isLoading.value = true;
   await store.getAllSlides(pageNumber.value, store.pagination.perPage);
   slideData.value = store.slides;
+  isLoading.value = false;
 };
 
 // Ensure data is loaded before the component mounts
@@ -33,27 +45,53 @@ watch(
 
 // Watch PageNumber Change
 watch(pageNumber, (newPage) => {
+  isLoading.value = true;
   store.getAllSlides(newPage, pagination.value.perPage);
+  isLoading.value = false;
 });
 
-//OnPage Change Get New Data
+// OnPage Change Get New Data
 const onPageChange = (event) => {
   pageNumber.value = event.page + 1;
   store.getAllSlides(pageNumber.value, pagination.value.perPage);
 };
 
-//On Search Get New Slides Data
+// On Search Get New Slides Data
 const handleSearch = () => {
   pageNumber.value = 1;
   store.getAllSlides(pageNumber.value, store.pagination.perPage);
 };
 
-//On Apply Filter Get New Slides Data
+// On Apply Filter Get New Slides Data
 const goToPage = (page) => {
   if (page > 0 && page <= pagination.value.totalPages) {
     pageNumber.value = page;
     store.getAllSlides(pageNumber.value, pagination.value.perPage);
   }
+};
+
+// Handle Delete Slide
+const handleDelete = async () => {
+  deleteLoading.value = true;
+  const result = await store.deleteSlide(selectedSlideId.value);
+  console.log(result);
+  deleteLoading.value = false;
+  deleteModalVisible.value = false;
+  toast.add({
+    severity: result.success ? 'success' : 'error',
+    summary: result.success ? 'Success' : 'Error',
+    detail: result.message,
+  });
+  // Reload the slides after deletion
+  if (result.success) {
+    await loadSlides();
+  }
+};
+
+// Open the delete modal for the specific slide
+const openDeleteModal = (slideId) => {
+  selectedSlideId.value = slideId;
+  deleteModalVisible.value = true;
 };
 </script>
 
@@ -96,39 +134,43 @@ const goToPage = (page) => {
                 <th class="p-1 text-center w-24">Actions</th>
               </tr>
             </thead>
+            <!-- Loading Indicator -->
+            <div v-if="isLoading" class="absolute top-[50%] left-[58%]">
+              <Icon name="eos-icons:loading" class="animate-spin text-4xl" />
+            </div>
             <!-- Table Body -->
             <tbody>
               <tr v-for="slide in slideData" :key="slide.unique_id" class="bg-white odd:bg-gray-100">
-                <!--Serial ID-->
+                <!-- Serial ID -->
                 <td class="p-1 text-center text-xs">{{ slide.id }}</td>
-                <!--Icon-->
+                <!-- Icon -->
                 <td class="p-1 text-left text-xs">
-                  <img :src="slide.icon" alt="Icon" class="w-12 h-12" v-if="slide.icon"/>
+                  <img :src="slide.icon" alt="Icon" class="w-12 h-12" v-if="slide.icon" />
                   <span v-else>No Icon</span>
                 </td>
-                <!--Name-->
+                <!-- Name -->
                 <td class="p-1 text-left text-xs">{{ slide.name }}</td>
-                <!--Description-->
+                <!-- Description -->
                 <td class="p-1 text-left text-xs">{{ slide.description }}</td>
-                <!--Status-->
+                <!-- Status -->
                 <td class="p-1 text-left text-xs">{{ slide.status === 1 ? 'Active' : 'Inactive' }}</td>
-                <!--Created Date-->
+                <!-- Created Date -->
                 <td class="p-1 text-left text-xs">{{ slide.created_at }}</td>
-                <!--Created By-->
+                <!-- Created By -->
                 <td class="p-1 text-center text-xs">{{ slide.created_by }}</td>
-                <!--Actions-->
+                <!-- Actions -->
                 <td class="p-1 text-center text-xs flex">
                   <div class="rounded-md bg-cyan-400 p-1 text-white" title="View">
-                    <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
+                    <Icon name="mdi:eye" width="1.4em" height="1.4em" />
                   </div>
                   <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
                     <NuxtLink :to="`/slide/edit/${slide.unique_id}`">
                       <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                     </NuxtLink>
                   </div>
-                  <button class="rounded-md bg-red-600 p-1 text-white" title="Delete">
+                  <Button @click="openDeleteModal(slide.unique_id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete">
                     <Icon name="bxs:trash" width="1.4em" height="1.4em" />
-                  </button>
+                  </Button>
                 </td>
               </tr>
             </tbody>
@@ -137,15 +179,15 @@ const goToPage = (page) => {
 
         <!-- Table Footer-->
         <div class="order_title text-sm flex justify-between h-full">
-          <!--Search Box-->
+          <!-- Search Box -->
           <div class="mt-[2px] ml-3">
             <InputGroup>
               <input type="number" v-model="pageNumber" @keyup.enter="goToPage(pageNumber)" class="border border-r-0 p-1 focus:outline-none" placeholder="Page Number" />
               <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" @click="goToPage(pageNumber)" />
             </InputGroup>
           </div>
-          <!--Pagination-->
-          <div class="flex ">
+          <!-- Pagination -->
+          <div class="flex">
             <Paginator 
               :first="(pageNumber - 1) * store.pagination.perPage"
               :rows="store.pagination.perPage"
@@ -161,7 +203,7 @@ const goToPage = (page) => {
         <Sidebar v-model:visible="visibleRight" header="Slide Filter" position="right">
           <div class="w-full">
             <label for="slideName" class="text-sm w-full">Slide Name</label>
-            <input type="text" v-model="slideName" @input="handleSearch" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Slide Name"/>
+            <input type="text" v-model="slideName" @input="handleSearch" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Slide Name" />
           </div>
           <div class="w-full mt-2">
             <label for="status" class="text-sm w-full">Status</label>
@@ -178,20 +220,33 @@ const goToPage = (page) => {
             </button>
           </div>
         </Sidebar>
+
+        <!-- Delete Modal -->
+        <Dialog v-model:visible="deleteModalVisible" modal header="Delete Slide" :style="{ width: '25rem' }">
+          <span class="p-text-secondary flex items-center justify-center flex-col mb-5">
+            <Icon name="material-symbols:delete-sweep-rounded" width="120px" height="120px" class="mr-2 text-red-500" />
+            Are you sure you want to delete this slide?
+          </span>
+          <div class="flex justify-around">
+            <Button class="bg-yellow-600 text-red-100 px-4 py-2" type="button" label="Cancel" severity="secondary" @click="deleteModalVisible = false"></Button>
+            <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Delete" @click="handleDelete" :loading="deleteLoading"></Button>
+          </div>
+        </Dialog>
+
+        <Toast />
       </div>
     </div>
   </NuxtLayout>
 </template>
 
-
 <style>
 button.p-paginator-page.p-paginator-element.p-link.p-highlight {
-    background-color: #fff;
-    color: #ef4444;
-    border-top: 3px solid #ef4444;
-    border-radius: 0px;
+  background-color: #fff;
+  color: #ef4444;
+  border-top: 3px solid #ef4444;
+  border-radius: 0px;
 }
 .p-paginator.p-component {
-    padding: 0px;
+  padding: 0px;
 }
 </style>
