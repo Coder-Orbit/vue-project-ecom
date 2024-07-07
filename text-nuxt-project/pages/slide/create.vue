@@ -1,5 +1,8 @@
 <script setup>
 import { useToast } from 'primevue/usetoast';
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 definePageMeta({
   layout: 'dashboard',
@@ -65,6 +68,9 @@ const dataSubmit = async () => {
         detail: result.message || 'Slide was created successfully.',
         life: 3000,
       });
+
+      router.push('/slide');
+
     } else {
       toast.add({
         severity: 'error',

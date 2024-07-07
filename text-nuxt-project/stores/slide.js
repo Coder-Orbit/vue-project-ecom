@@ -38,7 +38,7 @@ export const useSlideStore = defineStore("slide", {
           body: JSON.stringify(formData),
         });
         const data = await res.json();
-        if (data && data["0"] === "Success") {
+        if (data && data.status === "Success") {
           return { success: true };
         } else {
           return { success: false, message: 'Invalid credentials' };

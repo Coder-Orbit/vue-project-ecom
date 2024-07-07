@@ -4,15 +4,30 @@ import Card from 'primevue/card';
 
 import Paginator from 'primevue/paginator';
 
-
 import { ref, onMounted } from "vue";
+
+
+    const dashboard = ref([]);
 
     definePageMeta({
         layout: "dashboard",
         middleware: ['auth'],
     })
 
+    
+
+
+    // replace with actual API endpoint and master key
+    const config = useRuntimeConfig();
+    const EndPoint = config.public.baseURl;
+    const MasterKey = config.public.masterToken;
+    const app_token = useTokenStore().getToken;
+
+
     onMounted(() => {
+
+        
+
 		setTimeout(function () {
 			chartData.value = setChartData();
 			lineData.value = setLineData();
