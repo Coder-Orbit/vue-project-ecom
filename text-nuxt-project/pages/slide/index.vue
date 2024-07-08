@@ -14,7 +14,7 @@ const layout = 'dashboard';
 const store = useSlideStore();
 const slideData = computed(() => store.slides);
 const pagination = computed(() => store.pagination);
-const isLoading = ref(true);
+const isLoading = ref('success');
 const deleteModalVisible = ref(false);
 const deleteLoading = ref(false);
 const selectedSlideId = ref(null); // Track the selected slide ID for deletion
@@ -24,10 +24,10 @@ const toast = useToast();
 
 // On Load or Reload Get New Updated Data
 const loadSlides = async () => {
-  isLoading.value = true;
+  isLoading.value = 'Loading';
   await store.getAllSlides(pageNumber.value, store.pagination.perPage);
   slideData.value = store.slides;
-  isLoading.value = false;
+  isLoading.value = 'success';
 };
 
 // Ensure data is loaded before the component mounts
@@ -45,9 +45,9 @@ watch(
 
 // Watch PageNumber Change
 watch(pageNumber, (newPage) => {
-  isLoading.value = true;
+  isLoading.value = 'loading';
   store.getAllSlides(newPage, pagination.value.perPage);
-  isLoading.value = false;
+  isLoading.value = 'success';
 });
 
 // OnPage Change Get New Data
@@ -81,6 +81,7 @@ const handleDelete = async () => {
     severity: result.success ? 'success' : 'error',
     summary: result.success ? 'Success' : 'Error',
     detail: result.message,
+    life: 3000,
   });
   // Reload the slides after deletion
   if (result.success) {
@@ -93,10 +94,13 @@ const openDeleteModal = (slideId) => {
   selectedSlideId.value = slideId;
   deleteModalVisible.value = true;
 };
+
 </script>
 
 <template>
   <NuxtLayout :name="layout">
+  <!-- Loading Indicator -->
+    <Spiner :loading="isLoading"/>
     <div class="w-full px-3 mt-1">
       <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
         <!-- Header with Back, Filter, and Add Buttons -->
@@ -134,10 +138,7 @@ const openDeleteModal = (slideId) => {
                 <th class="p-1 text-center w-24">Actions</th>
               </tr>
             </thead>
-            <!-- Loading Indicator -->
-            <div v-if="isLoading" class="absolute top-[50%] left-[58%]">
-              <Icon name="eos-icons:loading" class="animate-spin text-4xl" />
-            </div>
+
             <!-- Table Body -->
             <tbody>
               <tr v-for="slide in slideData" :key="slide.unique_id" class="bg-white odd:bg-gray-100">
@@ -168,7 +169,7 @@ const openDeleteModal = (slideId) => {
                       <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                     </NuxtLink>
                   </div>
-                  <Button @click="openDeleteModal(slide.unique_id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete">
+                  <Button @click="openDeleteModal(slide.id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete">
                     <Icon name="bxs:trash" width="1.4em" height="1.4em" />
                   </Button>
                 </td>

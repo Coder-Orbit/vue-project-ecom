@@ -103,5 +103,4 @@ export const useSlideStore = defineStore("slide", {
       }
     },
   },
-  persist: true,
 });
