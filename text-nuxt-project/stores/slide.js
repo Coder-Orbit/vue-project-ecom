@@ -1,6 +1,6 @@
 export const useSlideStore = defineStore("slide", {
+  loading: false,
   state: () => ({
-    loading: false,
     status: null,
     slides: [],
     pagination: {
@@ -19,21 +19,20 @@ export const useSlideStore = defineStore("slide", {
     currentPage: (state) => state.pagination.currentPage,
   },
   actions: {
-    //Add Slides In /slide/create Page
+    // Add Slides In "/slide/create" Page
     async addSlide(slideData) {
       const config = useRuntimeConfig();
       const EndPoint = config.public.baseURl;
       const MasterKey = config.public.masterToken;
       const app_token = useTokenStore().getToken;
       const formData = slideData;
-      this.loading = true;
       try {
         const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide`, {
           method: "POST",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${app_token}`,
+            Authorization: `Bearer ${app_token}`,
           },
           body: JSON.stringify(formData),
         });
@@ -46,11 +45,9 @@ export const useSlideStore = defineStore("slide", {
       } catch (error) {
         console.log(error);
         return { success: false, message: 'An error occurred during login' };
-      } finally {
-        this.loading = false;
       }
     },
-    //Show Slides & Paginate In /slide Page
+    // Show Slides & Paginate In "/slide" Page
     async getAllSlides(page = 1) {
       const config = useRuntimeConfig();
       const EndPoint = config.public.baseURl;
@@ -62,18 +59,47 @@ export const useSlideStore = defineStore("slide", {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${app_token}`,
+            Authorization: `Bearer ${app_token}`,
           },
         });
         const data = await res.json();
+        console.log(data);
         this.slides = data.data;
         this.pagination.currentPage = data.current_page;
         this.pagination.totalPages = data.last_page;
         this.pagination.totalItems = data.total;
+        console.log(this.totalItems);
       } catch (error) {
         console.log(error);
       } finally {
         this.loading = false;
+      }
+    },
+    // Delete Slide In "/slide" Page
+    async deleteSlide(id) {
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide/${id}`, {
+          method: "DELETE",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${app_token}`,
+          },
+        });
+        const data = await res.json();
+        if (data === "Success") {
+          await this.getAllSlides();// Refresh the slides
+          return { success: true, message: 'Slide deleted successfully' };
+        } else {
+          return { success: false, message: 'Failed to delete slide' };
+        }
+      } catch (error) {
+        console.log(error);
+        return { success: false, message: 'An error occurred during delete' };
       }
     },
   },

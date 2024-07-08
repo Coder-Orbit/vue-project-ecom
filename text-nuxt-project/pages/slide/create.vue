@@ -22,6 +22,7 @@ const slideIcon = ref('');
 const slideBanner = ref('');
 const slideThumbnail = ref('');
 const store = useSlideStore();
+const isLoading = ref(false);
 
 const addMoreField = () => {
   extraFields.value.push({ fieldName: '', fieldValue: '' });
@@ -49,6 +50,7 @@ const dataSubmit = async () => {
     props[item.fieldName] = item.fieldValue;
     return props;
   }, {});
+  isLoading.value = true;
   try {
     const slideData = reactive({
       name: slideName.value,
@@ -87,6 +89,8 @@ const dataSubmit = async () => {
       life: 3000,
     });
     console.error(error);
+  } finally{
+    isLoading.value = false;
   }
 };
 </script>
@@ -184,8 +188,8 @@ const dataSubmit = async () => {
                                 </Fieldset>
                             </div>
                             <div class="place-content-end flex w-full">
-                                <button :disabled="store.loading === true" class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">
-                                    <div v-if="store.isLoading === false">
+                                <button :disabled="isLoading === true" class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">
+                                    <div v-if="isLoading === false">
                                         Add <Icon name="fa-solid:paper-plane"></Icon>
                                     </div>
                                     <div v-else>
