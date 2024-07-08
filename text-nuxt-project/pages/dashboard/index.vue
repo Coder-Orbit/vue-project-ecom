@@ -4,10 +4,18 @@ import Card from 'primevue/card';
 
 import Paginator from 'primevue/paginator';
 
+const { dateMonthFunction } = useDataDate();
+
+
+
 import { ref, onMounted } from "vue";
 
 
-    const dashboard = ref([]);
+    const summary = ref([]);
+    const loading = ref('not');
+    const recentData = ref([]);
+    const pagination = ref([]);
+    const pageNumber = ref(1);
 
     definePageMeta({
         layout: "dashboard",
@@ -23,13 +31,31 @@ import { ref, onMounted } from "vue";
     const MasterKey = config.public.masterToken;
     const app_token = useTokenStore().getToken;
 
+    // Ensure data is loaded before the component mounts
+    onMounted( async () => {
 
-    onMounted(() => {
+        try {
+            
+            const { data, status } = await useFetch(`${EndPoint}/admin/${MasterKey}/dashboard`, {
+                headers: {
+                    Accept: "application/json",
+                    "Authorization": `Bearer ${app_token}`,
+                }
+                });
+
+
+                loading.value = status.value;
+                summary.value = data.value;
+                recentData.value = data.value.recent_orders.data;
+                pagination.value = data.value.recent_orders;
+                console.log(data);
+            }
+        catch (error) {
+                console.log(error);
+        }
 
         
-
 		setTimeout(function () {
-			chartData.value = setChartData();
 			lineData.value = setLineData();
             pieData.value = setPieData();
             barData.value = setBarData();
@@ -39,37 +65,10 @@ import { ref, onMounted } from "vue";
 		
 	});
 
-	const chartData = ref();
 	const lineData = ref();
 	const pieData = ref();
 	const barData = ref();
 	const pieOptions = ref();
-
-    const setChartData = () => {
-        const documentStyle = getComputedStyle(document.documentElement);
-
-        return {
-            labels: ['01', '02', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
-            datasets: [
-                {
-                    label: "This Month",
-                
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: true,
-                    borderColor: documentStyle.getPropertyValue('--cyan-500'),
-                    tension: 0.4
-                },
-                {
-                    label: "Previous Month",
-                    
-                    data: [28, 48, 400, 19, 86, 27, 90],
-                    fill: true,
-                    borderColor: documentStyle.getPropertyValue('--gray-500'),
-                    tension: 0.4
-                }
-            ]
-        };
-    };
 
 
     const setLineData = () => {
@@ -81,7 +80,7 @@ import { ref, onMounted } from "vue";
                 {
                     label: "This Month",
                 
-                    data: [65, 59, 80, 81, 56, 55, 40],
+                    data: summary.current_month_orders,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue('--cyan-500'),
                     backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
@@ -90,7 +89,7 @@ import { ref, onMounted } from "vue";
                 {
                     label: "Previous Month",
                     
-                    data: [28, 48, 400, 19, 86, 27, 90],
+                    data: summary.previous_month_orders,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue('--gray-500'),
                     backgroundColor: documentStyle.getPropertyValue('--gray-500'),
@@ -110,7 +109,7 @@ import { ref, onMounted } from "vue";
                 {
                     label: "This Week",
                 
-                    data: [65, 59, 80, 81, 56, 55, 40],
+                    data: summary.current_weeks_orders,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue('--blue-500'),
                     backgroundColor: documentStyle.getPropertyValue('--blue-500'),
@@ -119,7 +118,7 @@ import { ref, onMounted } from "vue";
                 {
                     label: "Previous Week",
                     
-                    data: [28, 48, 400, 19, 86, 27, 90],
+                    data: summary.previous_weeks_orders,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue('--gray-300'),
                     backgroundColor: documentStyle.getPropertyValue('--gray-300'),
@@ -138,10 +137,16 @@ import { ref, onMounted } from "vue";
             datasets: [
                 {
                 
-                    data: [65, 59, 80, 81, 56, 55],
+                    data: [summary.pending, summary.processing, summary.packaging, summary.cancel, summary.rejected, summary.delivered],
                     fill: true,
                     // borderColor: [documentStyle.getPropertyValue('--green-700'), documentStyle.getPropertyValue('--blue-700'), documentStyle.getPropertyValue('--yellow-700'), documentStyle.getPropertyValue('--pink-700'), documentStyle.getPropertyValue('--red-700'), documentStyle.getPropertyValue('--green-500')],
-                    backgroundColor: [documentStyle.getPropertyValue('--orange-600'), documentStyle.getPropertyValue('--blue-600'), documentStyle.getPropertyValue('--yellow-600'), documentStyle.getPropertyValue('--pink-600'), documentStyle.getPropertyValue('--red-600'),documentStyle.getPropertyValue('--green-600')],
+                    backgroundColor: [
+                        documentStyle.getPropertyValue('--orange-600'), 
+                        documentStyle.getPropertyValue('--blue-600'),
+                        documentStyle.getPropertyValue('--yellow-600'),
+                        documentStyle.getPropertyValue('--pink-600'),
+                        documentStyle.getPropertyValue('--red-600'),
+                        documentStyle.getPropertyValue('--green-600')],
                     tension: 0.4
                 }
             ]
@@ -164,11 +169,55 @@ import { ref, onMounted } from "vue";
 
 
 
+const paginate = async (page) => {
+    console.log(page);
+    loading.value = "not";
+    
+
+    if(page > pagination.value.current_page){
+        pageNumber.value = page;
+    }else if(page == "&laquo; Previous"){
+
+        pageNumber.value  = ((pagination.value.current_page-1) == 0 ? 1 : (pagination.value.current_page-1));
+
+    }else if( page == 'Next &raquo;'){
+
+        pageNumber.value  = ((pagination.value.current_page+1) == pagination.last_page ? pagination.last_page : (pagination.value.current_page+1));
+        
+    }else{
+
+        pageNumber.value = pagination.value.current_page
+    }
+        
+    try {
+            
+            const { data, status } = await useFetch(`${EndPoint}/admin/${MasterKey}/orders?limit_per_page=5&page=${pageNumber.value}`, {
+                headers: {
+                    Accept: "application/json",
+                    "Authorization": `Bearer ${app_token}`,
+                }
+            });
+
+                loading.value = status.value;
+
+                recentData.value = data.value.orders.data;
+                pagination.value = data.value.orders;
+
+            }
+        catch (error) {
+                console.log(error);
+        }
+}
+
+
 
 </script>
 
 <template>
     <NuxtLayout :name="layout">
+        <div v-if="loading !== 'success' " class="min-h-screen w-full bg-black bg-opacity-[.3] top-0 left-0 z-30 flex items-center fixed">
+            <div class="w-12 mx-auto"><img alt="loading..." src="/spinner.gif"></div>
+        </div>
         <div class="w-full px-3 mt-1">
 
             <div class="grid grid-cols-4 gap-3 w-full">
@@ -184,18 +233,25 @@ import { ref, onMounted } from "vue";
 
                     <div class="flex w-full justify-between">
                         <div class="font-bold mt-1 ml-3 text-lg ">
-                            $56,2554
+                            ${{ summary.total_amount }}
                         </div>
                         
-                        <div class="text-xs mr-3">
-                            <div class="flex w-full justify-end text-green-600 -mt-2">
-                                <Icon class="text-right"  name="ph:arrow-up-right-bold" width="1.4em" height="1.4em" /> 
-                                <div>10.2</div>
+                        <div  class="text-xs mr-3" v-if="summary.previous_week_total_sale > summary.current_week_total_sale">
+                            <div class="flex w-full justify-end text-red-600 -mt-2">
+                                <Icon class="text-right"  name="ph:arrow-down-right-bold" width="1.4em" height="1.4em" /> 
+                                <div>{{ ( summary.current_week_total_sale - summary.previous_week_total_sale) }}</div>
                             </div>
+                            <div class="w-full">-{{ ((summary.previous_week_total_sale * summary.current_week_total_sale) / 100)}}% This week</div>
                             
-                            <div class="w-full ">+1.01% This week</div>
                         </div>
-                        
+                        <div v-else  class="text-xs mr-3">
+                            <div  class="flex w-full justify-end text-green-600 -mt-2">
+                                <Icon class="text-right"  name="ph:arrow-up-right-bold" width="1.4em" height="1.4em" /> 
+                                <div>{{ (summary.previous_week_total_sale - summary.current_week_total_sale) }}</div>
+                            </div>
+                            <div class="w-full">+{{ ((summary.previous_week_total_sale * summary.current_week_total_sale) / 100) }}% This week</div>
+                           
+                        </div>
                     </div>
                     <div class="absolute -bottom-1 -left-1 w-full">
                         <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 429 109.61">
@@ -216,16 +272,25 @@ import { ref, onMounted } from "vue";
 
                     <div class="flex w-full justify-between">
                         <div class="font-bold mt-1 ml-3 text-lg ">
-                            $20,2554
+                            ${{ summary.total_delivered_amount }}
                         </div>
                         
-                        <div class="text-xs mr-3">
+                        <div v-if='summary.previous_week_total_order > summary.current_week_total_order' class="text-xs mr-3">
                             <div class="flex w-full justify-end text-red-600 -mt-2">
                                 <Icon class="text-right"  name="ph:arrow-down-right-bold" width="1.4em" height="1.4em" /> 
-                                <div>10.2</div>
+                                <div>{{ ( summary.current_week_total_order - summary.previous_week_total_sale) }}</div>
                             </div>
                             
-                            <div class="w-full ">-0.31% This week</div>
+                            <div class="w-full ">-{{ (( summary.current_week_total_order - summary.previous_week_total_sale)*summary.current_week_total_order) /100  }}% This week</div>
+                        </div>
+                        
+                        <div v-else class="text-xs mr-3">
+                            <div  class="flex w-full justify-end text-green-600 -mt-2">
+                                <Icon class="text-right"  name="ph:arrow-up-right-bold" width="1.4em" height="1.4em" /> 
+                                <div>{{ (summary.current_week_total_order - summary.previous_week_total_sale) }}</div>
+                            </div>
+                            
+                            <div class="w-full ">+{{ (summary.current_week_total_order - summary.previous_week_total_sale) * summary.previous_week_total_sale/100 }}% This week</div>
                         </div>
                         
                     </div>
@@ -248,16 +313,25 @@ import { ref, onMounted } from "vue";
 
                     <div class="flex w-full justify-between">
                         <div class="font-bold mt-1 ml-3 text-lg ">
-                            $20,2554
+                            ${{ summary.previous_week_total_earning }}
                         </div>
                         
-                        <div class="text-xs mr-3">
-                            <div class="flex w-full justify-end text-green-600 -mt-2">
-                                <Icon class="text-right"  name="ph:arrow-up-right-bold" width="1.4em" height="1.4em" /> 
-                                <div>10.2</div>
+                        <div v-if='summary.previous_week_total_earning > summary.current_week_total_earning' class="text-xs mr-3">
+                            <div class="flex w-full justify-end text-red-600 -mt-2">
+                                <Icon class="text-right"  name="ph:arrow-down-right-bold" width="1.4em" height="1.4em" /> 
+                                <div>{{ ( summary.current_week_total_earning - summary.previous_week_total_earning) }}</div>
                             </div>
                             
-                            <div class="w-full ">+1.01% This week</div>
+                            <div class="w-full ">-{{ (( summary.current_week_total_earning - summary.previous_week_total_earning)*summary.current_week_total_earning) /100  }}% This week</div>
+                        </div>
+                        
+                        <div v-else class="text-xs mr-3">
+                            <div  class="flex w-full justify-end text-green-600 -mt-2">
+                                <Icon class="text-right"  name="ph:arrow-up-right-bold" width="1.4em" height="1.4em" /> 
+                                <div>{{ (summary.current_week_total_earning - summary.previous_week_total_earning) }}</div>
+                            </div>
+                            
+                            <div class="w-full ">+{{ (summary.current_week_total_earning - summary.previous_week_total_earning) * summary.previous_week_total_earning/100 }}% This week</div>
                         </div>
                         
                     </div>
@@ -281,16 +355,25 @@ import { ref, onMounted } from "vue";
 
                     <div class="flex w-full justify-between">
                         <div class="font-bold mt-1 ml-3 text-lg ">
-                            $20,2554
+                            ${{ summary.total_pays }}
                         </div>
                         
-                        <div class="text-xs mr-3">
-                            <div class="flex w-full justify-end text-green-600 -mt-2">
-                                <Icon class="text-right"  name="ph:arrow-up-bold" width="1.4em" height="1.4em" /> 
-                                <div>10.2</div>
+                        <div v-if='summary.previous_week_total_pays > summary.current_week_total_pays' class="text-xs mr-3">
+                            <div class="flex w-full justify-end text-red-600 -mt-2">
+                                <Icon class="text-right"  name="ph:arrow-down-right-bold" width="1.4em" height="1.4em" /> 
+                                <div>{{ ( summary.current_week_total_pays - summary.previous_week_total_pays) }}</div>
                             </div>
                             
-                            <div class="w-full ">+1.01% This week</div>
+                            <div class="w-full ">-{{ (( summary.current_week_total_pays - summary.previous_week_total_pays)*summary.current_week_total_pays) /100  }}% This week</div>
+                        </div>
+                        
+                        <div v-else class="text-xs mr-3">
+                            <div  class="flex w-full justify-end text-green-600 -mt-2">
+                                <Icon class="text-right"  name="ph:arrow-up-right-bold" width="1.4em" height="1.4em" /> 
+                                <div>{{ (summary.current_week_total_pays - summary.previous_week_total_pays) }}</div>
+                            </div>
+                            
+                            <div class="w-full ">+{{ (summary.current_week_total_pays - summary.previous_week_total_pays) * summary.previous_week_total_pays/100 }}% This week</div>
                         </div>
                         
                     </div>
@@ -355,15 +438,11 @@ import { ref, onMounted } from "vue";
                                 </div>
                                 <div class="order_title text-sm">
                                     <div class="pagination">
-                                        <a class="p-1  mt-1 text-black " href="#">&laquo;</a>
-                                        <a class="p-1 px-2 mt-1 border-t-4 border-red-500 text-red-500" href="#">1</a>
-                                        <a class="p-2 mt-1 text-black m-1" href="#">2</a>
-                                        <a class="p-2 mt-1 text-black m-1" href="#">3</a>
-                                        <a class="p-2 mt-1 text-black m-1" href="#">4</a>
-                                        <a class="p-2 mt-1 text-black m-1" href="#">5</a>
-                                        <a class="p-2 mt-1 text-black m-1" href="#">...</a>
-                                        <a class="p-2 mt-1 text-black m-1" href="#">6</a>
-                                        <a class="p-2 mt-1 text-black m-1" href="#">&raquo;</a>
+
+                                        <a v-for="(page, index) in  pagination.links" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500':page.active }" class="p-1  mt-1 text-black " :key="index" href="#">
+                                            
+                                        </a>
+                                        
                                     </div>
                                 </div>
                                 
@@ -382,56 +461,17 @@ import { ref, onMounted } from "vue";
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="bg-white odd:bg-gray-100">
-                                            <td class="p-1 text-left text-xs">1</td>
-                                            <td class="p-1 text-left text-xs">Md Majadul Islam</td>
-                                            <td class="p-1 text-left text-xs">#123456778</td>
-                                            <td class="p-1 text-left text-xs">3</td>
-                                            <td class="p-1 text-left text-xs">1234</td>
-                                            <td class="p-1 text-left text-xs">Pending</td>
-                                            <td class="p-1 text-left text-xs">30-nov-2023 10:30</td>
+                                        <tr v-for="(item, index) in  recentData"  class="bg-white odd:bg-gray-100" :key="index">
+                                            <td class="p-1 text-left text-xs">{{ ++index }}</td>
+                                            <td class="p-1 text-left text-xs">{{ item.extend_props.contact?.name }}</td>
+                                            <td class="p-1 text-left text-xs">#{{ item?.unique_id }}</td>
+                                            <td class="p-1 text-left text-xs">{{ item?.quantity }}</td>
+                                            <td class="p-1 text-left text-xs">{{ item?.grand_total }}</td>
+                                            <td class="p-1 text-left text-xs">{{ item?.status?.name }}</td>
+                                            <td class="p-1 text-left text-xs"> {{ dateMonthFunction(item?.created_at) }}</td>
                                             
                                         </tr>
-                                        <tr class="bg-white odd:bg-gray-100">
-                                            <td class="p-1 text-left text-xs">2</td>
-                                            <td class="p-1 text-left text-xs">Md Majadul Islam</td>
-                                            <td class="p-1 text-left text-xs">#123456778</td>
-                                            <td class="p-1 text-left text-xs">3</td>
-                                            <td class="p-1 text-left text-xs">1234</td>
-                                            <td class="p-1 text-left text-xs">Pending</td>
-                                            <td class="p-1 text-left text-xs">30-nov-2023 10:30</td>
-                                            
-                                        </tr>
-                                        <tr class="bg-white odd:bg-gray-100">
-                                            <td class="p-1 text-left text-xs">3</td>
-                                            <td class="p-1 text-left text-xs">Md Majadul Islam</td>
-                                            <td class="p-1 text-left text-xs">#123456778</td>
-                                            <td class="p-1 text-left text-xs">3</td>
-                                            <td class="p-1 text-left text-xs">1234</td>
-                                            <td class="p-1 text-left text-xs">Pending</td>
-                                            <td class="p-1 text-left text-xs">30-nov-2023 10:30</td>
-                                            
-                                        </tr>
-                                        <tr class="bg-white odd:bg-gray-100">
-                                            <td class="p-1 text-left text-xs">4</td>
-                                            <td class="p-1 text-left text-xs">Md Majadul Islam</td>
-                                            <td class="p-1 text-left text-xs">#123456778</td>
-                                            <td class="p-1 text-left text-xs">3</td>
-                                            <td class="p-1 text-left text-xs">1234</td>
-                                            <td class="p-1 text-left text-xs">Pending</td>
-                                            <td class="p-1 text-left text-xs">30-nov-2023 10:30</td>
-                                            
-                                        </tr>
-                                        <tr class="bg-white odd:bg-gray-100">
-                                            <td class="p-1 text-left text-xs">5</td>
-                                            <td class="p-1 text-left text-xs">Md Majadul Islam</td>
-                                            <td class="p-1 text-left text-xs">#123456778</td>
-                                            <td class="p-1 text-left text-xs">3</td>
-                                            <td class="p-1 text-left text-xs">1234</td>
-                                            <td class="p-1 text-left text-xs">Pending</td>
-                                            <td class="p-1 text-left text-xs">30-nov-2023 10:30</td>
-                                            
-                                        </tr>
+                                        
                                         
                                     </tbody>
                             </table>
