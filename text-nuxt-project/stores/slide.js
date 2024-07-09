@@ -2,6 +2,7 @@ export const useSlideStore = defineStore("slide", {
   loading: false,
   state: () => ({
     status: null,
+    SlideList: [],
     slides: [],
     pagination: {
       currentPage: 1,
@@ -75,6 +76,27 @@ export const useSlideStore = defineStore("slide", {
         console.log(error);
       } finally {
         this.loading = false;
+      }
+    },
+    // Get Slide List In "/slide/" Page
+    async getSlidesList(){
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${app_token}`,
+          },
+        });
+        const data = await res.json();
+        this.SlideList = data.data;
+        console.log(this.slides);
+      } catch (error) {
+        console.log(error);
       }
     },
     // Delete Slide In "/slide" Page
