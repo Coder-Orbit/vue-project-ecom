@@ -446,8 +446,7 @@ const paginate = async (page) => {
                                 <div class="order_title text-sm">
                                     <div class="pagination">
 
-                                        <a v-for="(page, index) in  pagination.links" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500':page.active }" class="p-1  mt-1 text-black " :key="index" href="#">
-                                            
+                                        <a v-for="(page, index) in  pagination.links" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500':page.active }" class="p-1  mt-1 text-black " :key="index" href="#">  
                                         </a>
                                         
                                     </div>

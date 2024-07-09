@@ -8,6 +8,7 @@ export const useSlideStore = defineStore("slide", {
       totalPages: 1,
       perPage: 15,
       totalItems: 0,
+      links: [],
     },
   }),
   getters: {
@@ -68,6 +69,7 @@ export const useSlideStore = defineStore("slide", {
         this.pagination.currentPage = data.current_page;
         this.pagination.totalPages = data.last_page;
         this.pagination.totalItems = data.total;
+        this.pagination.links = data.links;
         console.log(this.totalItems);
       } catch (error) {
         console.log(error);

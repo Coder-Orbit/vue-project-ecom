@@ -1,24 +1,31 @@
 <script setup>
 import InputGroup from 'primevue/inputgroup';
 import Sidebar from 'primevue/sidebar';
-import Paginator from 'primevue/paginator';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
-// Define all the Variables
-const visibleRight = ref(false);
-const pageNumber = ref(1);
-const layout = 'dashboard';
+//Define Page Meta
+definePageMeta({
+  layout: 'dashboard',
+  middleware: ['auth'],
+});
+
+// Slide Row data And Pagination From Store
 const store = useSlideStore();
 const slideData = computed(() => store.slides);
 const pagination = computed(() => store.pagination);
+//For Loading Components
 const isLoading = ref('success');
+//Filter Sidebar
+const visibleRight = ref(false);
+//delete
 const deleteModalVisible = ref(false);
 const deleteLoading = ref(false);
-const selectedSlideId = ref(null); // Track the selected slide ID for deletion
-
+const selectedSlideId = ref(null);
+//Pagination Initial PageNumber
+const pageNumber = ref(1);
 // Initialize Toast
 const toast = useToast();
 
@@ -44,15 +51,15 @@ watch(
 );
 
 // Watch PageNumber Change
-watch(pageNumber, (newPage) => {
+watch(pageNumber,async (newPage) => {
   isLoading.value = 'loading';
-  store.getAllSlides(newPage, pagination.value.perPage);
+  await store.getAllSlides(newPage, pagination.value.perPage);
   isLoading.value = 'success';
 });
 
 // OnPage Change Get New Data
-const onPageChange = (event) => {
-  pageNumber.value = event.page + 1;
+const onPageChange = (newPage) => {
+  pageNumber.value = newPage;
   store.getAllSlides(pageNumber.value, pagination.value.perPage);
 };
 
@@ -99,7 +106,7 @@ const openDeleteModal = (slideId) => {
 
 <template>
   <NuxtLayout :name="layout">
-  <!-- Loading Indicator -->
+    <!-- Loading Indicator -->
     <Spiner :loading="isLoading"/>
     <div class="w-full px-3 mt-1">
       <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
@@ -188,14 +195,12 @@ const openDeleteModal = (slideId) => {
             </InputGroup>
           </div>
           <!-- Pagination -->
-          <div class="flex">
-            <Paginator 
-              :first="(pageNumber - 1) * store.pagination.perPage"
-              :rows="store.pagination.perPage"
-              :totalRecords="store.pagination.totalItems"
-              :pageLinkSize="5"
-              :currentPage="pageNumber - 1"
-              @page="onPageChange"
+          <div class="pt-2">
+            <Pagination
+              :currentPage="pageNumber"
+              :totalPages="pagination.totalPages"
+              :links="pagination.links"
+              @paginate="onPageChange"
             />
           </div>
         </div>
