@@ -16,6 +16,10 @@ import { ref, onMounted } from "vue";
     const recentData = ref([]);
     const pagination = ref([]);
     const pageNumber = ref(1);
+    const lineGrapPrevious = ref([]);
+    const lineGrapCurrent = ref({});
+    const barGrapPrevious = ref([]);
+    const barGrapCurrent = ref([]);
 
     definePageMeta({
         layout: "dashboard",
@@ -48,7 +52,14 @@ import { ref, onMounted } from "vue";
                 summary.value = data.value;
                 recentData.value = data.value.recent_orders.data;
                 pagination.value = data.value.recent_orders;
+                lineGrapCurrent.value = data.value.current_month_orders.data;
+                lineGrapPrevious.value = data.value.previous_month_orders.data;
+
+                barGrapCurrent.value = data.value.current_weeks_orders.data;
+                barGrapPrevious.value = data.value.previous_weeks_orders.data;
+
                 console.log(data);
+
             }
         catch (error) {
                 console.log(error);
@@ -75,12 +86,12 @@ import { ref, onMounted } from "vue";
         const documentStyle = getComputedStyle(document.documentElement);
 
         return {
-            labels: ['01', '02', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
+            labels: ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
             datasets: [
                 {
                     label: "This Month",
                 
-                    data: summary.current_month_orders,
+                    data: lineGrapCurrent.value,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue('--cyan-500'),
                     backgroundColor: documentStyle.getPropertyValue('--cyan-500'),
@@ -89,7 +100,7 @@ import { ref, onMounted } from "vue";
                 {
                     label: "Previous Month",
                     
-                    data: summary.previous_month_orders,
+                    data: lineGrapPrevious,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue('--gray-500'),
                     backgroundColor: documentStyle.getPropertyValue('--gray-500'),
@@ -109,7 +120,7 @@ import { ref, onMounted } from "vue";
                 {
                     label: "This Week",
                 
-                    data: summary.current_weeks_orders,
+                    data: barGrapCurrent,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue('--blue-500'),
                     backgroundColor: documentStyle.getPropertyValue('--blue-500'),
@@ -118,7 +129,7 @@ import { ref, onMounted } from "vue";
                 {
                     label: "Previous Week",
                     
-                    data: summary.previous_weeks_orders,
+                    data: barGrapPrevious,
                     fill: false,
                     borderColor: documentStyle.getPropertyValue('--gray-300'),
                     backgroundColor: documentStyle.getPropertyValue('--gray-300'),
@@ -137,7 +148,7 @@ import { ref, onMounted } from "vue";
             datasets: [
                 {
                 
-                    data: [summary.pending, summary.processing, summary.packaging, summary.cancel, summary.rejected, summary.delivered],
+                    data: [summary.value.pending, summary.value.processing, summary.value.packaging, summary.value.cancel, summary.value.rejected, summary.value.delivered],
                     fill: true,
                     // borderColor: [documentStyle.getPropertyValue('--green-700'), documentStyle.getPropertyValue('--blue-700'), documentStyle.getPropertyValue('--yellow-700'), documentStyle.getPropertyValue('--pink-700'), documentStyle.getPropertyValue('--red-700'), documentStyle.getPropertyValue('--green-500')],
                     backgroundColor: [
