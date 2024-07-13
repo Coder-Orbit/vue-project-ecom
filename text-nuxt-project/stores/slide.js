@@ -126,5 +126,25 @@ export const useSlideStore = defineStore("slide", {
         return { success: false, message: 'An error occurred during delete' };
       }
     },
+    //SingleShow Slide In "/slide/:id" Page
+    async getSingleSlide(id) {
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${app_token}`,
+          },
+        });
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 });

@@ -5,6 +5,7 @@ import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useDataDate } from '~/composables/useDataDate';
 
 //Define Page Meta
 definePageMeta({
@@ -28,6 +29,8 @@ const selectedSlideId = ref(null);
 const pageNumber = ref(1);
 // Initialize Toast
 const toast = useToast();
+// Date Formatter
+const { dateMonthFunction } = useDataDate();
 
 // On Load or Reload Get New Updated Data
 const loadSlides = async () => {
@@ -161,18 +164,18 @@ const openDeleteModal = (slideId) => {
                 <!-- Description -->
                 <td class="p-1 text-left text-xs">{{ slide.description }}</td>
                 <!-- Status -->
-                <td class="p-1 text-left text-xs">{{ slide.status === 1 ? 'Active' : 'Inactive' }}</td>
+                <td class="p-1 text-left text-xs">{{ slide.status === '1' ? 'Active' : 'Inactive' }}</td>
                 <!-- Created Date -->
-                <td class="p-1 text-left text-xs">{{ slide.created_at }}</td>
+                <td class="p-1 text-left text-xs">{{  dateMonthFunction(slide.created_at)  }}</td>
                 <!-- Created By -->
-                <td class="p-1 text-center text-xs">{{ slide.created_by }}</td>
+                <td class="p-1 text-center text-xs">{{ slide.created_by =='1' ? "Admin":"Majedul Islam" }}</td>
                 <!-- Actions -->
                 <td class="p-1 text-center text-xs flex">
                   <div class="rounded-md bg-cyan-400 p-1 text-white" title="View">
                     <Icon name="mdi:eye" width="1.4em" height="1.4em" />
                   </div>
                   <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
-                    <NuxtLink :to="`/slide/edit/${slide.unique_id}`">
+                    <NuxtLink :to="`/slide/${slide.id}`">
                       <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                     </NuxtLink>
                   </div>
