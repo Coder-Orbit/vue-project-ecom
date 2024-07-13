@@ -146,5 +146,29 @@ export const useSlideStore = defineStore("slide", {
         console.log(error);
       }
     },
+    // Update Slide In "/slide/:id" Page
+    async updateSlide(slideData, id) {
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      const formData = slideData;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide/${id}`, {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${app_token}`,
+          },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.log(error);
+        return { success: false, message: 'An error occurred during login' };
+      }
+    },
   },
 });
