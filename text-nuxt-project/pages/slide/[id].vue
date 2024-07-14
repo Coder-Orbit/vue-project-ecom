@@ -61,6 +61,22 @@ const removeMoreField = (index) => {
     extraFields.value.splice(index, 1);
 }
 
+const slideIcon = ref('');
+const slideBanner = ref('');
+const slideThumbnail = ref('');
+
+const handleFileUpload = (event, type) => {
+  const file = event.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (type === 'icon') slideIcon.value = reader.result;
+      if (type === 'banner') slideBanner.value = reader.result;
+      if (type === 'thumbnail') slideThumbnail.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
 // Submit data
 const dataSubmit = async () => {
     try {
@@ -73,9 +89,9 @@ const dataSubmit = async () => {
             name: slide.value.name,
             status: slide.value.status,
             description: slide.value.description,
-            icon: slide.value.icon,
-            banner: slide.value.banner,
-            thumbnails: slide.value.thumbnails,
+            icon: slideIcon.value,
+            banner: slideBanner.value,
+            thumbnails: slideThumbnail.value,
             extend_props: extraProps.value,
         });
         loading.value = 'Success';
@@ -152,31 +168,31 @@ const dataSubmit = async () => {
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-3 gap-2 mt-2">
-                                    <div class="w-full">
-                                        <label for="dd-city" class="text-sm w-full">Slide Icon</label>
-                                        <FileUpload :pt="{
-                                            chooseButton: {
-                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                            }
-                                        }" mode="basic" name="icon" accept="image/*" />
-                                    </div>
-                                    <div class="w-full">
-                                        <label for="dd-city" class="text-sm w-full">Slide Banner</label>
-                                        <FileUpload :pt="{
-                                            chooseButton: {
-                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                            }
-                                        }" mode="basic" name="banner" accept="image/*" />
-                                    </div>
-                                    <div class="w-full">
-                                        <label for="dd-city" class="text-sm w-full">Slide Thumbnail</label>
-                                        <FileUpload :pt="{
-                                            chooseButton: {
-                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                            }
-                                        }" mode="basic" name="thumbnail" accept="image/*" />
-                                    </div>
+                                <div class="w-full">
+                                    <label for="slide-icon" class="text-sm w-full">Slide Icon</label>
+                                    <FileUpload :pt="{
+                                        chooseButton: {
+                                            class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                        }
+                                    }" mode="basic" name="icon" accept="image/*" @select="(event) => handleFileUpload(event, 'icon')"/>
                                 </div>
+                                <div class="w-full">
+                                    <label for="slide-banner" class="text-sm w-full">Slide Banner</label>
+                                    <FileUpload :pt="{
+                                        chooseButton: {
+                                            class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                        }
+                                    }" mode="basic" name="banner" accept="image/*" @select="(event) => handleFileUpload(event, 'banner')"/>
+                                </div>
+                                <div class="w-full">
+                                    <label for="slide-thumbnail" class="text-sm w-full">Slide Thumbnail</label>
+                                    <FileUpload :pt="{
+                                        chooseButton: {
+                                            class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                        }
+                                    }" mode="basic" name="thumbnail" accept="image/*" @select="(event) => handleFileUpload(event, 'thumbnail')"/>
+                                </div>
+                            </div>
                                 <div class="grid grid-cols-1 gap-2 mt-2">
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Description</label>
