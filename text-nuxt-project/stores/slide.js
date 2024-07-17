@@ -1,7 +1,7 @@
 export const useSlideStore = defineStore("slide", {
-  loading: false,
   state: () => ({
     status: null,
+    loading: false,
     SlideList: [],
     slides: [],
     pagination: {

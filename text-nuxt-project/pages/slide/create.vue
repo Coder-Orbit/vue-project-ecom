@@ -1,7 +1,5 @@
 <script setup>
 import { useToast } from 'primevue/usetoast';
-import { useRouter } from "vue-router";
-
 const router = useRouter();
 
 definePageMeta({
