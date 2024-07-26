@@ -128,7 +128,6 @@
             
         }
 
-
         const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/additional/media/${id}`,
             {
                 method: 'POST',
