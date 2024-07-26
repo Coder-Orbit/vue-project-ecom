@@ -1,13 +1,15 @@
 export const useSlideStore = defineStore("slide", {
-  loading: false,
   state: () => ({
     status: null,
+    loading: false,
+    SlideList: [],
     slides: [],
     pagination: {
       currentPage: 1,
       totalPages: 1,
       perPage: 15,
       totalItems: 0,
+      links: [],
     },
   }),
   getters: {
@@ -68,11 +70,33 @@ export const useSlideStore = defineStore("slide", {
         this.pagination.currentPage = data.current_page;
         this.pagination.totalPages = data.last_page;
         this.pagination.totalItems = data.total;
+        this.pagination.links = data.links;
         console.log(this.totalItems);
       } catch (error) {
         console.log(error);
       } finally {
         this.loading = false;
+      }
+    },
+    // Get Slide List In "/slide/" Page
+    async getSlidesList(){
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${app_token}`,
+          },
+        });
+        const data = await res.json();
+        this.SlideList = data.data;
+        console.log(this.slides);
+      } catch (error) {
+        console.log(error);
       }
     },
     // Delete Slide In "/slide" Page
@@ -102,6 +126,49 @@ export const useSlideStore = defineStore("slide", {
         return { success: false, message: 'An error occurred during delete' };
       }
     },
+    //SingleShow Slide In "/slide/:id" Page
+    async getSingleSlide(id) {
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide/${id}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${app_token}`,
+          },
+        });
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    // Update Slide In "/slide/:id" Page
+    async updateSlide(slideData, id) {
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      const formData = slideData;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide/${id}`, {
+          method: "PUT",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${app_token}`,
+          },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.log(error);
+        return { success: false, message: 'An error occurred during login' };
+      }
+    },
   },
-  persist: true,
 });

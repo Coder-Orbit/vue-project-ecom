@@ -1,33 +1,43 @@
 <script setup>
 import InputGroup from 'primevue/inputgroup';
 import Sidebar from 'primevue/sidebar';
-import Paginator from 'primevue/paginator';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useDataDate } from '~/composables/useDataDate';
 
-// Define all the Variables
-const visibleRight = ref(false);
-const pageNumber = ref(1);
-const layout = 'dashboard';
+//Define Page Meta
+definePageMeta({
+  layout: 'dashboard',
+  middleware: ['auth'],
+});
+
+// Slide Row data And Pagination From Store
 const store = useSlideStore();
 const slideData = computed(() => store.slides);
 const pagination = computed(() => store.pagination);
-const isLoading = ref(true);
+//For Loading Components
+const isLoading = ref('success');
+//Filter Sidebar
+const visibleRight = ref(false);
+//delete
 const deleteModalVisible = ref(false);
 const deleteLoading = ref(false);
-const selectedSlideId = ref(null); // Track the selected slide ID for deletion
-
+const selectedSlideId = ref(null);
+//Pagination Initial PageNumber
+const pageNumber = ref(1);
 // Initialize Toast
 const toast = useToast();
+// Date Formatter
+const { dateMonthFunction } = useDataDate();
 
 // On Load or Reload Get New Updated Data
 const loadSlides = async () => {
-  isLoading.value = true;
+  isLoading.value = 'Loading';
   await store.getAllSlides(pageNumber.value, store.pagination.perPage);
   slideData.value = store.slides;
-  isLoading.value = false;
+  isLoading.value = 'success';
 };
 
 // Ensure data is loaded before the component mounts
@@ -44,15 +54,15 @@ watch(
 );
 
 // Watch PageNumber Change
-watch(pageNumber, (newPage) => {
-  isLoading.value = true;
-  store.getAllSlides(newPage, pagination.value.perPage);
-  isLoading.value = false;
+watch(pageNumber,async (newPage) => {
+  isLoading.value = 'loading';
+  await store.getAllSlides(newPage, pagination.value.perPage);
+  isLoading.value = 'success';
 });
 
 // OnPage Change Get New Data
-const onPageChange = (event) => {
-  pageNumber.value = event.page + 1;
+const onPageChange = (newPage) => {
+  pageNumber.value = newPage;
   store.getAllSlides(pageNumber.value, pagination.value.perPage);
 };
 
@@ -81,6 +91,7 @@ const handleDelete = async () => {
     severity: result.success ? 'success' : 'error',
     summary: result.success ? 'Success' : 'Error',
     detail: result.message,
+    life: 3000,
   });
   // Reload the slides after deletion
   if (result.success) {
@@ -93,10 +104,13 @@ const openDeleteModal = (slideId) => {
   selectedSlideId.value = slideId;
   deleteModalVisible.value = true;
 };
+
 </script>
 
 <template>
   <NuxtLayout :name="layout">
+    <!-- Loading Indicator -->
+    <Spiner :loading="isLoading"/>
     <div class="w-full px-3 mt-1">
       <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
         <!-- Header with Back, Filter, and Add Buttons -->
@@ -134,10 +148,7 @@ const openDeleteModal = (slideId) => {
                 <th class="p-1 text-center w-24">Actions</th>
               </tr>
             </thead>
-            <!-- Loading Indicator -->
-            <div v-if="isLoading" class="absolute top-[50%] left-[58%]">
-              <Icon name="eos-icons:loading" class="animate-spin text-4xl" />
-            </div>
+
             <!-- Table Body -->
             <tbody>
               <tr v-for="slide in slideData" :key="slide.unique_id" class="bg-white odd:bg-gray-100">
@@ -153,22 +164,22 @@ const openDeleteModal = (slideId) => {
                 <!-- Description -->
                 <td class="p-1 text-left text-xs">{{ slide.description }}</td>
                 <!-- Status -->
-                <td class="p-1 text-left text-xs">{{ slide.status === 1 ? 'Active' : 'Inactive' }}</td>
+                <td class="p-1 text-left text-xs">{{ slide.status === '1' ? 'Active' : 'Inactive' }}</td>
                 <!-- Created Date -->
-                <td class="p-1 text-left text-xs">{{ slide.created_at }}</td>
+                <td class="p-1 text-left text-xs">{{  dateMonthFunction(slide.created_at)  }}</td>
                 <!-- Created By -->
-                <td class="p-1 text-center text-xs">{{ slide.created_by }}</td>
+                <td class="p-1 text-center text-xs">{{ slide.created_by =='1' ? "Admin":"Majedul Islam" }}</td>
                 <!-- Actions -->
                 <td class="p-1 text-center text-xs flex">
                   <div class="rounded-md bg-cyan-400 p-1 text-white" title="View">
                     <Icon name="mdi:eye" width="1.4em" height="1.4em" />
                   </div>
                   <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
-                    <NuxtLink :to="`/slide/edit/${slide.unique_id}`">
+                    <NuxtLink :to="`/slide/${slide.id}`">
                       <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                     </NuxtLink>
                   </div>
-                  <Button @click="openDeleteModal(slide.unique_id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete">
+                  <Button @click="openDeleteModal(slide.id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete">
                     <Icon name="bxs:trash" width="1.4em" height="1.4em" />
                   </Button>
                 </td>
@@ -187,14 +198,12 @@ const openDeleteModal = (slideId) => {
             </InputGroup>
           </div>
           <!-- Pagination -->
-          <div class="flex">
-            <Paginator 
-              :first="(pageNumber - 1) * store.pagination.perPage"
-              :rows="store.pagination.perPage"
-              :totalRecords="store.pagination.totalItems"
-              :pageLinkSize="5"
-              :currentPage="pageNumber - 1"
-              @page="onPageChange"
+          <div class="pt-2">
+            <Pagination
+              :currentPage="pageNumber"
+              :totalPages="pagination.totalPages"
+              :links="pagination.links"
+              @paginate="onPageChange"
             />
           </div>
         </div>

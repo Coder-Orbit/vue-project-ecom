@@ -164,6 +164,7 @@ import { ref, onMounted } from "vue";
         };
     };
 
+
     const setChartOptions = () => {
     const documentStyle = getComputedStyle(document.documentElement);
 
@@ -183,7 +184,6 @@ import { ref, onMounted } from "vue";
 const paginate = async (page) => {
     console.log(page);
     loading.value = "not";
-    
 
     if(page > pagination.value.current_page){
         pageNumber.value = page;
@@ -196,7 +196,6 @@ const paginate = async (page) => {
         pageNumber.value  = ((pagination.value.current_page+1) == pagination.last_page ? pagination.last_page : (pagination.value.current_page+1));
         
     }else{
-
         pageNumber.value = pagination.value.current_page
     }
         
@@ -226,11 +225,8 @@ const paginate = async (page) => {
 
 <template>
     <NuxtLayout :name="layout">
-        <div v-if="loading !== 'success' " class="min-h-screen w-full bg-black bg-opacity-[.3] top-0 left-0 z-30 flex items-center fixed">
-            <div class="w-12 mx-auto"><img alt="loading..." src="/spinner.gif"></div>
-        </div>
+        <Spiner :loading="loading" />
         <div class="w-full px-3 mt-1">
-
             <div class="grid grid-cols-4 gap-3 w-full">
                 <!-- Total Sales -->
                 <div class="shadow-md bg-white w-full h-36 overflow-hidden rounded-md relative">
@@ -449,9 +445,8 @@ const paginate = async (page) => {
                                 </div>
                                 <div class="order_title text-sm">
                                     <div class="pagination">
-
                                         <a v-for="(page, index) in  pagination?.links" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500':page.active }" class="p-1  mt-1 text-black " :key="index" href="#">
-                                            
+
                                         </a>
                                         
                                     </div>

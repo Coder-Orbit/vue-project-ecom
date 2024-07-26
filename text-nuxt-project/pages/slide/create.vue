@@ -1,7 +1,5 @@
 <script setup>
 import { useToast } from 'primevue/usetoast';
-import { useRouter } from "vue-router";
-
 const router = useRouter();
 
 definePageMeta({
@@ -99,6 +97,7 @@ const dataSubmit = async () => {
 <template>
 <NuxtLayout :name="layout">
     <Toast/>
+    <Spiner :loading="isLoading ? 'loading' : 'success'"/>
     <div class="w-full px-3 mt-1">
         <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
             <div class="flex w-full justify-between bg-gray-400 text-white">
