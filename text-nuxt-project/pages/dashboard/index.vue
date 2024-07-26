@@ -50,15 +50,15 @@ import { ref, onMounted } from "vue";
 
                 loading.value = status.value;
                 summary.value = data.value;
-                recentData.value = data.value.recent_orders.data;
+                recentData.value = data.value.recent_orders?.data;
                 pagination.value = data.value.recent_orders;
-                lineGrapCurrent.value = data.value.current_month_orders.data;
-                lineGrapPrevious.value = data.value.previous_month_orders.data;
+                lineGrapCurrent.value = data.value.current_month_orders?.data;
+                lineGrapPrevious.value = data.value.previous_month_orders?.data;
 
-                barGrapCurrent.value = data.value.current_weeks_orders.data;
-                barGrapPrevious.value = data.value.previous_weeks_orders.data;
+                barGrapCurrent.value = data.value.current_weeks_orders?.data;
+                barGrapPrevious.value = data.value.previous_weeks_orders?.data;
 
-                console.log(data);
+                console.log(summary);
 
             }
         catch (error) {
@@ -450,7 +450,7 @@ const paginate = async (page) => {
                                 <div class="order_title text-sm">
                                     <div class="pagination">
 
-                                        <a v-for="(page, index) in  pagination.links" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500':page.active }" class="p-1  mt-1 text-black " :key="index" href="#">
+                                        <a v-for="(page, index) in  pagination?.links" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500':page.active }" class="p-1  mt-1 text-black " :key="index" href="#">
                                             
                                         </a>
                                         

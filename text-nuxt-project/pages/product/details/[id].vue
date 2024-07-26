@@ -7,9 +7,11 @@
     
     import Rating from 'primevue/rating';
 
+    const route = useRoute()
 
-    const oldData = ref([])
+    const data = ref([])
     const rattingsValue = ref(4)
+    const product = ref([])
     const customTabStyle = ref(
         {
             headerTitle: {
@@ -22,136 +24,66 @@
 
         }
     )
-    const { data, eroor } = await useFetch('/api/jsonEditor');
 
+    // replace with actual API endpoint and master key
+    const config = useRuntimeConfig();
+    const EndPoint = config.public.baseURl;
+    const MasterKey = config.public.masterToken;
+    const app_token = useTokenStore().getToken;
+
+    const headers = ref({
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${app_token}`,
+                    "App-Master-Key" : `${MasterKey}`
+                })
 
     
 
-    const additionals =  ({
-
-                "white" : {
-                    "color_icon": "https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg",
-                    "color_thumbnails": "https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg",
-                    "color_galleries": "https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg,https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg",
-                    "size": {
-                        "s": {
-                            
-                            "color": "black",
-                            "size": "s",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 24
-                        },
-                        
-                        "m": {
-                            "product_id": 5,
-                            "color": "black",
-                            "size": "m",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 0
-                        },
-                        "l": {
-                            
-                            "color": "black",
-                            "size": "l",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 0
-                        },
-                        "xl": {
-                            
-                            "color": "black",
-                            "size": "xl",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 0
-                        },
-                        "xxl": {
-                            
-                            "color": "black",
-                            "size": "xxl",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 0
-                        }
-                    }
-                },
-                "Black" : {
-                    "color_icon": "https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg",
-                    "color_thumbnails": "https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg",
-                    "color_galleries": "https://primefaces.org/cdn/primevue/images/galleria/galleria11.jpg,https://primefaces.org/cdn/primevue/images/galleria/galleria10.jpg",
-                    "size": {
-                        "s": {
-                            
-                            "color": "black",
-                            "size": "s",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 24
-                        },
-                        
-                        "m": {
-                            "product_id": 5,
-                            "color": "black",
-                            "size": "m",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 0
-                        },
-                        "l": {
-                            
-                            "color": "black",
-                            "size": "l",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 0
-                        },
-                        "xl": {
-                            
-                            "color": "black",
-                            "size": "xl",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 0
-                        },
-                        "xxl": {
-                            
-                            "color": "black",
-                            "size": "xxl",
-                            "regular_price": 200,
-                            "current_price": 150,
-                            "discount": 25,
-                            "dicount_type": 0,
-                            "stock": 0
-                        }
-                    }
-                },
-
-            }
-        
-    )
+    const additionals =  ref({})
+    const medias =  ref({})
+    const attributes =  ref('')
+    const vendor =  ref({})
+    const categories =  ref({})
+    const brand =  ref({})
+    const country =  ref({})
+    const district =  ref({})
+    const police_station =  ref({})
 
     onMounted( async () => {
-        
+        try {
+
+            product.value = await $fetch(`${EndPoint}/admin/${MasterKey}/product/${route.params.id}`,
+                {
+                    method: 'get',
+                    headers: headers.value,
+                }
+            )
+
+            additionals.value = product.value.data.additional;
+            attributes.value = product.value.data.attributes.colors;
+            medias.value = [
+                ...product.value.data.additional_media,
+                {
+                    color_galleries : product.value.data.gallery,
+                    color_thumbnails : product.value.data.feature,
+                    color_icon : product.value.data.icon,
+                    slug : product.value.data.id+'_General',
+                }
+
+            ];
+            vendor.value = product.value.data.vendor;
+            categories.value = product.value.data.categories;
+            brand.value = product.value.data.brand;
+            country.value = product.value.data.country;
+            district.value = product.value.data.district;
+            police_station.value = product.value.data.police_station;
+            data.value = product.value.data.description;
+
+            console.log(product.value.data);
+
+        } catch (err) {
+            console.log(err)
+        }
     })
 
 
@@ -182,34 +114,36 @@
                 <div class="h-full overflow-y-auto p-4 w-full max-h-[calc(100vh-8.2rem)] flex flex-col bg-gray-100">
                     
                     <div class="grid grid-cols-4 gap-2">
-                        <div v-for="(additional, key, indexKey) in additionals" :key="indexKey">
-                            <ProductGallery :images="additional" :color="key"/>
+                        <div v-for="(additional, key, indexKey) in medias" :key="indexKey">
+                            <ProductGallery :additional="additional"/>
                         </div>
                     </div>
 
                     <div class="w-full mt-3">
-                        <div class="w-full" v-for="(color, key, indexKey) in additionals" :key="indexKey">
-                            <ProductSizes :sizes="color.size" :color="key" />
+                        <div class="w-full" :key="indexKey">
+                            <ProductSizes :additionals="additionals" :color="color" :key="indexKey"/>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-4 gap-2 mt-3 ">
                         <div class="w-full border rounded-md p-2 bg-white">
-                            <div class="w-full text-sm"><b>Vendor:</b> Cusotm Vendor Name</div>
+                            <div class="w-full text-sm"><b>Vendor:</b> {{ vendor?.name }}</div>
                             <div class="w-full text-sm"><b>Total Sale:</b> 11</div>
                             <div class="w-full text-sm"><b>Total Return:</b> 1</div>
                             <div class="w-full text-sm"><b>Ratting:</b> 4.1 <Icon name="noto:star"/></div>
                         </div>
                         <div class="w-full border rounded-md p-2">
-                            <div class="w-full text-sm"><b>Categories:</b> Category1, Category2, Category3</div>
+                            <div class="w-full text-sm"><b>Categories: </b>
+                                <span v-for="(category, index) in categories" :key="index"> {{ category.name }}<small v-if="categories.length > index+1">, </small> </span>
+                            </div>
                         </div>
                         <div class="w-full border rounded-md p-2">
-                            <div class="w-full text-sm"><b>Brand:</b> Brand Name</div>
+                            <div class="w-full text-sm"><b>Brand:</b> {{ brand?.name }}</div>
                         </div>
                         <div class="w-full border rounded-md p-2">
-                            <div class="w-full text-sm"><b>Countries:</b> Bangladesh</div>
-                            <div class="w-full text-sm"><b>District:</b> Dhaka</div>
-                            <div class="w-full text-sm"><b>Thana/Police:</b> Mirpur</div>
+                            <div class="w-full text-sm"><b>Countries:</b> {{ country?.name }}</div>
+                            <div class="w-full text-sm"><b>District:</b> {{ district?.name }}</div>
+                            <div class="w-full text-sm"><b>Thana/Police:</b> {{ police_station?.name }}</div>
                         </div>
                     </div>
 
@@ -241,23 +175,33 @@
 
                                         <p class="mb-3" v-else-if="item.type == 'paragraph'" v-html="item.data.text"></p>
 
-                                        <ol class="mb-3 list-decimal pl-6" v-else-if="item.type == 'list' && item.data.style == 'ordered'">
+                                        <ol class="mb-3 list-decimal pl-6" v-else-if="item.type == 'ordered' && item.data.style == 'ordered'">
                                             <li class="mb-1" v-for="(list, index) in item.data.items" :key="index">
-                                                {{ list }}
+                                                {{ list.content }}
                                             </li>
                                         </ol>
 
                                         <ul class="mb-3 list-disc pl-6" v-else-if="item.type == 'list' && item.data.style == 'unordered'">
                                             <li class="mb-1" v-for="(list, index) in item.data.items" :key="index">
-                                                {{ list }}
+                                                {{ list.content }}
                                             </li>
                                         </ul>
 
                                         <table class="mb-3 list-disc pl-6 table w-full table-auto border-collapse border border-slate-400" v-else-if="item.type == 'table'">
                                             <tr class="mb-1" v-for="(contents, index) in item.data.content" :key="index">
-                                                <td class="border border-slate-300 py-1 px-3" v-for="(content, index) in contents" :key="index">{{ content }}</td>
+                                                <td class="border border-slate-300 py-1 px-3" v-for="(content, index) in contents" :key="index" v-html="content"></td>
                                             </tr>
                                         </table>
+
+                                        <div v-else-if="item.type == 'CodeTool'" >
+                                            {{ item.data.code }}
+                                        </div>
+
+                                        <div v-else-if="item.type == 'RawTool'" >
+                                            {{ item.data.html }}
+                                        </div>
+
+                                        
                                         
                                         <iframe v-if="item.type == 'Embed'" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" frameborder="0" :width="item.data.width" :height="item.data.height" :src="item.data.embed"></iframe>
                                        

@@ -33,6 +33,7 @@
     "autoprefixer": "^10.4.19",
     "chart.js": "^4.4.2",
     "dotenv": "^16.4.5",
+    "moment-timezone": "^0.5.45",
     "nuxt": "^3.11.2",
     "nuxt-editorjs": "^1.0.4",
     "postcss": "^8.4.38",

@@ -7,6 +7,44 @@
     });
 const { color } = props;
 
+const galleries = ref([]);
+
+
+const emit = defineEmits(['addItionalData']);
+
+const  getData = (e, field) => {
+    const file = e.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            emit('addItionalData', { name : field, dataValue : reader.result});
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+const  selectMultiple = (e, field) => {
+
+    const files = e.files;
+
+    for( let i = 0; i < files.length; i++ ){
+
+        const reader = new FileReader();
+        if (files[i]) {
+            reader.onload = () => {
+                galleries.value[i] = reader.result 
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    }
+
+    emit('addItionalData', { name : field, dataValue : galleries.value});
+    
+    
+}
+
+
+
 
 </script>
 
@@ -33,14 +71,14 @@ const { color } = props;
             
         <div class="flex w-full px-2 py-1">
             <div class="w-full mr-2">
-                <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Color Icon </label>
+                <label for="dd-citwy" class="text-sm w-full"> Color Icon </label>
                 <FileUpload :pt="{
                         chooseButton: {
                             class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
                         },
                         
                         
-                    }" mode="basic" name="banner" accept="image/*" />
+                    }" mode="basic" type="file" @select="(event) => getData(event, `[${color}][color_icon]`)" accept="image/*" />
             </div>
             <div class="w-full mr-2">
                 <label for="dd-citye" class="text-sm w-full"> Color Thumbnails</label>
@@ -48,7 +86,7 @@ const { color } = props;
                         chooseButton: {
                             class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
                         },
-                    }" mode="basic" name="banner" accept="image/*" />
+                    }" mode="basic" type="file" @select="(event) => getData(event, `[${color}][color_thumbnails]`)" accept="image/*" />
             </div>
             <div class="w-full mr-2">
                 <label for="dd-citye" class="text-sm w-full"> Color Galleries</label>
@@ -56,7 +94,7 @@ const { color } = props;
                         chooseButton: {
                             class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
                         },
-                    }" mode="basic" name="banner" accept="image/*" />
+                    }" mode="basic" @select="(event) => selectMultiple(event, `[${color}][color_galleries]`)" multiple accept="image/*" />
             </div>
         </div>
 
