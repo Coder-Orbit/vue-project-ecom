@@ -26,7 +26,14 @@ export const useCategoryStore = defineStore("category", {
             const EndPoint = config.public.baseURl;
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
-            const formData = categoryData;
+            const formData = {
+                categoryData,
+                "validation": {
+                    "roles": {
+                        "name": "required",
+                    },
+                },
+            };
             try {
                 const res = await fetch(`${EndPoint}/admin/${MasterKey}/category`, {
                     method: "POST",
@@ -36,6 +43,7 @@ export const useCategoryStore = defineStore("category", {
                         Authorization: `Bearer ${app_token}`,
                     },
                     body: JSON.stringify(formData),
+                    
                 });
                 const data = await res.json();
                 if (data && data[0] === "Success") {
@@ -111,13 +119,14 @@ export const useCategoryStore = defineStore("category", {
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
             try {
-                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category`, {
+                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?limit_per_page=1000`, {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${app_token}`,
                     },
                 });
+                console.log(data);
                 this.CategoryList = data;
             } catch (error) {
                 console.log(error);
