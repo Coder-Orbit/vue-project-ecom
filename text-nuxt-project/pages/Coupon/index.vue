@@ -1,23 +1,108 @@
 <script setup>
     import InputGroup from 'primevue/inputgroup';
-    import InputGroupAddon from 'primevue/inputgroupaddon';
     import Sidebar from 'primevue/sidebar';
+    import Dialog from 'primevue/dialog';
+    import Toast from 'primevue/toast';
+    import { useDataDate } from '~/composables/useDataDate';
+    import { useCouponStore } from '~/stores/coupon';
 
-
-    const router = useRouter();
+    //Define Page Meta
     definePageMeta({
         layout: "dashboard",
         middleware: ['auth'],
     })
-
+    // Coupon Row data And Pagination From Store
+    const store = useCouponStore();
+    const couponData = computed(() => store.coupons);
+    const pagination = computed(() => store.pagination);
+    //For Loading Component
+    const isLoading = ref('success');
+    //For Right Side Filter
     const visibleRight = ref(false);
+    //delete
+    const selectedCouponId = ref(null);
+    const deleteModalVisible = ref(false);
+    const deleteLoading = ref(false);
+    //Pagination Initial PageNumber
+    const pageNumber = ref(1);
+    // Initialize Toast
+    const toast = useToast();
+    // Date Formatter
+    const { dateMonthFunction } = useDataDate();
 
+    // On Load or Reload Get New Updated Data
+    const loadCoupons = async () => {
+        isLoading.value = 'Loading';
+        await store.getAllCoupons(pageNumber.value, store.pagination.perPage);
+        couponData.value = store.coupons;
+        isLoading.value = 'success';
+    };
+    // Ensure data is loaded before the component mounts
+    onBeforeMount(async () => {
+    await loadCoupons();
+    });
+    // Watch for changes in the store Coupon and update CouponData accordingly
+    watch(
+        () => store.coupons,
+        (newCoupons) => {
+            couponData.value = newCoupons;
+        }
+    );
+    // Watch PageNumber Change
+    watch(pageNumber,async (newPage) => {
+        isLoading.value = 'loading';
+        await store.getAllCoupons(newPage, pagination.value.perPage);
+        isLoading.value = 'success';
+    });
+    // OnPage Change Get New Data
+    const onPageChange = (newPage) => {
+        pageNumber.value = newPage;
+        store.getAllCoupons(pageNumber.value, pagination.value.perPage);
+    };
+    // On Search Get New Coupon Data
+    const handleSearch = () => {
+        pageNumber.value = 1;
+        store.getAllCoupons(pageNumber.value, store.pagination.perPage);
+    };
+    // On Apply Filter Get New Coupon Data
+    const goToPage = (page) => {
+        if (page > 0 && page <= pagination.value.totalPages) {
+            pageNumber.value = page;
+            store.getAllCoupons(pageNumber.value, pagination.value.perPage);
+        }
+    };
+    // Handle Delete Coupon
+    const handleDelete = async () => {
+        deleteLoading.value = true;
+        const result = await store.deleteCoupon(selectedCouponId.value);
+        console.log(result);
+        deleteLoading.value = false;
+        deleteModalVisible.value = false;
+        toast.add({
+            severity: result.success ? 'success' : 'error',
+            summary: result.success ? 'Success' : 'Error',
+            detail: result.message,
+            life: 3000,
+        });
+        // Reload the Coupon after deletion
+        if (result.success) {
+            await loadCoupons();
+        }
+    };
+    // Open the delete modal for the specific Coupon
+    const openDeleteModal = (couponId) => {
+        selectedCouponId.value = couponId;
+        deleteModalVisible.value = true;
+    };
 </script>
 <template>
         <NuxtLayout :name="layout">
+            <Toast/>
+            <Spiner :loading = isLoading />
             <div class="w-full px-3 mt-1">
 
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
+                    <!-- Header with Back, Filter, and Add Buttons -->
                     <div class="flex w-full justify-between bg-gray-400 text-white">
                         
                         <div class="font-semibold mt-1 ml-3">Coupon</div>
@@ -42,6 +127,7 @@
                     <!-- Table list goes here -->
                     <div class=" h-[calc(100vh-10.4rem)] overflow-y-auto border-b px-3 pt-3">
                         <table class="table-fixed w-full">
+                            <!-- Table Headers -->
                             <thead>
                                 <tr class="w-full bg-gray-300 text-sm">
                                     <th class="p-1 text-left text-sm w-8">SL</th>
@@ -51,60 +137,68 @@
                                     <th class="p-1 text-left text-sm">Use Limit</th>
                                     <th class="p-1 text-left text-sm">Start Offer</th>
                                     <th class="p-1 text-left text-sm">End Offer</th>
-                                    <th class="p-1 text-left text-sm w-32">Description</th>
                                     <th class="p-1 text-left">Status</th>
                                     <th class="p-1 text-left w-24">Created At</th>
                                     <th class="p-1 text-center">Created By</th>
                                     <th class="p-1 text-center w-24">...</th>
                                 </tr>
                             </thead>
+                            <!-- Table Body -->
                             <tbody>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">Icon</td>
-                                    <td class="p-1 text-left text-xs">Name</td>
-                                    <td class="p-1 text-left text-xs">150.00</td>
-                                    <td class="p-1 text-left text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">12/05/24</td>
-                                    <td class="p-1 text-left text-xs">02/06/24</td>
-                                    <td class="p-1 text-left text-xs">Description</td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-left text-xs">30-11-2023 10:30</td>
-                                    <td class="p-1 text-center text-xs">admin</td>
+                                <tr v-for="coupon in couponData" :key="coupon.unique_id" class="bg-white odd:bg-gray-100">
+                                    <!-- Serial ID -->
+                                    <td class="p-1 text-left text-sm w-8">{{ coupon.id }}</td>
+                                    <!-- Icon -->
+                                    <td class="p-1 text-left text-sm w-12">
+                                        <img :src="coupon.icon" class="w-8 h-8" alt="Coupon Icon">
+                                    </td>
+                                    <!--Coupon Name-->
+                                    <td class="p-1 text-left text-sm">{{ coupon.name }}</td>
+                                    <!--Max Amount-->
+                                    <td class="p-1 text-left text-sm">{{ coupon.max_amount }}</td>
+                                    <!--Use Limite-->
+                                    <td class="p-1 text-left text-sm">{{ coupon.use_limit }}</td>
+                                    <!--Start Offer-->
+                                    <td class="p-1 text-left text-sm">{{ coupon.start_offer }}</td>
+                                    <!--End Offer-->
+                                    <td class="p-1 text-left text-sm">{{coupon.end_offer}}</td>
+                                    <!--Status-->
+                                    <td class="p-1 text-left text-xs">{{ coupon.status === '1' ? 'Active' : 'Inactive' }}</td>
+                                    <!--Created Date-->
+                                    <td class="p-1 text-left text-xs">{{  dateMonthFunction(coupon.created_at)  }}</td>
+                                    <!--Created By-->
+                                    <td class="p-1 text-center text-xs">{{ coupon.created_by =='1' ? "Admin":"Majedul Islam" }}</td>
+                                    <!--& Others Button-->
                                     <td class="p-1 text-center text-xs flex">
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
-                                            <NuxtLink to="/coupon/edit">
+                                            <NuxtLink :to="`/coupon/${ coupon.id }`">
                                                 <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                                             </NuxtLink>
                                         </div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                        <button @click="openDeleteModal(coupon.id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
                                 </tr>
-
-
-
-                                
                             </tbody>
                         </table>
                     </div>
-                    <div class="order_title text-sm flex justify-between h-full ">
-                        <div class="mt-[2px] ml-3 ">
+                    <!-- Table Footer-->
+                    <div class="order_title text-sm flex justify-between h-full">
+                        <!-- Search Box -->
+                        <div class="mt-[2px] ml-3">
                             <InputGroup>
-                                <input type="number" class="border border-r-0 p-1 focus:outline-none"  placeholder="Pagen Number" />
-                                <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" />
+                            <input type="number" v-model="pageNumber" @keyup.enter="goToPage(pageNumber)" class="border border-r-0 p-1 focus:outline-none" placeholder="Page Number" />
+                            <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" @click="goToPage(pageNumber)" />
                             </InputGroup>
                         </div>
-                        <div class="flex -mt-1">
-                            <a class="p-2 mt-1 text-black " href="#">&laquo;</a>
-                            <a class="p-1 px-2 mt-1 border-t-4 border-red-500 text-red-500" href="#">1</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">2</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">3</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">4</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">5</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">...</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">6</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">&raquo;</a>
+                        <!-- Pagination -->
+                        <div class="pt-2">
+                            <Pagination
+                            :currentPage="pageNumber"
+                            :totalPages="pagination.totalPages"
+                            :links="pagination.links"
+                            @paginate="onPageChange"
+                            />
                         </div>
                     </div>
                 </div>
@@ -135,6 +229,17 @@
 
 
                 </Sidebar>
+                <!-- Delete Modal -->
+                <Dialog v-model:visible="deleteModalVisible" modal header="Delete Coupon" :style="{ width: '25rem' }">
+                    <span class="p-text-secondary flex items-center justify-center flex-col mb-5">
+                        <Icon name="material-symbols:delete-sweep-rounded" width="120px" height="120px" class="mr-2 text-red-500" />
+                        Are you sure you want to delete this Coupon ?
+                    </span>
+                    <div class="flex justify-around">
+                        <Button class="bg-yellow-600 text-red-100 px-4 py-2" type="button" label="Cancel" severity="secondary" @click="deleteModalVisible = false"></Button>
+                        <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Delete" @click="handleDelete" :loading="deleteLoading"></Button>
+                    </div>
+                </Dialog>
             </div>
         </NuxtLayout>
 

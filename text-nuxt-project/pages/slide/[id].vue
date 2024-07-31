@@ -2,11 +2,11 @@
 import FileUpload from 'primevue/fileupload';
 import Fieldset from 'primevue/fieldset';
 
+//Define Page Meta
 definePageMeta({
     layout: "dashboard",
     middleware: "auth",
 })
-
 // Initialize router and route
 const router = useRouter();
 //Initialize Store
@@ -82,7 +82,6 @@ const dataSubmit = async () => {
     try {
         extraFields.value.forEach((item, index) => {
             extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
-            console.log(item)
         });
         // Form data
         const slideData = reactive({
@@ -96,9 +95,7 @@ const dataSubmit = async () => {
         });
         loading.value = 'Success';
         const result = await slideStore.updateSlide(slideData, Id);
-        console.log(result);
         if (result) {
-        router.push('/slide');
         toast.add({
             severity: 'success',
             summary: 'Slide Updated',

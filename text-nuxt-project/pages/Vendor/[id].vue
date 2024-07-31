@@ -1,31 +1,29 @@
 <script setup>
-    
-    import { ref } from "vue";
-    import Dropdown from 'primevue/dropdown';
     import FileUpload from 'primevue/fileupload';
     import Fieldset from 'primevue/fieldset';
 
-
-
-    const router = useRouter();
+//Define Page Meta
     definePageMeta({
         layout: "dashboard",
-        middleware: ['auth'],
+        middleware: "auth",
     })
 
-
-    const selectedCategory = ref();
+//Initialize Store
+const VendorStore = useVendorStore();
+const Vendor = ref({});
+// Initialize router and route
+const router = useRouter();
+    // Extra fields
     const extraProps = ref([]);
-    const extraFields = ref([
-        {
-            fieldName: "",
-            fieldValue: "",
-        },
-        {
-            fieldName: "",
-            fieldValue: "",
-        }
-    ]);
+    const extraFields = ref([]);
+    //Loading And Toast
+const loading = ref('Stop');
+const toast = useToast();
+// Assume you have a dynamic route with the slide ID
+const Id = router.currentRoute.value.params.id;
+//File Data
+const VendorIcon = ref('');
+const VendorBanner = ref('');
 
     // Add extra field function goes here
     const addMoreField = () => {
@@ -41,42 +39,103 @@
     const removeMoreField = (index) => {
         extraFields.value.splice(index, 1);
     }
+//Handle File Upload
+const handleFileUpload = (event, type) => {
+  const file = event.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (type === 'icon') CouponIcon.value = reader.result;
+      if (type === 'banner') CouponBanner.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
-    const categories = ref([
-        { name: 'Mobile', code: 'AU' },
-        { name: 'Frez', code: 'BR' },
-        { name: 'TV', code: 'CN' },
-        { name: 'AC', code: 'EG' },
-        { name: 'T-Shirt', code: 'FR' },
-        { name: 'Pants', code: 'DE' },
-        { name: 'Three PCs', code: 'IN' },
-        { name: 'Shoe', code: 'JP' },
-        { name: 'Panjabi', code: 'ES' },
-        { name: 'Shree', code: 'US' }
-    ]);
+// Fetch the Vendor data when the component is mounted
+onMounted(async () => {
+    loading.value = 'Success';
+    try {
+        const data = await VendorStore.getSingleVendor(Id);
+        Vendor.value = data.data;
+        console.log(Coupon.value);
+       // Populate extraFields with the existing extend_props
+       if (data.data.extend_props) {
+            extraFields.value = Object.entries(data.data.extend_props).map(([key, value]) => ({
+                fieldName: key,
+                fieldValue: value,
+            }));
+        }
+    } catch (error) {
+        console.error(error);
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to load Coupon data.',
+            life: 3000,
+        });
+    } finally {
+        loading.value = 'Stop';
+    }
+});
 
 
-    const dataSubmit = () => {
-
-        extraFields.value.forEach((item, index) => {
-
+    const dataSubmit = async() => {
+        try {
+            extraFields.value.forEach((item, index) => {
             extraProps.value = {...extraProps.value, [item.fieldName] : item.fieldValue};
-            console.log(item)
-        })
-
-        console.log(extraProps)
+        });
+        const vendorData = {
+            name: Vendor.value.name,
+            icon: VendorIcon.value,
+            banner: VendorBanner.value,
+            description: Vendor.value.description,
+            status: Vendor.value.status,
+            extend_props: extraProps.value,
+        };
+        loading.value = 'Success';
+        const result = await VendorStore.updateVendor(vendorData, Id);
+        if (result) {
+        toast.add({
+            severity: 'success',
+            summary: 'Vendor Updated',
+            detail: result.message || 'Vendor updated successfully.',
+            life: 3000,
+        });
+        // router.push('/vendor');
+        } else {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: result.message || 'Failed to update slide.',
+            life: 3000,
+        });
+        }
+        } catch (error) {
+            console.log(error);
+            toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'An unexpected error occurred.',
+      life: 3000,
+    });
+        } finally {
+    loading.value = 'Stop';
+  }
 
     }
 
 </script>
 <template>
     <NuxtLayout :name="layout">
+        <Toast />
+        <Spiner v-if="loading === 'Success'" />
         <div class="w-full px-3 mt-1">
 
 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
     <div class="flex w-full justify-between  bg-gray-400 text-white">
         
-        <div class="font-semibold mt-1 ml-3">Edit Category</div>
+        <div class="font-semibold mt-1 ml-3">Edit Vendor</div>
         <div class="font-semibold ml-1 flex">
             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-tr-sm">
                 <Icon name="gg:arrow-left-o"></Icon>
@@ -92,91 +151,40 @@
                 <form  @submit.prevent="dataSubmit">
                     <div class="grid grid-cols-2 gap-2">
                         <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Category Name</label>
-                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Category Name"/>
-                        </div>
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm">Parent Category</label>
-                            <Dropdown 
-                                :pt="{
-                                    root: {
-                                        class: 'text-sm w-full py-1 px-2 border outline-red-200 active:bg-gray-100'
-                                    },
-
-                                    filterInput:{
-                                        class: 'active:bg-gray-100 py-1 px-2 border mb-2'
-                                    },
-
-                                    item:{
-                                        class: 'hover:bg-red-100'
-                                    },
-
-                                    itemLabel:{
-                                        class: 'focus:bg-red-600'
-                                    },
-                                    
-                                    
-
-                                }"  
-                            v-model="selectedCategory" editable :options="categories" filter optionLabel="name" placeholder="Select a City" />
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-3 gap-2 mt-2">
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Category Icon</label>
-                            <FileUpload :pt="{
-                                chooseButton: {
-                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                },
-                                
-                                
-                            }" mode="basic" name="icon" accept="image/*"/>
-                        </div>
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Category Banner</label>
-                            <FileUpload :pt="{
-                                chooseButton: {
-                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                },
-                                
-                                
-                            }" mode="basic" name="banner" accept="image/*" />
-                        </div>
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Category Thumbnail</label>
-                            <FileUpload :pt="{
-                                chooseButton: {
-                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                },
-                                
-                                
-                            }" mode="basic" name="thumbnail" accept="image/*"/>
-                        </div>
-                    </div>
-
-                    <!-- comission tab -->
-                    <div class="grid grid-cols-3 gap-2 mt-2">
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Commission</label>
-                            <input type="number" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Commission"/>
-                        </div>
-                        <div class="w-full">
-                            <label for="dd-city" class="text-sm w-full">Commission Type</label>
-                            <select name="commission_type" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
-                                <option value="fixed"> Fixed</option>
-                                <option value="parcentage"> Parcentage</option>
-                            </select>
+                            <label for="dd-city" class="text-sm w-full">Vendor Name</label>
+                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Status</label>
-                            <select name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                            <select v-model="Vendor.status" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                                 <option value="1"> Active</option>
                                 <option value="0"> Inactive</option>
                             </select>
                         </div>
                     </div>
 
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Vendor Icon</label>
+                            <FileUpload :pt="{
+                                chooseButton: {
+                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                },
+                                
+                                
+                            }" mode="basic" @select="(event) => handleFileUpload(event, 'icon')" name="icon" accept="image/*"/>
+                        </div>
+                        <div class="w-full">
+                            <label for="dd-city" class="text-sm w-full">Vendor Banner</label>
+                            <FileUpload :pt="{
+                                chooseButton: {
+                                    class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                },
+                                
+                                
+                            }" mode="basic" @select="(event) => handleFileUpload(event, 'banner')" name="banner" accept="image/*" />
+                        </div>
+                    </div>
                     <!-- dynamic field -->
                     <div class="grid grid-col gap-2 mt-2">
                         <Fieldset legend="Extra Props" :pt="{
@@ -219,11 +227,11 @@
 
                     <div class="w-full mt-1">
                         <label for="dd-city" class="text-sm w-full">Description</label>
-                        <textarea class="w-full border rounded-md"></textarea>
+                        <textarea v-model="Vendor.description" class="w-full border rounded-md"></textarea>
                     </div>
 
                     <div class="place-content-end flex w-full">
-                        <button class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">Add <Icon name="fa-solid:paper-plane"></Icon></button>
+                        <button class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">Update <Icon name="fa-solid:paper-plane"></Icon></button>
                     </div>
 
                     

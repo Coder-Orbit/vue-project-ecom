@@ -1,76 +1,128 @@
 <script setup>
-    
-    import { ref } from "vue";
-    import Dropdown from 'primevue/dropdown';
     import FileUpload from 'primevue/fileupload';
     import Fieldset from 'primevue/fieldset';
+    import { useToast } from 'primevue/usetoast';
+    import { useBrandStore } from '~/stores/brand';
 
+//Get Router From useRouter
+const router = useRouter();
+//Get Toast
+const toast = useToast();
+//Define Page Meta
+definePageMeta({
+    layout: "dashboard",
+    middleware: ['auth'],
+})
+//Loading State
+const isLoading = ref(false);
+//Get Brand Store
+const brandStore = useBrandStore();
+//Get Reactive Data
+const BrandName = ref('');
+const Commission = ref('');
+const CommissionType = ref("fixed");
+const Status = ref(1);
+const Description = ref('');
+const BrandIcon = ref('');
+const BrandBanner = ref('');
+const BrandThumbnail = ref('');
+const extraProps = ref([]);
+const extraFields = ref([
+    {
+        fieldName: "",
+        fieldValue: "",
+    },
+]);
 
-
-    const router = useRouter();
-    definePageMeta({
-        layout: "dashboard",
-        middleware: ['auth'],
-    })
-
-
-    const selectedCategory = ref();
-    const extraProps = ref([]);
-    const extraFields = ref([
-        {
-            fieldName: "",
-            fieldValue: "",
-        },
-        {
+// Add extra field function goes here
+const addMoreField = () => {
+    extraFields.value = [
+        ...extraFields.value, {
             fieldName: "",
             fieldValue: "",
         }
-    ]);
+    ];
+}
 
-    // Add extra field function goes here
-    const addMoreField = () => {
-        extraFields.value = [
-            ...extraFields.value, {
-                fieldName: "",
-                fieldValue: "",
-            }
-        ];
+// Remove extra field
+const removeMoreField = (index) => {
+    extraFields.value.splice(index, 1);
+}
+
+// File Upload
+const handleFileUpload = (event, type) => {
+    const file = event.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (type === 'icon') BrandIcon.value = reader.result;
+            if (type === 'banner') BrandBanner.value = reader.result;
+            if (type === 'thumbnail') BrandThumbnail.value = reader.result;
+        };
+        reader.readAsDataURL(file);
     }
+};
 
-    // Remove extra field
-    const removeMoreField = (index) => {
-        extraFields.value.splice(index, 1);
-    }
+const dataSubmit = async () => {
 
-    const categories = ref([
-        { name: 'Mobile', code: 'AU' },
-        { name: 'Frez', code: 'BR' },
-        { name: 'TV', code: 'CN' },
-        { name: 'AC', code: 'EG' },
-        { name: 'T-Shirt', code: 'FR' },
-        { name: 'Pants', code: 'DE' },
-        { name: 'Three PCs', code: 'IN' },
-        { name: 'Shoe', code: 'JP' },
-        { name: 'Panjabi', code: 'ES' },
-        { name: 'Shree', code: 'US' }
-    ]);
+    extraFields.value.forEach((item, index) => {
 
+        extraProps.value = {...extraProps.value, [item.fieldName] : item.fieldValue};
+        console.log(item)
+    })
 
-    const dataSubmit = () => {
+    isLoading.value = true;
+    try {
+        const data = {
+            name: BrandName.value,
+            icon: BrandIcon.value,
+            banner: BrandBanner.value,
+            thumbnail: BrandThumbnail.value,
+            description: Description.value,
+            commission: Commission.value,
+            commission_type: CommissionType.value,
+            status: Status.value,
+            extend_props: extraProps.value
+        }
+        console.log(data);
+        const result = await brandStore.addBrand(data);
+        if (result.success) {
+            toast.add({
+                severity: 'success',
+                summary: 'Brand Created',
+                detail: result.message || 'Brand was created successfully.',
+                life: 3000,
+            });
 
-        extraFields.value.forEach((item, index) => {
+            //router.push('/brand');
 
-            extraProps.value = {...extraProps.value, [item.fieldName] : item.fieldValue};
-            console.log(item)
-        })
+        } else {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: result.message || 'An error occurred.',
+                life: 3000,
+            });
+        }
+    } catch (error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'An unexpected error occurred.',
+            life: 3000,
+        });
+        console.error(error);
+    } finally{
+    isLoading.value = false;
+  }
 
-        console.log(extraProps)
-
-    }
+}
 
 </script>
 <template>
     <NuxtLayout :name="layout">
+        <Toast />
+        <spiner v-if="isLoading" />
         <div class="w-full px-3 mt-1">
 
 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
@@ -90,20 +142,21 @@
         <div class="flex w-full justify-center">
             <div class="w-1/2">
                 <form  @submit.prevent="dataSubmit">
+                    <!--Name And Status-->
                     <div class="grid grid-cols-2 gap-2">
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Brand Name</label>
-                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
+                            <input type="text" v-model="BrandName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Status</label>
-                            <select name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                            <select v-model="Status" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                                 <option value="1"> Active</option>
                                 <option value="0"> Inactive</option>
                             </select>
                         </div>
                     </div>
-
+                    <!--File Upload-->
                     <div class="grid grid-cols-3 gap-2 mt-2">
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Brand Icon</label>
@@ -113,7 +166,7 @@
                                 },
                                 
                                 
-                            }" mode="basic" name="icon" accept="image/*"/>
+                            }" mode="basic"  @select="(event) => handleFileUpload(event, 'icon')"  name="icon" accept="image/*"/>
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Brand Banner</label>
@@ -123,7 +176,7 @@
                                 },
                                 
                                 
-                            }" mode="basic" name="banner" accept="image/*" />
+                            }" mode="basic"  @select="(event) => handleFileUpload(event, 'banner')" name="banner" accept="image/*" />
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Brand Thumbnail</label>
@@ -133,25 +186,23 @@
                                 },
                                 
                                 
-                            }" mode="basic" name="thumbnail" accept="image/*"/>
+                            }" mode="basic"  @select="(event) => handleFileUpload(event, 'thumbnail')" name="thumbnail" accept="image/*"/>
                         </div>
                     </div>
-
                     <!-- comission tab -->
                     <div class="grid grid-cols-2 gap-2 mt-2">
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Commission</label>
-                            <input type="number" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Commission"/>
+                            <input type="number" v-model="Commission" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Commission"/>
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Commission Type</label>
-                            <select name="commission_type" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                            <select v-model="CommissionType" name="commission_type" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                                 <option value="fixed"> Fixed</option>
                                 <option value="parcentage"> Parcentage</option>
                             </select>
                         </div>
                     </div>
-
                     <!-- dynamic field -->
                     <div class="grid grid-col gap-2 mt-2">
                         <Fieldset legend="Extra Props" :pt="{
@@ -190,18 +241,22 @@
                         </Fieldset>
                         
                     </div>
-
-
+                    <!--Description-->
                     <div class="w-full mt-1">
                         <label for="dd-city" class="text-sm w-full">Description</label>
-                        <textarea class="w-full border rounded-md"></textarea>
+                        <textarea v-model="Description" class="w-full border rounded-md"></textarea>
                     </div>
-
+                    <!--Submit Button-->
                     <div class="place-content-end flex w-full">
-                        <button class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">Add <Icon name="fa-solid:paper-plane"></Icon></button>
+                        <button :disabled="isLoading === true" class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">
+                                    <div v-if="isLoading === false">
+                                        Add <Icon name="fa-solid:paper-plane"></Icon>
+                                    </div>
+                                    <div v-else>
+                                        Loading... <Icon name="fa-solid:paper-plane"></Icon>
+                                    </div>
+                                </button>
                     </div>
-
-                    
                 </form>
             </div>
 

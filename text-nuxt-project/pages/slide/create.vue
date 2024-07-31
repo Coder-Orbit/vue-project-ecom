@@ -11,7 +11,6 @@ const toast = useToast();
 const extraProps = ref([]);
 const extraFields = ref([
   { fieldName: '', fieldValue: '' },
-  { fieldName: '', fieldValue: '' }
 ]);
 const slideName = ref('');
 const status = ref('1');

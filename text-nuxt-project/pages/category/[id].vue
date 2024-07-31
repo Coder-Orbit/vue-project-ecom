@@ -4,35 +4,31 @@ import FileUpload from 'primevue/fileupload';
 import Fieldset from 'primevue/fieldset';
 
 
-//Get Toast
-const toast = useToast();
+
 //Define Page Meta
 definePageMeta({
     layout: "dashboard",
-    middleware: ['auth'],
+    middleware: "auth",
 })
-//Get Category Store
-const categoryStore = useCategoryStore();
-//Loading State
-const isLoading = ref(false);
-
-//Get Reactive Data
-const CategoryName = ref('');
-const Commission = ref('');
-const CommissionType = ref('fixed');
-const Status = ref(1);
-const CategoryIcon = ref('');
-const CategoryBanner = ref('');
-const CategoryThumbnail = ref('');
-const Description = ref('');
-const selectedCategory = ref('');
+// Initialize router and route
+const router = useRouter();
+//Initialize Store
+const CategoryStore = useCategoryStore();
+const Category = ref({});
+const allCategories = ref([]);
+// Extra fields
 const extraProps = ref([]);
-const extraFields = ref([
-    {
-        fieldName: "",
-        fieldValue: "",
-    },
-]);
+const extraFields = ref([]);
+const loading = ref('Stop');
+const toast = useToast();
+// Assume you have a dynamic route with the slide ID
+const Id = router.currentRoute.value.params.id;
+//All Slide data
+const slideIcon = ref('');
+const slideBanner = ref('');
+const slideThumbnail = ref('');
+
+
 
 // Add extra field function goes here
 const addMoreField = () => {
@@ -47,97 +43,73 @@ const addMoreField = () => {
 const removeMoreField = (index) => {
     extraFields.value.splice(index, 1);
 }
-
-// Categories Ref
-const categories = ref([]);
-
-// Fetch Categories before Mount
-onBeforeMount(async () => {
- await categoryStore.getCategoryList();
- categories.value = categoryStore.CategoryList.data.map((category) => ({
-    name: category.name,
-    code: category.unique_id,
-  }));
-});
-
-// File Upload
+//handle File Upload
 const handleFileUpload = (event, type) => {
-    const file = event.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            if (type === 'icon') CategoryIcon.value = reader.result;
-            if (type === 'banner') CategoryBanner.value = reader.result;
-            if (type === 'thumbnail') CategoryThumbnail.value = reader.result;
-        };
-        reader.readAsDataURL(file);
-    }
+  const file = event.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (type === 'icon') slideIcon.value = reader.result;
+      if (type === 'banner') slideBanner.value = reader.result;
+      if (type === 'thumbnail') slideThumbnail.value = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
-const dataSubmit = async () => {
-    extraFields.value.forEach((item, index) => {
-        extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
-    })
-
-    isLoading.value = true;
+const categories = ref([
+    { name: `allCate`, code: 'AU' },
+]);
+//onMounted get Spesific Data
+onMounted(async () => {
+    loading.value = 'Success';
     try {
-        const data = {
-            name: CategoryName.value,
-            category: selectedCategory.value,
-            icon: CategoryIcon.value,
-            banner: CategoryBanner.value,
-            thumbnail: CategoryThumbnail.value,
-            description: Description.value,
-            commission: Commission.value,
-            commission_type: CommissionType.value,
-            status: Status.value,
-            extra_props: extraProps.value
-        }
-        console.log(data);
-        const result = await categoryStore.addCategory(data);
-        if (result.success) {
-            toast.add({
-                severity: 'success',
-                summary: 'Category Created',
-                detail: result.message || 'Category was created successfully.',
-                life: 3000,
-            });
-
-            //router.push('/Category');
-
-        } else {
-            toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: result.message || 'An error occurred.',
-                life: 3000,
-            });
+        const data = await CategoryStore.getSingleCategory(Id);
+        Category.value = data.data;
+        console.log(Category.value);
+        if (data.data.extend_props) {
+            extraFields.value = Object.entries(data.data.extend_props).map(([key, value]) => ({
+                fieldName: key,
+                fieldValue: value,
+            }));
         }
     } catch (error) {
+        console.error(error);
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'An unexpected error occurred.',
+            detail: 'Failed to load Category data.',
             life: 3000,
         });
-        console.error(error);
     } finally {
-        isLoading.value = false;
+        loading.value = 'Stop';
     }
+});
 
+//Data Submit
+const dataSubmit = () => {
+
+    extraFields.value.forEach((item, index) => {
+
+        extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
+        console.log(item)
+    })
+
+    console.log(extraProps)
 }
 
 </script>
 <template>
     <NuxtLayout :name="layout">
         <Toast />
-        <spiner v-if="isLoading" />
+        <Spiner v-if="loading === 'Success'" />
         <div class="w-full px-3 mt-1">
 
             <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
+                <!--Header-->
                 <div class="flex w-full justify-between  bg-gray-400 text-white">
 
-                    <div class="font-semibold mt-1 ml-3">Create Category</div>
+                    <div class="font-semibold mt-1 ml-3">Edit Category</div>
                     <div class="font-semibold ml-1 flex">
                         <button @click="$router.back()"
                             class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-tr-sm">
@@ -152,12 +124,10 @@ const dataSubmit = async () => {
                     <div class="flex w-full justify-center">
                         <div class="w-1/2">
                             <form @submit.prevent="dataSubmit">
-
-                                <!-- Category Name -->
                                 <div class="grid grid-cols-2 gap-2">
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Category Name</label>
-                                        <input type="text" v-model="CategoryName"
+                                        <input type="text" v-model="Category.name"
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
                                             placeholder="Category Name" />
                                     </div>
@@ -182,12 +152,11 @@ const dataSubmit = async () => {
 
 
 
-                                        }" v-model="selectedCategory" editable :options="categories" filter
-                                            optionLabel="name" optionValue="name" placeholder="Select a Category" />
+                                        }" v-model="Category.category" editable :options="categories" filter optionLabel="name"
+                                            placeholder="Select a City" />
                                     </div>
                                 </div>
 
-                                <!-- File Upload -->
                                 <div class="grid grid-cols-3 gap-2 mt-2">
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Category Icon</label>
@@ -197,8 +166,7 @@ const dataSubmit = async () => {
                                             },
 
 
-                                        }" mode="basic" name="icon" accept="image/*"
-                                            @select="(event) => handleFileUpload(event, 'icon')" />
+                                        }" mode="basic" name="icon" accept="image/*" />
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Category Banner</label>
@@ -208,8 +176,7 @@ const dataSubmit = async () => {
                                             },
 
 
-                                        }" mode="basic" name="banner" accept="image/*"
-                                            @select="(event) => handleFileUpload(event, 'banner')" />
+                                        }" mode="basic" name="banner" accept="image/*" />
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Category Thumbnail</label>
@@ -219,8 +186,7 @@ const dataSubmit = async () => {
                                             },
 
 
-                                        }" mode="basic" name="thumbnail" accept="image/*"
-                                            @select="(event) => handleFileUpload(event, 'thumbnail')" />
+                                        }" mode="basic" name="thumbnail" accept="image/*" />
                                     </div>
                                 </div>
 
@@ -228,13 +194,13 @@ const dataSubmit = async () => {
                                 <div class="grid grid-cols-3 gap-2 mt-2">
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Commission</label>
-                                        <input type="number" v-model="Commission"
+                                        <input type="number" v-model="Category.commission"
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
                                             placeholder="Commission" />
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Commission Type</label>
-                                        <select v-model="CommissionType" name="commission_type" id="commission_type"
+                                        <select name="commission_type" id="commission_type" v-model="Category.commission_type"
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                                             <option value="fixed"> Fixed</option>
                                             <option value="parcentage"> Parcentage</option>
@@ -242,7 +208,7 @@ const dataSubmit = async () => {
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Status</label>
-                                        <select v-model="Status" name="status" id="commission_type"
+                                        <select name="status" id="commission_type" v-model="Category.status"
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                                             <option value="1"> Active</option>
                                             <option value="0"> Inactive</option>
@@ -302,24 +268,15 @@ const dataSubmit = async () => {
 
                                 </div>
 
-                                <!--Description-->
+
                                 <div class="w-full mt-1">
                                     <label for="dd-city" class="text-sm w-full">Description</label>
-                                    <textarea v-model="Description" placeholder="Write in Details..." class="w-full p-2 border rounded-md"></textarea>
+                                    <textarea v-model="Category.description" class="w-full border rounded-md"></textarea>
                                 </div>
 
-                                <!--Submit Button-->
                                 <div class="place-content-end flex w-full">
-                                    <button :disabled="isLoading === true"
-                                        class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4"
-                                        type="submit">
-                                        <div v-if="isLoading === false">
-                                            Add <Icon name="fa-solid:paper-plane"></Icon>
-                                        </div>
-                                        <div v-else>
-                                            Loading... <Icon name="fa-solid:paper-plane"></Icon>
-                                        </div>
-                                    </button>
+                                    <button class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4"
+                                        type="submit">Update <Icon name="fa-solid:paper-plane"></Icon></button>
                                 </div>
 
 

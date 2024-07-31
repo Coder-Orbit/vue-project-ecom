@@ -1,6 +1,5 @@
 export const useCategoryStore = defineStore("category", {
     state: () => ({
-        status: null,
         loading: false,
         CategoryList: [],
         categories: [],
@@ -57,7 +56,8 @@ export const useCategoryStore = defineStore("category", {
             const app_token = useTokenStore().getToken;
             this.loading = true;
             try {
-                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category?page=${page}&limit_per_page=${this.pagination.perPage}`, {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category?relative=categories&page=${page}&limit_per_page=${this.pagination.perPage}`, {
+                    method: 'GET',
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
@@ -65,21 +65,16 @@ export const useCategoryStore = defineStore("category", {
                     },
                 });
                 const data = await res.json();
-                if (data && data.status === "Success") {
-                    this.CategoryList = data.data;
-                    this.pagination.currentPage = data.meta.current_page;
-                    this.pagination.totalPages = data.meta.total_pages;
-                    this.pagination.totalItems = data.meta.total_items;
-                    this.pagination.links = data.links;
-                    this.loading = false;
-                } else {
-                    this.loading = false;
-                    this.status = data.message;
-                }
+                console.log(data);
+                this.categories = data.data;
+                this.pagination.currentPage = data.current_page;
+                this.pagination.totalPages = data.last_page;
+                this.pagination.totalItems = data.total;
+                this.pagination.links = data.links;
             } catch (error) {
                 console.log(error);
+            } finally {
                 this.loading = false;
-                this.status = 'An error occurred during login';
             }
         },
         // Delete Category In "/category" Page
@@ -98,7 +93,7 @@ export const useCategoryStore = defineStore("category", {
                     },
                 });
                 const data = await res.json();
-                if (data && data.status === "Success") {
+                if (data === "Success") {
                     return { success: true };
                 } else {
                     return { success: false, message: 'Invalid credentials' };
@@ -108,6 +103,7 @@ export const useCategoryStore = defineStore("category", {
                 return { success: false, message: 'An error occurred during login' };
             }
         },
+
         // Get Category List In "/category/" Page
         async getCategoryList() {
             const config = useRuntimeConfig();
@@ -115,15 +111,14 @@ export const useCategoryStore = defineStore("category", {
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
             try {
-                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category`, {
+                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category`, {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${app_token}`,
                     },
                 });
-                const data = await res.json();
-                this.categories = data.data;
+                this.CategoryList = data;
             } catch (error) {
                 console.log(error);
             }
