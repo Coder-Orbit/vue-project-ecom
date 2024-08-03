@@ -28,11 +28,6 @@ export const useCategoryStore = defineStore("category", {
             const app_token = useTokenStore().getToken;
             const formData = {
                 categoryData,
-                "validation": {
-                    "roles": {
-                        "name": "required",
-                    },
-                },
             };
             try {
                 const res = await fetch(`${EndPoint}/admin/${MasterKey}/category`, {

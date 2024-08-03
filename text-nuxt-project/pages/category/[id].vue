@@ -28,6 +28,14 @@ const slideIcon = ref('');
 const slideBanner = ref('');
 const slideThumbnail = ref('');
 
+// Fetch Categories before Mount
+onBeforeMount(async () => {
+ await CategoryStore.getCategoryList();
+ allCategories.value = CategoryStore.CategoryList.data.map((category) => ({
+    name: category.name,
+    code: category.unique_id,
+  }));
+});
 
 
 // Add extra field function goes here
@@ -90,12 +98,9 @@ onMounted(async () => {
 const dataSubmit = () => {
 
     extraFields.value.forEach((item, index) => {
-
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
-        console.log(item)
     })
 
-    console.log(extraProps)
 }
 
 </script>
@@ -152,8 +157,8 @@ const dataSubmit = () => {
 
 
 
-                                        }" v-model="Category.category" editable :options="categories" filter optionLabel="name"
-                                            placeholder="Select a City" />
+                                        }" v-model="Category.category" editable :options="allCategories" filter optionLabel="name"
+                                            optionValue="name" placeholder="Select a City" />
                                     </div>
                                 </div>
 

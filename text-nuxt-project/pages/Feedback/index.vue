@@ -1,38 +1,77 @@
 <script setup>
-    import InputGroup from 'primevue/inputgroup';
-    import InputGroupAddon from 'primevue/inputgroupaddon';
-    import Sidebar from 'primevue/sidebar';
-    import TabMenu from 'primevue/tabmenu';
+import InputGroup from 'primevue/inputgroup';
+import Sidebar from 'primevue/sidebar';
+//Define Page Meta
+definePageMeta({
+    layout: "dashboard",
+    middleware: ['auth'],
+});
 
+//Define Store
+const feedbackStore = useFeedbackStore();
+const feedbackData = computed(()=> feedbackStore.feedbacks);
+const pagination = computed(() => feedbackStore.pagination);
+//For Loading Component
+const isLoading = ref('success');
+//For Right Side Filter
+const visibleRight = ref(false);
+// Initialize Toast
+const toast = useToast();
+//Pagination Initial PageNumber
+const pageNumber = ref(1);
 
-    import { ref } from "vue";
+// On Load or Reload Get New Updated Data
+const loadFeedbacks = async () => {
+    isLoading.value = 'Loading';
+    await feedbackStore.getAllFeedbacks(pageNumber.value, feedbackStore.pagination.perPage);
+    feedbackData.value = feedbackStore.feedbacks;
+    console.log(feedbackData.value)
+    isLoading.value = 'success';
+};
 
-    const items = ref([
-        { label: 'Dashboard', icon: 'pi pi-home' },
-        { label: 'Transactions', icon: 'pi pi-chart-line' },
-        { label: 'Products', icon: 'pi pi-list' },
-        { label: 'Messages', icon: 'pi pi-inbox' }
-    ]);
+// Ensure data is loaded before the component mounts
+onBeforeMount(async () => {
+    await loadFeedbacks();
+});
 
-
-    const router = useRouter();
-    definePageMeta({
-        layout: "dashboard",
-        middleware: ['auth'],
-    })
-
-    const visibleRight = ref(false);
-    
-
-
+    // Watch for changes in the store Coupon and update CouponData accordingly
+    watch(
+        () => feedbackStore.feedbacks,
+        (newFeedback) => {
+            feedbackData.value = newFeedback;
+        }
+    );
+    // Watch PageNumber Change
+    watch(pageNumber,async (newPage) => {
+        isLoading.value = 'loading';
+        await feedbackStore.getAllFeedbacks(newPage, pagination.value.perPage);
+        isLoading.value = 'success';
+    });
+    // OnPage Change Get New Data
+    const onPageChange = (newPage) => {
+        pageNumber.value = newPage;
+        feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+    };
+    // On Search Get New Coupon Data
+    const handleSearch = () => {
+        pageNumber.value = 1;
+        feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+    };
+    // On Apply Filter Get New Coupon Data
+    const goToPage = (page) => {
+        if (page > 0 && page <= pagination.value.totalPages) {
+            pageNumber.value = page;
+            feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+        }
+    };
 </script>
 <template>
     <NuxtLayout :name="layout">
+        <Toast/>
+        <Spiner :loading = isLoading />
             <div class="w-full px-3 mt-1">
-
-                
-
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
+                    <!-- Header goes here -->
                     <div class="flex w-full justify-between bg-gray-400 text-white">
                         
                         <div class="font-semibold mt-1 ml-3">All Feedbacks</div>
@@ -50,9 +89,11 @@
                         
                     </div>
 
+
                     <!-- Table list goes here -->
                     <div class=" h-[calc(100vh-10.4rem)] overflow-y-auto border-b px-3 pt-3">
                         <table class=" w-full table-auto">
+                            <!--Table header -->
                             <thead>
                                 <tr class="w-full bg-gray-300 text-sm">
                                     <th class="p-1 text-left text-sm w-8">SL</th>
@@ -64,127 +105,48 @@
                                     <th class="p-1 text-center w-24">...</th>
                                 </tr>
                             </thead>
+                            <!--Table Body-->
                             <tbody>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">120001</td>
-                                    <td class="p-1 text-left text-xs">129555</td>
-                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve,T-shirt, Short Sleeve</td>
+                                <tr v-for="review in feedbackData.data" :key="review.id" class="bg-white odd:bg-gray-100">
+                                    <td class="p-1 text-center text-xs">{{ review.id }}</td>
+                                    <td class="p-1 text-left text-xs">{{ review.customer.name }}</td>
+                                    <td class="p-1 text-left text-xs">{{review.product_id}}</td>
+                                    <td class="p-1 text-left text-xs">{{ review.comments }}</td>
                                     <td class="p-1 text-left text-xs">
-                                        <div class="flex">
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-gray-400" />
-                                        </div>
+                                        <StarRating :rating="review.rattings" />
                                     </td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class="rounded-md mx-1 bg-green-500 p-1 text-white" title="Edit"><Icon name="material-symbols:check" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">120001</td>
-                                    <td class="p-1 text-left text-xs">129555</td>
-                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve,T-shirt, Short Sleeve</td>
                                     <td class="p-1 text-left text-xs">
-                                        <div class="flex">
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-gray-400" />
-                                        </div>
+                                        <label class="relative inline-flex cursor-pointer items-center">
+                                            <input id="switch" type="checkbox" class="peer sr-only" />
+                                            <label for="switch" class="hidden"></label>
+                                            <div class="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-red-800 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
+                                        </label>
                                     </td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class="rounded-md mx-1 bg-green-500 p-1 text-white" title="Edit"><Icon name="material-symbols:check" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">120001</td>
-                                    <td class="p-1 text-left text-xs">129555</td>
-                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve,T-shirt, Short Sleeve</td>
-                                    <td class="p-1 text-left text-xs">
-                                        <div class="flex">
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-gray-400" />
-                                        </div>
-                                    </td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class="rounded-md mx-1 bg-green-500 p-1 text-white" title="Edit"><Icon name="material-symbols:check" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">120001</td>
-                                    <td class="p-1 text-left text-xs">129555</td>
-                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve,T-shirt, Short Sleeve</td>
-                                    <td class="p-1 text-left text-xs">
-                                        <div class="flex">
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-gray-400" />
-                                        </div>
-                                    </td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class="rounded-md mx-1 bg-green-500 p-1 text-white" title="Edit"><Icon name="material-symbols:check" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
-                                    </td>
-                                </tr>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">120001</td>
-                                    <td class="p-1 text-left text-xs">129555</td>
-                                    <td class="p-1 text-left text-xs">T-shirt, Short Sleeve,T-shirt, Short Sleeve</td>
-                                    <td class="p-1 text-left text-xs">
-                                        <div class="flex">
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-yellow-400" />
-                                            <Icon name="mdi:star" width="1.4em" height="1.4em" class="text-gray-400" />
-                                        </div>
-                                    </td>
-                                    <td class="p-1 text-left text-xs">Active</td>
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class="rounded-md mx-1 bg-green-500 p-1 text-white" title="Edit"><Icon name="material-symbols:check" width="1.4em" height="1.4em" /></div>
-                                        <button class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                    <td class="p-1 text-center text-xs flex justify-center">
+                                        <div class="rounded-md mx-1 bg-green-500 p-1 cursor-pointer text-white" title="Edit"><Icon name="material-symbols:edit" width="1.4em" height="1.4em" /></div>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="order_title text-sm flex justify-between h-full ">
-                        <div class="mt-[2px] ml-3 ">
+
+                    <!-- Table Footer-->
+                    <div class="order_title text-sm flex justify-between h-full">
+                        <!-- Search Box -->
+                        <div class="mt-[2px] ml-3">
                             <InputGroup>
-                                <input type="number" class="border border-r-0 p-1 focus:outline-none"  placeholder="Pagen Number" />
-                                <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" />
+                            <input type="number" v-model="pageNumber" @keyup.enter="goToPage(pageNumber)" class="border border-r-0 p-1 focus:outline-none" placeholder="Page Number" />
+                            <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" @click="goToPage(pageNumber)" />
                             </InputGroup>
                         </div>
-                        <div class="flex -mt-1">
-                            <a class="p-2 mt-1 text-black " href="#">&laquo;</a>
-                            <a class="p-1 px-2 mt-1 border-t-4 border-red-500 text-red-500" href="#">1</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">2</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">3</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">4</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">5</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">...</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">6</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">&raquo;</a>
+                        <!-- Pagination -->
+                        <div class="pt-2">
+                            <Pagination
+                            :currentPage="pageNumber"
+                            :totalPages="pagination.totalPages"
+                            :links="pagination.links"
+                            @paginate="onPageChange"
+                            />
                         </div>
                     </div>
                 </div>
