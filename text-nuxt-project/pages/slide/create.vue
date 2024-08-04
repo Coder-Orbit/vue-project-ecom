@@ -2,16 +2,19 @@
 import { useToast } from 'primevue/usetoast';
 const router = useRouter();
 
+//Define Page Meta
 definePageMeta({
   layout: 'dashboard',
   middleware: 'auth',
 });
-
+//Toast
 const toast = useToast();
+//Extra Props
 const extraProps = ref([]);
 const extraFields = ref([
   { fieldName: '', fieldValue: '' },
 ]);
+//Reactive Varrialbes
 const slideName = ref('');
 const status = ref('1');
 const description = ref('');
@@ -20,15 +23,15 @@ const slideBanner = ref('');
 const slideThumbnail = ref('');
 const store = useSlideStore();
 const isLoading = ref(false);
-
+//Add More Field
 const addMoreField = () => {
   extraFields.value.push({ fieldName: '', fieldValue: '' });
 };
-
+//Remove More Field
 const removeMoreField = (index) => {
   extraFields.value.splice(index, 1);
 };
-
+//File Upload
 const handleFileUpload = (event, type) => {
   const file = event.files[0];
   if (file) {
@@ -41,7 +44,7 @@ const handleFileUpload = (event, type) => {
     reader.readAsDataURL(file);
   }
 };
-
+//Data Submit
 const dataSubmit = async () => {
   extraProps.value = extraFields.value.reduce((props, item) => {
     props[item.fieldName] = item.fieldValue;
@@ -65,10 +68,12 @@ const dataSubmit = async () => {
         severity: 'success',
         summary: 'Slide Created',
         detail: result.message || 'Slide was created successfully.',
-        life: 3000,
+        life: 2000,
       });
-
-      router.push('/slide');
+      //Redirect to Slide Page
+      setTimeout(() => {
+        router.push('/slide')
+      }, 2000);
 
     } else {
       toast.add({
@@ -99,6 +104,7 @@ const dataSubmit = async () => {
     <Spiner :loading="isLoading ? 'loading' : 'success'"/>
     <div class="w-full px-3 mt-1">
         <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
+        <!--Page header-->
             <div class="flex w-full justify-between bg-gray-400 text-white">
                 <div class="font-semibold mt-1 ml-3">Create Slide</div>
                 <div class="font-semibold ml-1 flex">
@@ -107,10 +113,12 @@ const dataSubmit = async () => {
                     </button>
                 </div>
             </div>
+            <!--Form Ipnput-->
             <div class="h-[calc(100vh-8rem)] overflow-y-auto border-b px-3 pt-2">
                 <div class="flex w-full justify-center">
                     <div class="w-1/2">
                         <form @submit.prevent="dataSubmit">
+                            <!--Name And Status-->
                             <div class="grid grid-cols-2 gap-2">
                                 <div class="w-full">
                                     <label for="slide-name" class="text-sm w-full">Slide Name</label>
@@ -124,6 +132,7 @@ const dataSubmit = async () => {
                                     </select>
                                 </div>
                             </div>
+                            <!--File Upload-->
                             <div class="grid grid-cols-3 gap-2 mt-2">
                                 <div class="w-full">
                                     <label for="slide-icon" class="text-sm w-full">Slide Icon</label>
@@ -150,12 +159,14 @@ const dataSubmit = async () => {
                                     }" mode="basic" name="thumbnail" accept="image/*" @select="(event) => handleFileUpload(event, 'thumbnail')"/>
                                 </div>
                             </div>
+                            <!--Description-->
                             <div class="grid grid-cols-1 gap-2 mt-2">
                                 <div class="w-full">
                                     <label for="description" class="text-sm w-full">Description</label>
                                     <textarea v-model="description" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Description"></textarea>
                                 </div>
                             </div>
+                            <!--Extra Props-->
                             <div class="grid grid-col gap-2 mt-2">
                                 <Fieldset legend="Extra Props" :pt="{
                                     root: { class: 'border p-2' },
@@ -185,6 +196,7 @@ const dataSubmit = async () => {
                                     </div>
                                 </Fieldset>
                             </div>
+                            <!--Submit Button-->
                             <div class="place-content-end flex w-full">
                                 <button :disabled="isLoading === true" class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">
                                     <div v-if="isLoading === false">

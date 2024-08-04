@@ -54,7 +54,7 @@ watch(
 );
 
 // Watch PageNumber Change
-watch(pageNumber,async (newPage) => {
+watch(pageNumber, async (newPage) => {
   isLoading.value = 'loading';
   await store.getAllSlides(newPage, pagination.value.perPage);
   isLoading.value = 'success';
@@ -110,22 +110,25 @@ const openDeleteModal = (slideId) => {
 <template>
   <NuxtLayout :name="layout">
     <!-- Loading Indicator -->
-    <Spiner :loading="isLoading"/>
+    <Spiner :loading="isLoading" />
     <div class="w-full px-3 mt-1">
       <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
         <!-- Header with Back, Filter, and Add Buttons -->
         <div class="flex w-full justify-between bg-gray-400 text-white">
           <div class="font-semibold mt-1 ml-3">Slides</div>
           <div class="font-semibold ml-1 flex">
-            <button @click="$router.back()" :disabled="pageNumber === 1" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
+            <button @click="$router.back()" :disabled="pageNumber === 1"
+              class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
               <Icon name="gg:arrow-left-o"></Icon>
               Back
             </button>
-            <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm" @click="visibleRight = true">
+            <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm"
+              @click="visibleRight = true">
               <Icon name="iconoir:filter-solid"></Icon>
               Filter
             </button>
-            <NuxtLink to="slide/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
+            <NuxtLink to="slide/create"
+              class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
               <Icon name="zondicons:add-outline"></Icon>
               Add
             </NuxtLink>
@@ -166,9 +169,9 @@ const openDeleteModal = (slideId) => {
                 <!-- Status -->
                 <td class="p-1 text-left text-xs">{{ slide.status === '1' ? 'Active' : 'Inactive' }}</td>
                 <!-- Created Date -->
-                <td class="p-1 text-left text-xs">{{  dateMonthFunction(slide.created_at)  }}</td>
+                <td class="p-1 text-left text-xs">{{ dateMonthFunction(slide.created_at) }}</td>
                 <!-- Created By -->
-                <td class="p-1 text-center text-xs">{{ slide.created_by =='1' ? "Admin":"Majedul Islam" }}</td>
+                <td class="p-1 text-center text-xs">{{ slide.created_by == '1' ? "Admin" : "Majedul Islam" }}</td>
                 <!-- Actions -->
                 <td class="p-1 text-center text-xs flex">
                   <div class="rounded-md bg-cyan-400 p-1 text-white" title="View">
@@ -179,7 +182,8 @@ const openDeleteModal = (slideId) => {
                       <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                     </NuxtLink>
                   </div>
-                  <Button @click="openDeleteModal(slide.id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete">
+                  <Button @click="openDeleteModal(slide.id)" class="rounded-md bg-red-600 p-1 text-white"
+                    title="Delete">
                     <Icon name="bxs:trash" width="1.4em" height="1.4em" />
                   </Button>
                 </td>
@@ -193,18 +197,16 @@ const openDeleteModal = (slideId) => {
           <!-- Search Box -->
           <div class="mt-[2px] ml-3">
             <InputGroup>
-              <input type="number" v-model="pageNumber" @keyup.enter="goToPage(pageNumber)" class="border border-r-0 p-1 focus:outline-none" placeholder="Page Number" />
-              <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" @click="goToPage(pageNumber)" />
+              <input type="number" v-model="pageNumber" @keyup.enter="goToPage(pageNumber)"
+                class="border border-r-0 p-1 focus:outline-none" placeholder="Page Number" />
+              <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000"
+                @click="goToPage(pageNumber)" />
             </InputGroup>
           </div>
           <!-- Pagination -->
           <div class="pt-2">
-            <Pagination
-              :currentPage="pageNumber"
-              :totalPages="pagination.totalPages"
-              :links="pagination.links"
-              @paginate="onPageChange"
-            />
+            <Pagination :currentPage="pageNumber" :totalPages="pagination.totalPages" :links="pagination.links"
+              @paginate="onPageChange" />
           </div>
         </div>
 
@@ -212,18 +214,23 @@ const openDeleteModal = (slideId) => {
         <Sidebar v-model:visible="visibleRight" header="Slide Filter" position="right">
           <div class="w-full">
             <label for="slideName" class="text-sm w-full">Slide Name</label>
-            <input type="text" v-model="slideName" @input="handleSearch" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Slide Name" />
+            <input type="text" v-model="slideName" @input="handleSearch"
+              class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+              placeholder="Slide Name" />
           </div>
           <div class="w-full mt-2">
             <label for="status" class="text-sm w-full">Status</label>
-            <select v-model="status" @change="handleSearch" name="status" id="status" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+            <select v-model="status" @change="handleSearch" name="status" id="status"
+              class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
               <option value="">All</option>
               <option value="1">Active</option>
               <option value="0">Inactive</option>
             </select>
           </div>
           <div class="font-semibold flex mt-2 place-content-end">
-            <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md" @click="applyFilter">
+            <button
+              class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md"
+              @click="applyFilter">
               <Icon name="fluent:search-12-filled"></Icon>
               Search
             </button>
@@ -237,8 +244,10 @@ const openDeleteModal = (slideId) => {
             Are you sure you want to delete this slide?
           </span>
           <div class="flex justify-around">
-            <Button class="bg-yellow-600 text-red-100 px-4 py-2" type="button" label="Cancel" severity="secondary" @click="deleteModalVisible = false"></Button>
-            <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Delete" @click="handleDelete" :loading="deleteLoading"></Button>
+            <Button class="bg-yellow-600 text-red-100 px-4 py-2" type="button" label="Cancel" severity="secondary"
+              @click="deleteModalVisible = false"></Button>
+            <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Delete" @click="handleDelete"
+              :loading="deleteLoading"></Button>
           </div>
         </Dialog>
 
@@ -255,6 +264,7 @@ button.p-paginator-page.p-paginator-element.p-link.p-highlight {
   border-top: 3px solid #ef4444;
   border-radius: 0px;
 }
+
 .p-paginator.p-component {
   padding: 0px;
 }
