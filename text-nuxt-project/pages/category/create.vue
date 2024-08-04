@@ -4,6 +4,8 @@ import FileUpload from 'primevue/fileupload';
 import Fieldset from 'primevue/fieldset';
 
 
+//Define Router
+const router = useRouter();
 //Get Toast
 const toast = useToast();
 //Define Page Meta
@@ -56,7 +58,7 @@ onBeforeMount(async () => {
  await categoryStore.getCategoryList();
  categories.value = categoryStore.CategoryList.data.map((category) => ({
     name: category.name,
-    code: category.unique_id,
+    id: category.id,
   }));
 });
 
@@ -73,7 +75,7 @@ const handleFileUpload = (event, type) => {
         reader.readAsDataURL(file);
     }
 };
-
+//data
 const dataSubmit = async () => {
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
@@ -81,9 +83,9 @@ const dataSubmit = async () => {
 
     isLoading.value = true;
     try {
-        const data = {
+        const categoryData = {
             name: CategoryName.value,
-            category: selectedCategory.value,
+            parent_id: selectedCategory.value,
             icon: CategoryIcon.value,
             banner: CategoryBanner.value,
             thumbnail: CategoryThumbnail.value,
@@ -93,8 +95,9 @@ const dataSubmit = async () => {
             status: Status.value,
             extra_props: extraProps.value
         }
-        console.log(data);
-        const result = await categoryStore.addCategory(data);
+        console.log(categoryData);
+        const result = await categoryStore.addCategory(categoryData);
+        console.log(result);
         if (result.success) {
             toast.add({
                 severity: 'success',
@@ -103,7 +106,10 @@ const dataSubmit = async () => {
                 life: 3000,
             });
 
-            //router.push('/Category');
+            setTimeout(() => {
+                router.push('/category');
+            }, 2000);
+
 
         } else {
             toast.add({
@@ -182,8 +188,8 @@ const dataSubmit = async () => {
 
 
 
-                                        }" v-model="selectedCategory" editable :options="categories" filter
-                                            optionLabel="name" optionValue="name" placeholder="Select a Category" />
+                                        }" v-model="selectedCategory" editable :options="categories"
+                                            optionLabel="name" optionValue="id" placeholder="Select a Category" />
                                     </div>
                                 </div>
 

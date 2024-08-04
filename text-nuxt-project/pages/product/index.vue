@@ -192,7 +192,7 @@ const colors = ref([
                                 <td class="p-1 text-left text-xs">{{ product.stock }}</td>
                                 <td class="p-1 text-left text-xs">
                                     <span v-for="(category, index) in product?.categories" :key="index">
-                                        {{ category.name }}<span v-if="product?.categories.length > (index+1)">, </span>
+                                        {{ category.name }} <span v-if="product?.categories.length > (index+1)">, </span>
                                     </span>
                                 </td>
                                 <td class="p-1 text-left text-xs">{{ product.attributes.colors }}</td>

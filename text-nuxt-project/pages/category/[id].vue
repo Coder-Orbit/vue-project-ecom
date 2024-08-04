@@ -33,7 +33,7 @@ onBeforeMount(async () => {
  await CategoryStore.getCategoryList();
  allCategories.value = CategoryStore.CategoryList.data.map((category) => ({
     name: category.name,
-    code: category.unique_id,
+    id: category.id,
   }));
 });
 
@@ -158,7 +158,7 @@ const dataSubmit = () => {
 
 
                                         }" v-model="Category.category" editable :options="allCategories" filter optionLabel="name"
-                                            optionValue="name" placeholder="Select a City" />
+                                            optionValue="id" placeholder="Select a City" />
                                     </div>
                                 </div>
 

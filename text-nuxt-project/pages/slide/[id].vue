@@ -100,9 +100,11 @@ const dataSubmit = async () => {
             severity: 'success',
             summary: 'Slide Updated',
             detail: result.message || 'Slide updated successfully.',
-            life: 3000,
+            life: 2000,
         });
-        router.push('/slide');
+        setTimeout(() => {
+            router.push('/slide');
+        }, 2000);
         } else {
         toast.add({
             severity: 'error',

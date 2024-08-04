@@ -26,9 +26,7 @@ export const useCategoryStore = defineStore("category", {
             const EndPoint = config.public.baseURl;
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
-            const formData = {
-                categoryData,
-            };
+            const formData = categoryData;
             try {
                 const res = await fetch(`${EndPoint}/admin/${MasterKey}/category`, {
                     method: "POST",
@@ -38,13 +36,13 @@ export const useCategoryStore = defineStore("category", {
                         Authorization: `Bearer ${app_token}`,
                     },
                     body: JSON.stringify(formData),
-                    
                 });
                 const data = await res.json();
+                console.log(formData);
                 if (data && data[0] === "Success") {
-                    return { success: true };
+                    return { success: true, message: 'Category Added Successfully' };
                 } else {
-                    return { success: false, message: 'Invalid credentials' };
+                    return { success: false, message: 'Something is Wrong' };
                 }
             } catch (error) {
                 console.log(error);
@@ -97,7 +95,7 @@ export const useCategoryStore = defineStore("category", {
                 });
                 const data = await res.json();
                 if (data === "Success") {
-                    return { success: true };
+                    return { success: true, message: 'Category Deleted Successfully' };
                 } else {
                     return { success: false, message: 'Invalid credentials' };
                 }
@@ -106,7 +104,6 @@ export const useCategoryStore = defineStore("category", {
                 return { success: false, message: 'An error occurred during login' };
             }
         },
-
         // Get Category List In "/category/" Page
         async getCategoryList() {
             const config = useRuntimeConfig();
@@ -114,7 +111,7 @@ export const useCategoryStore = defineStore("category", {
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
             try {
-                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?limit_per_page=1000`, {
+                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?limit_per_page=10`, {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",

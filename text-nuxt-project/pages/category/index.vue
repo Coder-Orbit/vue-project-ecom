@@ -132,10 +132,10 @@
                                 <tr class="w-full bg-gray-300 text-sm">
                                     <th class="p-1 text-left text-sm w-8">SL</th>
                                     <th class="p-1 text-left text-sm w-12">Icon</th>
+                                    <th class="p-1 text-left text-sm">Parent Category</th>
                                     <th class="p-1 text-left text-sm">Category</th>
-                                    <th class="p-1 text-left text-sm">Comission</th>
-                                    <th class="p-1 text-left text-sm">Sub Category</th>
                                     <th class="p-1 text-left text-sm w-48">Description</th>
+                                    <th class="p-1 text-left text-sm">Comission</th>
                                     <th class="p-1 text-left">Status</th>
                                     <th class="p-1 text-left">Created Date</th>
                                     <th class="p-1 text-center">Created By</th>
@@ -153,14 +153,23 @@
                                     <td class="p-1 text-left text-xs">
                                         <img :src="category.icon" class="w-8 h-8" alt="icon" />
                                     </td>
-                                    <td class="p-1 text-left text-xs">{{category.name}}</td>
-                                    <!-- commission -->
-                                    <td class="p-1 text-left text-xs">{{ category.commission }}</td>
+                                    <td class="p-1 text-left text-xs">
+                                        {{category.name}}
+                                    </td>
                                     <!--Sub Category-->
-                                    <td class="p-1 text-left text-xs">-
+                                    <td class="p-1 text-left text-xs">
+
+                                        <span v-if="category.categories.length > 0">
+                                            <template v-for="(parentC, index) in category.categories" :key="parentC.id">
+                                                {{ parentC.name }}<span v-if="category?.categories.length > (index+1)">, </span>
+                                            </template>
+                                        </span>
+                                        <span v-else>-</span>
                                     </td>
                                     <!--Description-->
                                     <td class="p-1 text-left text-xs">{{ category.description }}</td>
+                                    <!-- commission -->
+                                    <td class="p-1 text-left text-xs">{{ category.commission }}</td>
                                     <!--Status-->
                                     <td class="p-1 text-left text-xs">{{ category.status === '1' ? 'Active' : 'Inactive' }}</td>
                                     <!--Created Date-->
