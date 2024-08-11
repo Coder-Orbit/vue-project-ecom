@@ -115,7 +115,7 @@ import { ref, onMounted } from "vue";
         const documentStyle = getComputedStyle(document.documentElement);
 
         return {
-            labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
             datasets: [
                 {
                     label: "This Week",
