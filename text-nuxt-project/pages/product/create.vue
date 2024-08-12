@@ -45,7 +45,7 @@
     const regular_price = ref('');
     const current_price = ref('');
     const dicount = ref(0);
-    const dicount_type = ref(1);
+    const discount_type = ref(1);
     const stock = ref('');
     const seoDescription = ref('');
     const seoTag = ref('');
@@ -342,7 +342,7 @@
             regular_price : regular_price.value,
             current_price : current_price.value,
             discount : dicount.value,
-            discount_type : dicount_type.value,
+            discount_type : discount_type.value,
 
             icon : icon.value,
             feature : feature.value,
