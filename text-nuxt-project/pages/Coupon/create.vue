@@ -100,17 +100,19 @@ const dataSubmit = async() => {
                 severity: 'success',
                 summary: 'Coupon Created',
                 detail: result.message || 'Coupon was created successfully.',
-                life: 3000,
+                life: 2000,
             });
 
-            //router.push('/Coupon');
+            setTimeout(() => {
+                router.push('/Coupon');
+            }, 2000);
 
         } else {
             toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: result.message || 'An error occurred.',
-                life: 3000,
+                life: 2000,
             });
         }
     } catch (error) {
@@ -118,7 +120,7 @@ const dataSubmit = async() => {
             severity: 'error',
             summary: 'Error',
             detail: 'An unexpected error occurred.',
-            life: 3000,
+            life: 2000,
         });
         console.error(error);
     } finally {

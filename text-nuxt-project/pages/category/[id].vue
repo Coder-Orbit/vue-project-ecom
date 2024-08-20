@@ -21,23 +21,31 @@ const extraProps = ref([]);
 const extraFields = ref([]);
 const loading = ref('Stop');
 const toast = useToast();
+//cat
+const selectedCategory = ref('')
 // Assume you have a dynamic route with the slide ID
 const Id = router.currentRoute.value.params.id;
 //All Slide data
-const slideIcon = ref('');
-const slideBanner = ref('');
-const slideThumbnail = ref('');
+const CategoryIcon = ref('');
+const CategoryBanner = ref('');
+const CategoryThumbnail = ref('');
 
 // Fetch Categories before Mount
 onBeforeMount(async () => {
  await CategoryStore.getCategoryList();
- allCategories.value = CategoryStore.CategoryList.data.map((category) => ({
+ allCategories.value = CategoryStore.CategoryList.map((category) => ({
     name: category.name,
     id: category.id,
   }));
 });
-
-
+//Fetch Categories on Input Change
+const OnInputChange = async () =>{
+    await CategoryStore.getFilteredCategoriList(selectedCategory.value);
+    allCategories.value = CategoryStore.CategoryList.data.map((category) => ({
+        name: category.name,
+        id: category.id,
+    }));
+}
 // Add extra field function goes here
 const addMoreField = () => {
     extraFields.value = [
@@ -57,17 +65,13 @@ const handleFileUpload = (event, type) => {
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
-      if (type === 'icon') slideIcon.value = reader.result;
-      if (type === 'banner') slideBanner.value = reader.result;
-      if (type === 'thumbnail') slideThumbnail.value = reader.result;
+      if (type === 'icon') CategoryIcon.value = reader.result;
+      if (type === 'banner') CategoryBanner.value = reader.result;
+      if (type === 'thumbnail') CategoryThumbnail.value = reader.result;
     };
     reader.readAsDataURL(file);
   }
 };
-
-const categories = ref([
-    { name: `allCate`, code: 'AU' },
-]);
 //onMounted get Spesific Data
 onMounted(async () => {
     loading.value = 'Success';
@@ -95,12 +99,30 @@ onMounted(async () => {
 });
 
 //Data Submit
-const dataSubmit = () => {
-
+const dataSubmit = async () => {
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
+    });
+    //from data
+    const CategoryData = reactive({
+        name: Category.value.name,
+        commission: Category.value.commission,
+        commission_type: Category.value.commission_type,
+        description: Category.value.description,
+        status: Category.value.status,
+        parent_id:selectedCategory.value,
+        icon: CategoryIcon.value,
+        banner: CategoryBanner.value,
+        thumbnail: CategoryThumbnail.value,
+        extend_props: extraProps.value,
     })
-
+    isLoading.value = true;
+    //Submit Data
+    try {
+        const result = await categoryStore.addCategory(categoryData);
+    } catch (error) {
+        
+    }
 }
 
 </script>
@@ -155,10 +177,8 @@ const dataSubmit = () => {
                                                 class: 'focus:bg-red-600'
                                             },
 
-
-
-                                        }" v-model="Category.category" editable :options="allCategories" filter optionLabel="name"
-                                            optionValue="id" placeholder="Select a City" />
+                                        }" v-model="selectedCategory" editable :options="allCategories" optionLabel="name" @change="OnInputChange"
+                                            optionValue="id" placeholder="Select a Category" />
                                     </div>
                                 </div>
 
@@ -171,7 +191,7 @@ const dataSubmit = () => {
                                             },
 
 
-                                        }" mode="basic" name="icon" accept="image/*" />
+                                        }" mode="basic" name="icon" accept="image/*" @select="(event) => handleFileUpload(event, 'icon')" />
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Category Banner</label>
@@ -181,7 +201,7 @@ const dataSubmit = () => {
                                             },
 
 
-                                        }" mode="basic" name="banner" accept="image/*" />
+                                        }" mode="basic" name="banner" accept="image/*" @select="(event) => handleFileUpload(event, 'banner')" />
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Category Thumbnail</label>
@@ -191,7 +211,7 @@ const dataSubmit = () => {
                                             },
 
 
-                                        }" mode="basic" name="thumbnail" accept="image/*" />
+                                        }" mode="basic" name="thumbnail" accept="image/*" @select="(event) => handleFileUpload(event, 'thumbnail')" />
                                     </div>
                                 </div>
 

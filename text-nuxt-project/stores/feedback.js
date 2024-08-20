@@ -42,5 +42,28 @@ export const useFeedbackStore = defineStore("feedback", {
                 console.log(error);
             }
         },
+        // Update Feedback In "/feedback" Page
+        async updateFeedback(feedbackData, id) {
+            const config = useRuntimeConfig();
+            const EndPoint = config.public.baseURl;
+            const MasterKey = config.public.masterToken;
+            const app_token = useTokenStore().getToken;
+            const fromData = feedbackData
+            try {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/feedbacks/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${app_token}`,
+                    },
+                    body: JSON.stringify(fromData),
+                });
+                const data = await res.json();
+                return data;
+            } catch (error) {
+                console.log(error);
+            }
+        },
     }
 });

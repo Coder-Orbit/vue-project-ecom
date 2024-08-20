@@ -84,7 +84,7 @@ export const useVendorStore = defineStore ("vendor",{
                     const MasterKey = config.public.masterToken;
                     const app_token = useTokenStore().getToken;
                     try {
-                        const res = await fetch(`${EndPoint}/admin/${MasterKey}/Vendor/${id}`, {
+                        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/Vendor/${id}`, {
                             method: "DELETE",
                             headers: {
                                 Accept: "application/json",
@@ -130,7 +130,7 @@ export const useVendorStore = defineStore ("vendor",{
                     const MasterKey = config.public.masterToken;
                     const app_token = useTokenStore().getToken;
                     try {
-                        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/vendor/${id}`, {
+                        const res = await fetch(`${EndPoint}/admin/${MasterKey}/vendor/${id}`, {
                             headers: {
                                 Accept: "application/json",
                                 "Content-Type": "application/json",
@@ -141,6 +141,7 @@ export const useVendorStore = defineStore ("vendor",{
                         return data;
                     } catch (error) {
                         console.log(error);
+                        return { success: false, message: 'An error occurred during Api Call' };
                     }
                 },
                 //Updated Vendor In "/Vendor/:id" Page
@@ -160,8 +161,7 @@ export const useVendorStore = defineStore ("vendor",{
                             },
                             body: JSON.stringify(formData),
                         });
-                        const data = await res.json();
-                        if (data && data[0] === "Success") {
+                        if (res === "Success") {
                             return { success: true, message: 'Vendor Updated Successfully' };
                         } else {
                             return { success: false, message: 'Something wrong on Request' };

@@ -1,18 +1,18 @@
 <script setup>
-import InputGroup from 'primevue/inputgroup';
-import Sidebar from 'primevue/sidebar';
+import InputGroup from "primevue/inputgroup";
+import Sidebar from "primevue/sidebar";
 //Define Page Meta
 definePageMeta({
-    layout: "dashboard",
-    middleware: ['auth'],
+  layout: "dashboard",
+  middleware: ["auth"],
 });
 
 //Define Store
 const feedbackStore = useFeedbackStore();
-const feedbackData = computed(()=> feedbackStore.feedbacks);
+const feedbackData = computed(() => feedbackStore.feedbacks);
 const pagination = computed(() => feedbackStore.pagination);
 //For Loading Component
-const isLoading = ref('success');
+const isLoading = ref("success");
 //For Right Side Filter
 const visibleRight = ref(false);
 // Initialize Toast
@@ -22,161 +22,262 @@ const pageNumber = ref(1);
 
 // On Load or Reload Get New Updated Data
 const loadFeedbacks = async () => {
-    isLoading.value = 'Loading';
-    await feedbackStore.getAllFeedbacks(pageNumber.value, feedbackStore.pagination.perPage);
-    feedbackData.value = feedbackStore.feedbacks;
-    console.log(feedbackData.value)
-    isLoading.value = 'success';
+  isLoading.value = "Loading";
+  await feedbackStore.getAllFeedbacks(
+    pageNumber.value,
+    feedbackStore.pagination.perPage
+  );
+  feedbackData.value = feedbackStore.feedbacks;
+  console.log(feedbackData.value);
+  isLoading.value = "success";
 };
 
 // Ensure data is loaded before the component mounts
 onBeforeMount(async () => {
-    await loadFeedbacks();
+  await loadFeedbacks();
 });
 
-    // Watch for changes in the store Coupon and update CouponData accordingly
-    watch(
-        () => feedbackStore.feedbacks,
-        (newFeedback) => {
-            feedbackData.value = newFeedback;
-        }
-    );
-    // Watch PageNumber Change
-    watch(pageNumber,async (newPage) => {
-        isLoading.value = 'loading';
-        await feedbackStore.getAllFeedbacks(newPage, pagination.value.perPage);
-        isLoading.value = 'success';
+// Watch for changes in the store Coupon and update CouponData accordingly
+watch(
+  () => feedbackStore.feedbacks,
+  (newFeedback) => {
+    feedbackData.value = newFeedback;
+  }
+);
+// Watch PageNumber Change
+watch(pageNumber, async (newPage) => {
+  isLoading.value = "loading";
+  await feedbackStore.getAllFeedbacks(newPage, pagination.value.perPage);
+  isLoading.value = "success";
+});
+// OnPage Change Get New Data
+const onPageChange = (newPage) => {
+  pageNumber.value = newPage;
+  feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+};
+// On Search Get New Coupon Data
+const handleSearch = () => {
+  pageNumber.value = 1;
+  feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+};
+// On Apply Filter Get New Coupon Data
+const goToPage = (page) => {
+  if (page > 0 && page <= pagination.value.totalPages) {
+    pageNumber.value = page;
+    feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+  }
+};
+//Status update
+const updateStatus = async (id, status, rattings, comments) => {
+  isLoading.value = "loading";
+
+  try {
+    const feedbackData = reactive({
+      status: status,
+      rattings: rattings,
+      comments: comments,
     });
-    // OnPage Change Get New Data
-    const onPageChange = (newPage) => {
-        pageNumber.value = newPage;
-        feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
-    };
-    // On Search Get New Coupon Data
-    const handleSearch = () => {
-        pageNumber.value = 1;
-        feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
-    };
-    // On Apply Filter Get New Coupon Data
-    const goToPage = (page) => {
-        if (page > 0 && page <= pagination.value.totalPages) {
-            pageNumber.value = page;
-            feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+    console.log(feedbackData);
+    const res =  await feedbackStore.updateFeedback(feedbackData, id);
+    if (res.msg === "feeback_update") {
+      toast.add({
+                severity: 'success',
+                summary: 'Feedback Updated',
+                detail: 'Feedback was Updated successfully.',
+                life: 2000,
+            });
+    }else {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'An error occurred.',
+                life: 2000,
+            });
         }
-    };
+  } catch (error) {
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'An unexpected error occurred.',
+            life: 2000,
+        });
+        console.error(error);
+    } finally {
+        isLoading.value = "success";
+    }
+};
+
 </script>
 <template>
-    <NuxtLayout :name="layout">
-        <Toast/>
-        <Spiner :loading = isLoading />
-            <div class="w-full px-3 mt-1">
-                <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
-                    <!-- Header goes here -->
-                    <div class="flex w-full justify-between bg-gray-400 text-white">
-                        
-                        <div class="font-semibold mt-1 ml-3">All Feedbacks</div>
-                        <div class="font-semibold ml-1 flex">
-                            <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
-                                <Icon name="gg:arrow-left-o"></Icon>
-                                Back
-                            </button>
+  <NuxtLayout :name="layout">
+    <Toast />
+    <Spiner :loading="isLoading" />
+    <div class="w-full px-3 mt-1">
+      <div
+        class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md"
+      >
+        <!-- Header goes here -->
+        <div class="flex w-full justify-between bg-gray-400 text-white">
+          <div class="font-semibold mt-1 ml-3">All Feedbacks</div>
+          <div class="font-semibold ml-1 flex">
+            <button
+              @click="$router.back()"
+              class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100"
+            >
+              <Icon name="gg:arrow-left-o"></Icon>
+              Back
+            </button>
 
-                            <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm " @click="visibleRight = true">
-                                <Icon name="iconoir:filter-solid"></Icon>
-                                Filter
-                            </button>
-                        </div>
-                        
-                    </div>
+            <button
+              class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm"
+              @click="visibleRight = true"
+            >
+              <Icon name="iconoir:filter-solid"></Icon>
+              Filter
+            </button>
+          </div>
+        </div>
 
+        <!-- Table list goes here -->
+        <div class="h-[calc(100vh-10.4rem)] overflow-y-auto border-b px-3 pt-3">
+          <table class="w-full table-auto">
+            <!--Table header -->
+            <thead>
+              <tr class="w-full bg-gray-300 text-sm">
+                <th class="p-1 text-left text-sm w-8">SL</th>
+                <th class="p-1 text-left text-sm">Customer Id</th>
+                <th class="p-1 text-left text-sm">Product Id</th>
+                <th class="p-1 text-left text-sm w-2/5">Comments</th>
+                <th class="p-1 text-left text-sm">Rattings</th>
+                <th class="p-1 text-left">Status</th>
+                <th class="p-1 text-center w-24">...</th>
+              </tr>
+            </thead>
+            <!--Table Body-->
+            <tbody>
+              <tr
+                v-for="review in feedbackData.data"
+                :key="review.id"
+                class="bg-white odd:bg-gray-100"
+              >
+              <!--Feedback Id-->
+                <td class="p-1 text-center text-xs">{{ review.id }}</td>
+                <!--Feedback Name-->
+                <td class="p-1 text-left text-xs">
+                  {{ review.customer.name }}
+                </td>
+                <!--Feedback ProductID-->
+                <td class="p-1 text-left text-xs">{{ review.product_id }}</td>
+                <!--Feedback Comments-->
+                <td class="p-1 text-left text-xs">{{ review.comments }}</td>
+                <!--Feedback Review-->
+                <td class="p-1 text-left text-xs">
+                  <StarRating :rating="review.rattings" />
+                </td>
+    <!-- Feedback Status -->
+    <td class="p-1 text-left text-xs">
+      <label class="relative inline-flex cursor-pointer items-center">
+        <input
+          id="switch"
+          type="checkbox"
+          class="peer sr-only"
+          :checked="review.status === 1"
+          @change="() => {
+            const newStatus = review.status === 1 ? 0 : 1;
+            updateStatus(review.id, newStatus, review.rattings, review.comments);
+          }"
+        />
+        <div
+          class="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-red-800 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"
+        ></div>
+      </label>
+    </td>
+                <!--Feedback Others-->
+                <td class="p-1 text-center text-xs flex justify-center">
+                  <div
+                    class="rounded-md mx-1 bg-green-500 p-1 cursor-pointer text-white"
+                    title="Edit"
+                  >
+                    <Icon
+                      name="material-symbols:edit"
+                      width="1.4em"
+                      height="1.4em"
+                    />
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-                    <!-- Table list goes here -->
-                    <div class=" h-[calc(100vh-10.4rem)] overflow-y-auto border-b px-3 pt-3">
-                        <table class=" w-full table-auto">
-                            <!--Table header -->
-                            <thead>
-                                <tr class="w-full bg-gray-300 text-sm">
-                                    <th class="p-1 text-left text-sm w-8">SL</th>
-                                    <th class="p-1 text-left text-sm ">Customer Id</th>
-                                    <th class="p-1 text-left text-sm">Product Id</th>
-                                    <th class="p-1 text-left text-sm w-2/5">Comments</th>
-                                    <th class="p-1 text-left text-sm">Rattings</th>
-                                    <th class="p-1 text-left">Status</th>
-                                    <th class="p-1 text-center w-24">...</th>
-                                </tr>
-                            </thead>
-                            <!--Table Body-->
-                            <tbody>
-                                <tr v-for="review in feedbackData.data" :key="review.id" class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">{{ review.id }}</td>
-                                    <td class="p-1 text-left text-xs">{{ review.customer.name }}</td>
-                                    <td class="p-1 text-left text-xs">{{review.product_id}}</td>
-                                    <td class="p-1 text-left text-xs">{{ review.comments }}</td>
-                                    <td class="p-1 text-left text-xs">
-                                        <StarRating :rating="review.rattings" />
-                                    </td>
-                                    <td class="p-1 text-left text-xs">
-                                        <label class="relative inline-flex cursor-pointer items-center">
-                                            <input id="switch" type="checkbox" class="peer sr-only" />
-                                            <label for="switch" class="hidden"></label>
-                                            <div class="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-red-800 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"></div>
-                                        </label>
-                                    </td>
-                                    <td class="p-1 text-center text-xs flex justify-center">
-                                        <div class="rounded-md mx-1 bg-green-500 p-1 cursor-pointer text-white" title="Edit"><Icon name="material-symbols:edit" width="1.4em" height="1.4em" /></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+        <!-- Table Footer-->
+        <div class="order_title text-sm flex justify-between h-full">
+          <!-- Search Box -->
+          <div class="mt-[2px] ml-3">
+            <InputGroup>
+              <input
+                type="number"
+                v-model="pageNumber"
+                @keyup.enter="goToPage(pageNumber)"
+                class="border border-r-0 p-1 focus:outline-none"
+                placeholder="Page Number"
+              />
+              <icon
+                class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer"
+                name="nonicons:go-16"
+                color="#000"
+                @click="goToPage(pageNumber)"
+              />
+            </InputGroup>
+          </div>
+          <!-- Pagination -->
+          <div class="pt-2">
+            <Pagination
+              :currentPage="pageNumber"
+              :totalPages="pagination.totalPages"
+              :links="pagination.links"
+              @paginate="onPageChange"
+            />
+          </div>
+        </div>
+      </div>
 
-                    <!-- Table Footer-->
-                    <div class="order_title text-sm flex justify-between h-full">
-                        <!-- Search Box -->
-                        <div class="mt-[2px] ml-3">
-                            <InputGroup>
-                            <input type="number" v-model="pageNumber" @keyup.enter="goToPage(pageNumber)" class="border border-r-0 p-1 focus:outline-none" placeholder="Page Number" />
-                            <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" @click="goToPage(pageNumber)" />
-                            </InputGroup>
-                        </div>
-                        <!-- Pagination -->
-                        <div class="pt-2">
-                            <Pagination
-                            :currentPage="pageNumber"
-                            :totalPages="pagination.totalPages"
-                            :links="pagination.links"
-                            @paginate="onPageChange"
-                            />
-                        </div>
-                    </div>
-                </div>
+      <Sidebar
+        v-model:visible="visibleRight"
+        header="Category Filter"
+        position="right"
+      >
+        <div class="w-full">
+          <label for="dd-city" class="text-sm w-full">Customer Id</label>
+          <input
+            type="text"
+            v-model="value"
+            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+            placeholder="Customer Id"
+          />
+        </div>
+        <div class="w-full mt-2">
+          <label for="dd-city" class="text-sm w-full">Status</label>
+          <select
+            name="status"
+            id="commission_type"
+            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+          >
+            <option value="1">Active</option>
+            <option value="0">Inactive</option>
+          </select>
+        </div>
 
-                <Sidebar v-model:visible="visibleRight" header="Category Filter" position="right">
-                    <div class="w-full">
-                        <label for="dd-city" class="text-sm w-full">Customer Id</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Customer Id"/>
-                    </div>
-                    <div class="w-full mt-2">
-                        <label for="dd-city" class="text-sm w-full">Status</label>
-                        <select name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
-                            <option value="1"> Active</option>
-                            <option value="0"> Inactive</option>
-                        </select>
-                    </div>
-
-                    <div class="font-semibold flex mt-2 place-content-end">
-                        
-
-                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="visibleRight = true">
-                            <Icon name="fluent:search-12-filled"></Icon>
-                            Search
-                        </button>
-                        
-                    </div>
-
-
-
-                </Sidebar>
-            </div>
-        </NuxtLayout>
+        <div class="font-semibold flex mt-2 place-content-end">
+          <button
+            class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md"
+            @click="visibleRight = true"
+          >
+            <Icon name="fluent:search-12-filled"></Icon>
+            Search
+          </button>
+        </div>
+      </Sidebar>
+    </div>
+  </NuxtLayout>
 </template>

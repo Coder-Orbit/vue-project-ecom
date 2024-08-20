@@ -94,7 +94,9 @@ const dataSubmit = async () => {
                 life: 3000,
             });
 
-            //router.push('/brand');
+            setTimeout(() => {
+                router.push('/Brand');
+            }, 2000);
 
         } else {
             toast.add({

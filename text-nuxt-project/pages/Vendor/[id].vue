@@ -58,7 +58,7 @@ onMounted(async () => {
     try {
         const data = await VendorStore.getSingleVendor(Id);
         Vendor.value = data.data;
-        console.log(Coupon.value);
+        console.log(Vendor.value);
        // Populate extraFields with the existing extend_props
        if (data.data.extend_props) {
             extraFields.value = Object.entries(data.data.extend_props).map(([key, value]) => ({
@@ -71,8 +71,8 @@ onMounted(async () => {
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: 'Failed to load Coupon data.',
-            life: 3000,
+            detail: data.message ||'Failed to load Coupon data.',
+            life: 2000,
         });
     } finally {
         loading.value = 'Stop';
@@ -152,7 +152,7 @@ onMounted(async () => {
                     <div class="grid grid-cols-2 gap-2">
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Vendor Name</label>
-                            <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
+                            <input type="text" v-model="Vendor.name" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Status</label>

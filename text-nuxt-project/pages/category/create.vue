@@ -56,11 +56,19 @@ const categories = ref([]);
 // Fetch Categories before Mount
 onBeforeMount(async () => {
  await categoryStore.getCategoryList();
- categories.value = categoryStore.CategoryList.data.map((category) => ({
+ categories.value = categoryStore.CategoryList.map((category) => ({
     name: category.name,
     id: category.id,
   }));
 });
+
+const OnInputChange = async () =>{
+    await categoryStore.getFilteredCategoriList(selectedCategory.value);
+    categories.value = categoryStore.CategoryList.data.map((category) => ({
+        name: category.name,
+        id: category.id,
+    }));
+}
 
 // File Upload
 const handleFileUpload = (event, type) => {
@@ -95,9 +103,7 @@ const dataSubmit = async () => {
             status: Status.value,
             extra_props: extraProps.value
         }
-        console.log(categoryData);
         const result = await categoryStore.addCategory(categoryData);
-        console.log(result);
         if (result.success) {
             toast.add({
                 severity: 'success',
@@ -189,7 +195,7 @@ const dataSubmit = async () => {
 
 
                                         }" v-model="selectedCategory" editable :options="categories"
-                                            optionLabel="name" optionValue="id" placeholder="Select a Category" />
+                                            optionLabel="name" @change="OnInputChange()" optionValue="id" placeholder="Select a Category" />
                                     </div>
                                 </div>
 

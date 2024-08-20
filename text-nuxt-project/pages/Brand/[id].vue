@@ -107,15 +107,17 @@ try {
             severity: 'success',
             summary: 'Brand Updated',
             detail: result.message || 'Brand updated successfully.',
-            life: 3000,
+            life: 2000,
         });
-        router.push('/brand');
+        setTimeout(() => {
+            router.push('/brand');
+        }, 2000);
     }else {
         toast.add({
             severity: 'error',
             summary: 'Error',
             detail: result.message || 'Failed to update Brand.',
-            life: 3000,
+            life: 2000,
         });
     }
 } catch (error) {
@@ -124,7 +126,7 @@ try {
       severity: 'error',
       summary: 'Error',
       detail: 'An unexpected error occurred.',
-      life: 3000,
+      life: 2000,
     });
   } finally {
     loading.value = 'Stop';
@@ -183,7 +185,7 @@ try {
                                 },
                                 
                                 
-                            }" mode="basic" name="icon" accept="image/*"/>
+                            }" @select="(event) => handleFileUpload(event, 'icon')"  mode="basic" name="icon" accept="image/*"/>
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Brand Banner</label>
@@ -193,7 +195,7 @@ try {
                                 },
                                 
                                 
-                            }" mode="basic" name="banner" accept="image/*" />
+                            }"  @select="(event) => handleFileUpload(event, 'banner')"  mode="basic" name="banner" accept="image/*" />
                         </div>
                         <div class="w-full">
                             <label for="dd-city" class="text-sm w-full">Brand Thumbnail</label>
@@ -203,7 +205,7 @@ try {
                                 },
                                 
                                 
-                            }" mode="basic" name="thumbnail" accept="image/*"/>
+                            }"  @select="(event) => handleFileUpload(event, 'thumbnail')"  mode="basic" name="thumbnail" accept="image/*"/>
                         </div>
                     </div>
 

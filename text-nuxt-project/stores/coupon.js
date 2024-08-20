@@ -39,7 +39,7 @@ export const useCouponStore = defineStore ("Coupon",{
                         });
                         const data = await res.json();
                         if (data && data[0] === "Success") {
-                            return { success: true, message: 'coupon Added Successfully' };
+                            return { success: true, message: 'Coupon Added Successfully' };
                         } else {
                             return { success: false, message: 'Invalid credentials' };
                         }
@@ -151,7 +151,7 @@ export const useCouponStore = defineStore ("Coupon",{
                     const app_token = useTokenStore().getToken;
                     const formData = couponData;
                     try {
-                        const res = await fetch(`${EndPoint}/admin/${MasterKey}/coupon/${id}`, {
+                        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/coupon/${id}`, {
                             method: "PUT",
                             headers: {
                                 Accept: "application/json",
@@ -160,11 +160,10 @@ export const useCouponStore = defineStore ("Coupon",{
                             },
                             body: JSON.stringify(formData),
                         });
-                        const data = await res.json();
-                        if (data && data[0] === "Success") {
+                        if (res === "Success") {
                             return { success: true, message: 'Coupon Updated Successfully' };
                         } else {
-                            return { success: false, message: 'Invalid credentials' };
+                            return { success: false, message: 'Something wrong on Request' };
                         }
                     } catch (error) {
                         console.log(error);

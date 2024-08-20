@@ -56,7 +56,6 @@ onMounted(async () => {
     try {
         const data = await CouponStore.getSingleCoupon(Id);
         Coupon.value = data.data;
-        console.log(Coupon.value);
        // Populate extraFields with the existing extend_props
        if (data.data.extend_props) {
             extraFields.value = Object.entries(data.data.extend_props).map(([key, value]) => ({
@@ -101,20 +100,22 @@ const dataSubmit = async () => {
         }
         loading.value = 'Success';
         const result = await CouponStore.updateCoupon(couponData, Id);
-        if (result) {
+        if (result.success) {
         toast.add({
             severity: 'success',
-            summary: 'Slide Updated',
-            detail: result.message || 'Slide updated successfully.',
-            life: 3000,
+            summary: 'Coupon Updated',
+            detail: result.message || 'Coupon updated successfully.',
+            life: 2000,
         });
-        // router.push('/coupon');
+         setTimeout(() => {
+            router.push('/coupon');
+         }, 2000);
         } else {
         toast.add({
             severity: 'error',
             summary: 'Error',
-            detail: result.message || 'Failed to update slide.',
-            life: 3000,
+            detail: result.message || 'Failed to update Coupon.',
+            life: 2000,
         });
         }
     } catch (error) {
@@ -123,7 +124,7 @@ const dataSubmit = async () => {
       severity: 'error',
       summary: 'Error',
       detail: 'An unexpected error occurred.',
-      life: 3000,
+      life: 2000,
     });
     } finally {
     loading.value = 'Stop';

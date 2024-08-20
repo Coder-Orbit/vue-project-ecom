@@ -62,9 +62,7 @@ const handleFileUpload = (event, type) => {
 const dataSubmit = async () => {
 
     extraFields.value.forEach((item, index) => {
-
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
-        console.log(item)
     })
 
 
@@ -78,24 +76,26 @@ const dataSubmit = async () => {
             status: Status.value,
             extra_props: extraProps.value
         }
-        console.log(data);
         const result = await vendorStore.addVendor(data);
+        console.log(result);
         if (result.success) {
             toast.add({
                 severity: 'success',
                 summary: 'Vendor Created',
                 detail: result.message || 'Vendor was created successfully.',
-                life: 3000,
+                life: 2000,
             });
 
-            //router.push('/Vendor');
+            setTimeout(() => {
+                router.push('/Vendor');
+            }, 2000);
 
         } else {
             toast.add({
                 severity: 'error',
                 summary: 'Error',
                 detail: result.message || 'An error occurred.',
-                life: 3000,
+                life: 2000,
             });
         }
     } catch (error) {
@@ -103,7 +103,7 @@ const dataSubmit = async () => {
             severity: 'error',
             summary: 'Error',
             detail: 'An unexpected error occurred.',
-            life: 3000,
+            life: 2000,
         });
         console.error(error);
     } finally {

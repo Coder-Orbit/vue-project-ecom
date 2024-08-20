@@ -111,14 +111,13 @@ export const useCategoryStore = defineStore("category", {
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
             try {
-                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?limit_per_page=10`, {
+                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?data=all`, {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${app_token}`,
                     },
                 });
-                console.log(data);
                 this.CategoryList = data;
             } catch (error) {
                 console.log(error);
@@ -144,5 +143,26 @@ export const useCategoryStore = defineStore("category", {
                 console.log(error);
             }
         },
+        // Get Filterd Data In "/category" Page
+        async getFilteredCategoriList(filteredName) {
+            const config = useRuntimeConfig();
+            const EndPoint = config.public.baseURl;
+            const MasterKey = config.public.masterToken;
+            const app_token = useTokenStore().getToken;
+            try {
+                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?name=${filteredName}`, {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${app_token}`,
+                    },
+                });
+                this.CategoryList = data;
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        //update Category
+        
     },
 });
