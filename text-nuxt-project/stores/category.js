@@ -111,14 +111,14 @@ export const useCategoryStore = defineStore("category", {
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
             try {
-                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?data=all`, {
+                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?limit_per_page=10`, {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${app_token}`,
                     },
                 });
-                this.CategoryList = data;
+                this.CategoryList = data.data;
             } catch (error) {
                 console.log(error);
             }
