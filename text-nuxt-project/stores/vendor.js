@@ -84,7 +84,7 @@ export const useVendorStore = defineStore ("vendor",{
                     const MasterKey = config.public.masterToken;
                     const app_token = useTokenStore().getToken;
                     try {
-                        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/Vendor/${id}`, {
+                        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/vendor/${id}`, {
                             method: "DELETE",
                             headers: {
                                 Accept: "application/json",
@@ -110,7 +110,7 @@ export const useVendorStore = defineStore ("vendor",{
                     const MasterKey = config.public.masterToken;
                     const app_token = useTokenStore().getToken;
                     try {
-                        const res = await fetch(`${EndPoint}/admin/${MasterKey}/Vendor`, {
+                        const res = await fetch(`${EndPoint}/admin/${MasterKey}/vendor`, {
                             headers: {
                                 Accept: "application/json",
                                 "Content-Type": "application/json",
