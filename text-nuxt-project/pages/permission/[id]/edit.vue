@@ -8,6 +8,11 @@
     })
 
 
+    const route = useRoute();
+
+    const { dateMonthFunction } = useDataDate();
+
+
     // replace with actual API endpoint and master key
     const config = useRuntimeConfig();
     const EndPoint = config.public.baseURl;
@@ -24,14 +29,36 @@
     const status = ref(1);
     const loading = ref('success');
 
+    onMounted(async () => {
+
+        loading.value = "not";
+
+        try {
+            const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/role/${route.params.id}/edit`,
+                {
+                    method: 'get',
+                    headers: headers.value,
+                }
+            )
+
+            loading.value = "success";
+            role_name.value = resp.name
+            status.value = resp.status
+
+        } catch (err) {
+            console.log(err)
+        }
+
+    })
+
 
     const submitData = async () => {
 
         loading.value = "not";
 
-        const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/role`,
+        const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/role/${route.params.id}`,
             {
-                method: 'POST',
+                method: 'PATCH',
                 headers:headers.value,
                 body: {
                     name: role_name.value,
@@ -81,6 +108,7 @@
                             <select name="status" v-model="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                                 <option value="1"> Active</option>
                                 <option value="0"> Inactive</option>
+                                <option value="2"> ---</option>
                             </select>
                         </div>
                     </div>

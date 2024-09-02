@@ -71,7 +71,7 @@ const paginate = async (page) => {
 
     }else if( page == 'Next &raquo;'){
 
-        pageNumber.value  = ((products.value.current_page+1) == products.last_page ? products.last_page : (products.value.current_page+1));
+        pageNumber.value  = ((products.value.current_page+1) == products.value.last_page ? products.value.last_page : (products.value.current_page+1));
         
     }
         

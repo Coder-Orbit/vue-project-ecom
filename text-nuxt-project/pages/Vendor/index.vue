@@ -75,7 +75,6 @@
     const handleDelete = async () => {
         deleteLoading.value = true;
         const result = await store.deleteVendor(selectedVendorId.value);
-        console.log(result);
         deleteLoading.value = false;
         deleteModalVisible.value = false;
         toast.add({

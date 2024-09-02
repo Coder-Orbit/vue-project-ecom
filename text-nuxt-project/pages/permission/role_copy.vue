@@ -920,16 +920,15 @@ const toggle = (itemIndex) => {
 
 
 // Multiple checkbox function goes here for sub menu open
-const multipleCheck = (itemId) => {
+const multipleCheck = (itemIndex) => {
 
-    let findData = nodes.value.access.findIndex((element) => element.id == itemId);
+    nodes.value.access[itemIndex].children.forEach((item, index) => {
 
-    nodes.value.access[findData].children.forEach((item, index) => {
-        nodes.value.access[findData].children[index] = {
-            ...nodes.value.access[findData].children[index],
-            "checked" : !nodes.value.access[findData].children[index].checked
+        nodes.value.access[itemIndex].children[index] = {
+            ...nodes.value.access[itemIndex].children[index],
+            "checked" : !nodes.value.access[itemIndex].children[index].checked
         }
-
+        
     })
 
     
@@ -985,45 +984,64 @@ const checkRoles = async (e) => {
 
     console.table(checkExitPermissions.value);
     console.table(nodes.value.access);
+    
 
+    // if(checkExitPermissions.value == ""){
 
-    if(checkExitPermissions.value == ""){
+    //     nodes.value.access.map((data, index) => {
 
-        nodes.value.access.map((data, index) => {
-
-            data.children.map((childData, childeIndex) => {
-                    nodes.value.access[index].children[childeIndex].menu_id = {
-                    ...nodes.value.access[index].children[childeIndex],
-                    "checked" : false
-                }
+    //         data.children.map((childData, childeIndex) => {
+    //                 nodes.value.access[index].children[childeIndex].menu_id = {
+    //                 ...nodes.value.access[index].children[childeIndex],
+    //                 "checked" : false
+    //             }
 
                 
-                    nodes.value.access[index] = {
-                        ...nodes.value.access[index],
-                        "indeterminate" : true
-                    }
+    //                 nodes.value.access[index] = {
+    //                     ...nodes.value.access[index],
+    //                     "indeterminate" : true
+    //                 }
                 
-            })
+    //         })
 
-        })
+    //     })
 
-    }else{
+    // }else{
 
-        checkExitPermissions.value.map((data, index) => {
+    //     checkExitPermissions.value.map((data, index) => {
 
-            let findData = nodes.value.access.findIndex((element) => element.id == data.menu_id);
+    //         let findData = nodes.value.access.find((element) => element.id == data.menu_id);
 
-            nodes.value.access[findData].children.forEach((item, index) => {
-                nodes.value.access[findData].children[index] = {
-                    ...nodes.value.access[findData].children[index],
-                    "checked" : !nodes.value.access[findData].children[index].checked
-                }
+    //         console.log(findData);
 
-            })
-        })
+    //         if(findData.id !== undefined){
+    //             data.children.map((childData, childeIndex) => {
+    //                 if(nodes.value.access[index].children[childeIndex] != undefined){
+    //                     nodes.value.access[index].children[childeIndex] = {
+    //                         ...nodes.value.access[index].children[childeIndex],
+    //                         "checked" : !nodes.value.access[index].children[childeIndex].checked
+                            
+    //                     }
+                    
+    //                 }
+
+    //                 if(nodes.value.access[index].children.length == data.children.length ){
+    //                     nodes.value.access[index] = {
+    //                         ...nodes.value.access[index],
+    //                         "indeterminate" : false
+    //                     }
+    //                 }else{
+    //                     nodes.value.access[index] = {
+    //                         ...nodes.value.access[index],
+    //                         "indeterminate" : true
+    //                     }
+
+    //                 }
+    //             })
+    //         }
         
-       
-    }
+    //     })
+    // }
 
 
     
@@ -1135,7 +1153,7 @@ const updateRoles = async (e) => {
                                         <Icon name="iconamoon:arrow-right-2" :class="`${item.opened ? 'rotate-90' : ''}`" class="ease-in duration-300 text-2xl"></Icon>
                                     </div>
                                     <div class="-mt-[2px] flex">
-                                        <input class="mr-2" v-bind="item.id" :checked="item.indeterminate != false ? false : true" :indeterminate="item.indeterminate" type="checkbox" @click="multipleCheck(item.id)"  :id="item.id">
+                                        <input class="mr-2" :class="`_${item.id}`" v-bind="item.id" :checked="item.indeterminate != false ? false : true" :indeterminate="item.indeterminate" type="checkbox" @click="multipleCheck(index)"  :id="item.id">
                                         <label :for="item.id" class="text-md mt-1">{{ item.name }}</label>
                                     </div>
                                 </div>
