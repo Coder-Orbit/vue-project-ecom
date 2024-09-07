@@ -170,5 +170,27 @@ export const useCouponStore = defineStore ("Coupon",{
                         return { success: false, message: 'An error Occurred During Update Coupon' };
                     }
                 },
+                        //Filtered Coupon Data In "/coupon/"Page
+        async filterdData(couponName) {
+            const config = useRuntimeConfig();
+            const EndPoint = config.public.baseURl;
+            const MasterKey = config.public.masterToken;
+            const app_token = useTokenStore().getToken;
+            try {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/coupon?name=${couponName}`, {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${app_token}`,
+                    },
+                });
+                const data = await res.json();
+                return data;
+            } catch (error) {
+                console.log(error);
+                return { success: false, message: 'An error occurred during filtering' };
+            }
+        }
     }
 })

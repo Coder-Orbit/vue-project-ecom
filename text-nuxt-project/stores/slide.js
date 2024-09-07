@@ -65,13 +65,11 @@ export const useSlideStore = defineStore("slide", {
           },
         });
         const data = await res.json();
-        console.log(data);
         this.slides = data.data;
         this.pagination.currentPage = data.current_page;
         this.pagination.totalPages = data.last_page;
         this.pagination.totalItems = data.total;
         this.pagination.links = data.links;
-        console.log(this.totalItems);
       } catch (error) {
         console.log(error);
       } finally {
@@ -79,7 +77,7 @@ export const useSlideStore = defineStore("slide", {
       }
     },
     // Get Slide List In "/slide/" Page
-    async getSlidesList(){
+    async getSlidesList() {
       const config = useRuntimeConfig();
       const EndPoint = config.public.baseURl;
       const MasterKey = config.public.masterToken;
@@ -94,7 +92,6 @@ export const useSlideStore = defineStore("slide", {
         });
         const data = await res.json();
         this.SlideList = data.data;
-        console.log(this.slides);
       } catch (error) {
         console.log(error);
       }
@@ -170,5 +167,27 @@ export const useSlideStore = defineStore("slide", {
         return { success: false, message: 'An error occurred during login' };
       }
     },
+    //Filtered Slide Data In "/slide/"Page
+    async filterdData(slideName) {
+      const config = useRuntimeConfig();
+      const EndPoint = config.public.baseURl;
+      const MasterKey = config.public.masterToken;
+      const app_token = useTokenStore().getToken;
+      try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide?name=${slideName}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${app_token}`,
+          },
+        });
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.log(error);
+        return { success: false, message: 'An error occurred during filtering' };
+      }
+    }
   },
 });

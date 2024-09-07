@@ -25,10 +25,25 @@
     const deleteLoading = ref(false);
     //Pagination Initial PageNumber
     const pageNumber = ref(1);
+    //sidebar
+    const brandName = ref();
+    const brandStatus = ref("");
+    const filteredDataCount = ref();
+    const filted = ref();
     // Initialize Toast
     const toast = useToast();
     // Date Formatter
     const { dateMonthFunction } = useDataDate();
+    //FilterData
+    watch(brandName, async (newValue) => {
+        if (newValue || brandStatus.value) {
+            isLoading.value = 'loading';
+            const res = await store.filterdData(newValue, brandStatus.value);
+            filted.value = res.data;
+            filteredDataCount.value = res.data.length
+            isLoading.value = 'success';
+        }
+    });
     // On Load or Reload Get New Updated Data
     const loadBrands = async () => {
         isLoading.value = 'Loading';
@@ -142,7 +157,7 @@
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                                <tr v-for="brand in brandData" :key="brand.unique_id" class="bg-white odd:bg-gray-100">
+                                <tr v-for="brand in (brandName && brandName.length > 0 ? filted : brandData)" :key="brand.unique_id" class="bg-white odd:bg-gray-100">
                                     <!-- Serial ID -->
                                     <td class="p-1 text-center text-xs">{{ brand.id }}</td>
                                     <!-- Icon -->
@@ -197,13 +212,14 @@
                 <Sidebar v-model:visible="visibleRight" header="Brand Filter" position="right">
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Brand Name</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
+                        <input type="text" v-model="brandName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
-                        <select name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <select v-model="brandStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                             <option value="1"> Active</option>
                             <option value="0"> Inactive</option>
+                            <option value=""> All</option>
                         </select>
                     </div>
 
@@ -217,7 +233,11 @@
                         
                     </div>
 
-
+                    <!-- Show the length of filtered data -->
+          <div class="mt-2 text-sm text-gray-600">
+            <span v-if="filteredDataCount">Showing {{ filteredDataCount }} results</span>
+            <span v-else>No results found</span>
+          </div>
 
                 </Sidebar>
 

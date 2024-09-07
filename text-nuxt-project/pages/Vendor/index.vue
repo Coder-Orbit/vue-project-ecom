@@ -28,7 +28,21 @@
     const toast = useToast();
     // Date Formatter
     const { dateMonthFunction } = useDataDate();
-
+//sidebar
+const vendorName = ref();
+const vendorStatus = ref("");
+const filteredDataCount = ref();
+const filted = ref();
+// Watch vendorName field changes and apply filter
+watch(vendorName, async (newValue) => {
+  if (newValue || vendorStatus.value) {
+    isLoading.value = 'loading';
+    const res = await store.filterdData(newValue, vendorStatus.value);
+    filted.value = res.data;
+    filteredDataCount.value = res.data.length
+    isLoading.value = 'success';
+  }
+});
 
     // On Load or Reload Get New Updated Data
     const loadVendors = async () => {
@@ -141,7 +155,7 @@
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                                <tr v-for="vendor in vendorData" :key="vendor.unique_id" class="bg-white odd:bg-gray-100">
+                                <tr v-for="vendor in (vendorName && vendorName.length > 0 ? filted : vendorData)" :key="vendor.unique_id" class="bg-white odd:bg-gray-100">
                                     <!-- Serial ID -->
                                     <td class="p-1 text-center text-xs">{{  vendor.id }}</td>
                                     <!-- Icon -->
@@ -193,16 +207,17 @@
                     </div>
                 </div>
 
-                <Sidebar v-model:visible="visibleRight" header="Brand Filter" position="right">
+                <Sidebar v-model:visible="visibleRight" header="Vendor Filter" position="right">
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Vendor Name</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
+                        <input type="text" v-model="vendorName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
-                        <select name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <select v-model="vendorStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                             <option value="1"> Active</option>
                             <option value="0"> Inactive</option>
+                            <option value=""> All</option>
                         </select>
                     </div>
 
@@ -214,7 +229,11 @@
                         </button>
                         
                     </div>
-
+<!-- Show the length of filtered data -->
+<div class="mt-2 text-sm text-gray-600">
+            <span v-if="filteredDataCount">Showing {{ filteredDataCount }} results</span>
+            <span v-else>No results found</span>
+          </div>
 
 
                 </Sidebar>

@@ -161,8 +161,30 @@ export const useCategoryStore = defineStore("category", {
             } catch (error) {
                 console.log(error);
             }
-        }
-        //update Category
+        },
+        //Filtered Category Data In "/Category/"Page
+        async filterdData(categoryName) {
+            const config = useRuntimeConfig();
+            const EndPoint = config.public.baseURl;
+            const MasterKey = config.public.masterToken;
+            const app_token = useTokenStore().getToken;
+            try {
+              const res = await fetch(`${EndPoint}/admin/${MasterKey}/category?name=${categoryName}`, {
+                method: "GET",
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${app_token}`,
+                },
+              });
+              const data = await res.json();
+              return data;
+            } catch (error) {
+              console.log(error);
+              return { success: false, message: 'An error occurred during filtering' };
+            }
+          }
         
     },
+        
 });

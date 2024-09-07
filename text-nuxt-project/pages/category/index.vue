@@ -29,7 +29,21 @@
     // Date Formatter
     const { dateMonthFunction } = useDataDate();
 
-
+//sidebar
+const categoryName = ref();
+const categoryStatus = ref("");
+const filteredDataCount = ref();
+const filted = ref();
+// Watch slideName field changes and apply filter
+watch(categoryName, async (newValue) => {
+  if (newValue || categoryStatus.value) {
+    isLoading.value = 'loading';
+    const res = await store.filterdData(newValue, categoryStatus.value);
+    filted.value = res.data;
+    filteredDataCount.value = res.data.length
+    isLoading.value = 'success';
+  }
+});
     // On Load or Reload Get New Updated Data
     const loadCategories = async () => {
         isLoading.value = 'Loading';
@@ -144,7 +158,7 @@
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                                <tr v-for="category in categoryData" :key="category.unique_id" class="bg-white odd:bg-gray-100">
+                                <tr v-for="category in (categoryName && categoryName.length > 0 ? filted : categoryData)" :key="category.unique_id" class="bg-white odd:bg-gray-100">
                                     <!-- Serial ID -->
                                     <td class="p-1 text-center text-xs">
                                         {{category.id}}
@@ -216,13 +230,14 @@
                 <Sidebar v-model:visible="visibleRight" header="Category Filter" position="right">
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Category Name</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Category Name"/>
+                        <input type="text" v-model="categoryName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Category Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
-                        <select name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <select v-model="categoryStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                             <option value="1"> Active</option>
                             <option value="0"> Inactive</option>
+                            <option value=""> All</option>
                         </select>
                     </div>
 
@@ -235,8 +250,11 @@
                         </button>
                         
                     </div>
-
-
+<!-- Show the length of filtered data -->
+<div class="mt-2 text-sm text-gray-600">
+            <span v-if="filteredDataCount">Showing {{ filteredDataCount }} results</span>
+            <span v-else>No results found</span>
+          </div>
 
                 </Sidebar>
 

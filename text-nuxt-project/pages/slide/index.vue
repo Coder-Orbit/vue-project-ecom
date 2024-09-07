@@ -31,6 +31,22 @@ const pageNumber = ref(1);
 const toast = useToast();
 // Date Formatter
 const { dateMonthFunction } = useDataDate();
+//sidebar
+const slideName = ref();
+const SlideStatus = ref("");
+const filteredDataCount = ref();
+const filted = ref();
+// Watch slideName field changes and apply filter
+watch(slideName, async (newValue) => {
+  if (newValue || SlideStatus.value) {
+    isLoading.value = 'loading';
+    const res = await store.filterdData(newValue, SlideStatus.value);
+    filted.value = res.data;
+    filteredDataCount.value = res.data.length
+    isLoading.value = 'success';
+  }
+});
+
 
 // On Load or Reload Get New Updated Data
 const loadSlides = async () => {
@@ -45,13 +61,6 @@ onBeforeMount(async () => {
   await loadSlides();
 });
 
-// Watch for changes in the store slides and update slideData accordingly
-watch(
-  () => store.slides,
-  (newSlides) => {
-    slideData.value = newSlides;
-  }
-);
 
 // Watch PageNumber Change
 watch(pageNumber, async (newPage) => {
@@ -59,6 +68,18 @@ watch(pageNumber, async (newPage) => {
   await store.getAllSlides(newPage, pagination.value.perPage);
   isLoading.value = 'success';
 });
+
+/* Watch Sidebar Input Fields
+watch(slideName, async (newValue) => {
+  isLoading.value='loading';
+  await store.filterdData(newValue);
+  isLoading.value = 'success';
+});*/
+
+watch(SlideStatus, (newValue) => {
+  console.log('Slide Status changed:', newValue);
+});
+
 
 // OnPage Change Get New Data
 const onPageChange = (newPage) => {
@@ -154,7 +175,7 @@ const openDeleteModal = (slideId) => {
 
             <!-- Table Body -->
             <tbody>
-              <tr v-for="slide in slideData" :key="slide.unique_id" class="bg-white odd:bg-gray-100">
+              <tr v-for="slide in (slideName && slideName.length > 0 ? filted : slideData)" :key="slide.unique_id" class="bg-white odd:bg-gray-100">
                 <!-- Serial ID -->
                 <td class="p-1 text-center text-xs">{{ slide.id }}</td>
                 <!-- Icon -->
@@ -220,7 +241,7 @@ const openDeleteModal = (slideId) => {
           </div>
           <div class="w-full mt-2">
             <label for="status" class="text-sm w-full">Status</label>
-            <select v-model="status" @change="handleSearch" name="status" id="status"
+            <select v-model="SlideStatus" @change="handleSearch" name="status" id="status"
               class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
               <option value="">All</option>
               <option value="1">Active</option>
@@ -234,6 +255,11 @@ const openDeleteModal = (slideId) => {
               <Icon name="fluent:search-12-filled"></Icon>
               Search
             </button>
+          </div>
+                <!-- Show the length of filtered data -->
+          <div class="mt-2 text-sm text-gray-600">
+            <span v-if="filteredDataCount">Showing {{ filteredDataCount }} results</span>
+            <span v-else>No results found</span>
           </div>
         </Sidebar>
 
