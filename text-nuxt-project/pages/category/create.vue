@@ -102,8 +102,11 @@ const dataSubmit = async () => {
             commission: Commission.value,
             commission_type: CommissionType.value,
             status: Status.value,
-            extra_props: extraProps.value
+            extend_props: extraProps.value
         }
+
+
+
         const result = await categoryStore.addCategory(categoryData);
         if (result.success) {
             toast.add({

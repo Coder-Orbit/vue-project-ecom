@@ -5,12 +5,14 @@ state: () => ({
 }),
 actions: {
     async login(form){
+        
         // replace with actual API endpoint and master key
         const config = useRuntimeConfig();
         const EndPoint = config.public.baseURl;
         const MasterKey = config.public.masterToken;
         const formData = form;
         const token = useTokenStore();
+        console.log(config);
         this.loading = true;
         try {
             const res = await fetch(`${EndPoint}/login`,{

@@ -15,6 +15,7 @@ definePageMeta({
 })
 
 async function handleLogin() {
+    console.log("hello");
   const result = await store.login(form);
   if (result.success) {
     router.push('/dashboard');

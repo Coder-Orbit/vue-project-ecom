@@ -185,7 +185,7 @@ watch(categoryName, async (newValue) => {
                                     <!-- commission -->
                                     <td class="p-1 text-left text-xs">{{ category.commission }}</td>
                                     <!--Status-->
-                                    <td class="p-1 text-left text-xs">{{ category.status === '1' ? 'Active' : 'Inactive' }}</td>
+                                    <td class="p-1 text-left text-xs">{{ category.status == '1' ? 'Active' : 'Inactive' }}</td>
                                     <!--Created Date-->
                                     <td class="p-1 text-left text-xs">{{  dateMonthFunction(category.created_at)  }}</td>
                                     <!--Creaeted By-->
