@@ -100,6 +100,7 @@ onMounted(async () => {
 
 //Data Submit
 const dataSubmit = async () => {
+    loading.value = 'Success';
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
     });
@@ -116,10 +117,39 @@ const dataSubmit = async () => {
         thumbnail: CategoryThumbnail.value,
         extend_props: extraProps.value,
     })
-    isLoading.value = true;
+
+    
+           
+
+       
+
+    loading.value = 'stop';
     //Submit Data
     try {
+
         const result = await categoryStore.addCategory(categoryData);
+
+        console.log(result);
+        // if (result.success) {
+        //     toast.add({
+        //         severity: 'success',
+        //         summary: 'Category Created',
+        //         detail: result.message || 'Category was updated successfully.',
+        //         life: 2000,
+        //     });
+
+        //     setTimeout(() => {
+        //         router.push('/category');
+        //     }, 2000);
+        // } else {
+        //     toast.add({
+        //         severity: 'error',
+        //         summary: 'Error',
+        //         detail: result.message || 'An error occurred.',
+        //         life: 2000,
+        //     });
+        // }
+
     } catch (error) {
         
     }

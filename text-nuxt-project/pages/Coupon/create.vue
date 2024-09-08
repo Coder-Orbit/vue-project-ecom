@@ -93,7 +93,7 @@ const dataSubmit = async() => {
             use_limit:UseLimit.value,
             extend_props: extraProps.value,
         }
-        console.log(data);
+
         const result = await CouponStore.addcoupon(data);
         if (result.success) {
             toast.add({
