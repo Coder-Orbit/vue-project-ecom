@@ -49,6 +49,38 @@ export const useCategoryStore = defineStore("category", {
                 return { success: false, message: 'An error Occurred During Add Category' };
             }
         },
+
+
+        // Add Categories In "/category/create" Page
+        async updateCategory(categoryData) {
+            const config = useRuntimeConfig();
+            const EndPoint = config.public.baseURl;
+            const MasterKey = config.public.masterToken;
+            const app_token = useTokenStore().getToken;
+            const formData = categoryData;
+            try {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category/${formData.id}`, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${app_token}`,
+                    },
+                    body: JSON.stringify(formData),
+                });
+                const data = await res.json();
+                console.log(data);
+                if (data && data[0] === "Success") {
+                    return { success: true, message: 'Category Added Successfully' };
+                } else {
+                    return { success: false, message: 'Something is Wrong' };
+                }
+            } catch (error) {
+                console.log(error);
+                return { success: false, message: 'An error Occurred During Add Category' };
+            }
+        },
+
         // Show Categories & Paginate In "/category" Page
         async getAllCategories(page = 1) {
             const config = useRuntimeConfig();

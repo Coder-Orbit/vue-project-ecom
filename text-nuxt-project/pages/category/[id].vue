@@ -116,7 +116,10 @@ const dataSubmit = async () => {
         banner: CategoryBanner.value,
         thumbnail: CategoryThumbnail.value,
         extend_props: extraProps.value,
+        id: Id,
     })
+
+
 
     
            
@@ -127,7 +130,7 @@ const dataSubmit = async () => {
     //Submit Data
     try {
 
-        const result = await categoryStore.addCategory(categoryData);
+        const result = await CategoryStore.updateCategory(CategoryData);
 
         console.log(result);
         // if (result.success) {
@@ -330,8 +333,7 @@ const dataSubmit = async () => {
                                 </div>
 
                                 <div class="place-content-end flex w-full">
-                                    <button class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4"
-                                        type="submit">Update <Icon name="fa-solid:paper-plane"></Icon></button>
+                                    <button class="bg-green-500 mt-1 font-semibold text-white py-1 rounded-md px-4 mb-4" type="submit">Update <Icon name="fa-solid:paper-plane"></Icon></button>
                                 </div>
 
 

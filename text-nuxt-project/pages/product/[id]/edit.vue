@@ -170,7 +170,16 @@
                         shortcut: 'CMD+SHIFT+M',
                     },
 
-                    Embed: Embed,
+                    embed: {
+                    class: Embed,
+                        config: {
+                            services: {
+                                youtube: true,
+                                coub: true
+                            },
+                        }
+                    },
+
                     CodeTool: CodeTool,
                     RawTool: RawTool,
                     Delimiter: Delimiter,
@@ -411,7 +420,7 @@
 
         console.table(resp);
 
-        // router.push('/product');
+        router.push('/product');
         loading.value = "success";
 
     }
