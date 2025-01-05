@@ -106,7 +106,6 @@ const dataSubmit = async () => {
         }
 
 
-
         const result = await categoryStore.addCategory(categoryData);
         if (result.success) {
             toast.add({
@@ -337,7 +336,6 @@ const dataSubmit = async () => {
                                         </div>
                                     </button>
                                 </div>
-
 
                             </form>
                         </div>

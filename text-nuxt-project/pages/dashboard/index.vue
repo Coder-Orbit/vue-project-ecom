@@ -47,7 +47,6 @@ import { ref, onMounted } from "vue";
                 }
                 });
 
-
                 loading.value = status.value;
                 summary.value = data.value;
                 recentData.value = data.value.recent_orders?.data;
@@ -243,7 +242,7 @@ const paginate = async (page) => {
                             ${{ summary.total_amount }}
                         </div>
                         
-                        <div  class="text-xs mr-3" v-if="summary.previous_week_total_sale > summary.current_week_total_sale">
+                        <div class="text-xs mr-3" v-if="summary.previous_week_total_sale > summary.current_week_total_sale">
                             <div class="flex w-full justify-end text-red-600 -mt-2">
                                 <Icon class="text-right"  name="ph:arrow-down-right-bold" width="1.4em" height="1.4em" /> 
                                 <div>{{ ( summary.current_week_total_sale - summary.previous_week_total_sale) }}</div>

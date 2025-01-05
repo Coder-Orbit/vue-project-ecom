@@ -30,20 +30,30 @@
     const { dateMonthFunction } = useDataDate();
 
 //sidebar
-const categoryName = ref();
+const tempCategoryName = ref("");
+const categoryName = ref("");
 const categoryStatus = ref("");
+const CategoryCommition = ref("");
 const filteredDataCount = ref();
-const filted = ref();
+const filted = ref([]);
 // Watch slideName field changes and apply filter
-watch(categoryName, async (newValue) => {
-  if (newValue || categoryStatus.value) {
-    isLoading.value = 'loading';
-    const res = await store.filterdData(newValue, categoryStatus.value);
-    filted.value = res.data;
-    filteredDataCount.value = res.data.length
-    isLoading.value = 'success';
-  }
-});
+const applyFilter = async () => {
+    if (tempCategoryName.value) {
+        categoryName.value = tempCategoryName.value;
+    }
+    else {
+        categoryName.value = "";
+    }
+    if (categoryName.value || categoryStatus.value || CategoryCommition.value) {
+        isLoading.value = 'loading';
+        const res = await store.filterdData(categoryName.value, categoryStatus.value , CategoryCommition.value);
+        filted.value = res.data;
+        filteredDataCount.value = res.data.length;
+        isLoading.value = 'success';
+        // console.log(categoryStatus.value);
+    }
+};
+// watch([categoryName, categoryStatus], applyFilter);
     // On Load or Reload Get New Updated Data
     const loadCategories = async () => {
         isLoading.value = 'Loading';
@@ -55,13 +65,10 @@ watch(categoryName, async (newValue) => {
     onBeforeMount(async () => {
     await loadCategories();
     });
-    // Watch for changes in the store Category and update CategoryData accordingly
-    watch(
-    () => store.categories,
-    (newCategories) => {
-        categoryData.value = newCategories;
-    }
-    );
+    // For changes in the store Category and update CategoryData accordingly
+    const updateCategoryData = () => {
+        categoryData.value = store.categories;
+    };
     // Watch PageNumber Change
     watch(pageNumber,async (newPage) => {
     isLoading.value = 'loading';
@@ -230,7 +237,7 @@ watch(categoryName, async (newValue) => {
                 <Sidebar v-model:visible="visibleRight" header="Category Filter" position="right">
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Category Name</label>
-                        <input type="text" v-model="categoryName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Category Name"/>
+                        <input type="text" v-model="tempCategoryName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Category Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
@@ -240,22 +247,21 @@ watch(categoryName, async (newValue) => {
                             <option value=""> All</option>
                         </select>
                     </div>
-
+                    <!-- <div class="w-full">
+                        <label for="dd-city" class="text-sm w-full">Category Commition</label>
+                        <input type="number" v-model="CategoryCommition" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Category Commition"/>
+                    </div> -->
                     <div class="font-semibold flex mt-2 place-content-end">
-                        
-
-                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="visibleRight = true">
+                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md" @click="applyFilter">
                             <Icon name="fluent:search-12-filled"></Icon>
                             Search
                         </button>
-                        
                     </div>
-<!-- Show the length of filtered data -->
-<div class="mt-2 text-sm text-gray-600">
-            <span v-if="filteredDataCount">Showing {{ filteredDataCount }} results</span>
-            <span v-else>No results found</span>
-          </div>
-
+                    <!-- Show the length of filtered data -->
+                    <div class="mt-2 text-sm text-gray-600">
+                        <span v-if="filteredDataCount">Showing {{ filteredDataCount }} results</span>
+                        <span v-else>No results found</span>
+                    </div>
                 </Sidebar>
 
 
