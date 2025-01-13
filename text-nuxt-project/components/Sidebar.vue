@@ -17,18 +17,22 @@ const orderStatus = ref([
     },
     {
         id: 4,
-        name: "Ready to Shipped"
+        name: "Packaging"
     },
     {
         id: 5,
-        name: "Cancel"
+        name: "Ready to Shipped"
     },
     {
         id: 6,
-        name: "Rejected"
+        name: "Cancel"
     },
     {
         id: 7,
+        name: "Rejected"
+    },
+    {
+        id: 8,
         name: "Delivered"
     }
 ])
@@ -499,8 +503,6 @@ const toggle = (index) => {
                         <div class="text-left text-sm ml-1 -mt-[2px]">User Permission</div>
                     </NuxtLink>
                 </li>
-
-                
             </ul>
         </li>
 

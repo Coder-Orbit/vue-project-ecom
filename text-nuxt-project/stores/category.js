@@ -216,68 +216,6 @@ export const useCategoryStore = defineStore("category", {
               return { success: false, message: 'An error occurred during filtering' };
             }
           },
-        //   async filterdData(categoryName, categoryStatus, CategoryCommition) {
-        //     const config = useRuntimeConfig();
-        //     const EndPoint = config.public.baseURl;
-        //     const MasterKey = config.public.masterToken;
-        //     const app_token = useTokenStore().getToken;
-        
-        //     try {
-        //         const url = `${EndPoint}/admin/${MasterKey}/category?${
-        //             categoryName ? `name=${categoryName}&` : ''
-        //         }${categoryStatus ? `status=${categoryStatus}&` : ''}${
-        //             CategoryCommition ? `commission=${CategoryCommition}` : ''
-        //         }`; // Remove trailing '&' if present
-        
-        //         const res = await fetch(url, {
-        //             method: 'GET',
-        //             headers: {
-        //                 Accept: "application/json",
-        //                 "Content-Type": "application/json",
-        //                 Authorization: `Bearer ${app_token}`,
-        //             },
-        //         });
-        
-        //         const data = await res.json();
-        //         return data;
-        //     } catch (error) {
-        //         console.log(error);
-        //         return { success: false, message: 'An error occurred during filtering' };
-        //     }
-        // }
-          // Fetch Filtered Category Data
-        // async fetchFilteredCategories(categoryName = "", categoryStatus = "") {
-        //     const config = useRuntimeConfig();
-        //     const EndPoint = config.public.baseURl;
-        //     const MasterKey = config.public.masterToken;
-        //     const app_token = useTokenStore().getToken;
-        
-        //     try {
-        //     const url = new URL(`${EndPoint}/admin/${MasterKey}/category?name=${categoryName}&status=${categoryStatus}`);
-        //     // if (categoryName) url.searchParams.append("name", categoryName);
-        //     // if (categoryStatus) url.searchParams.append("&status", categoryStatus);
-        
-        //     const res = await fetch(url.toString(), {
-        //         method: "GET",
-        //         headers: {
-        //         Accept: "application/json",
-        //         "Content-Type": "application/json",
-        //         Authorization: `Bearer ${app_token}`,
-        //         },
-        //     });
-        
-        //     if (!res.ok) {
-        //         throw new Error(`Failed to fetch: ${res.statusText}`);
-        //     }
-        
-        //     const data = await res.json();
-        //     return data;
-        //     } catch (error) {
-        //     console.error("Error fetching filtered categories:", error);
-        //     return { success: false, message: "An error occurred while fetching data" };
-        //     }
-        // },
-        
     },
         
 });

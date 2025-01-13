@@ -9,7 +9,10 @@ export const useProductStore = defineStore('product',{
         setAdditional(sizeData, colorData, fieldName, fieldValue){
             this.additional = {
                 ...this.additional,
-                colorData
+                colorData,
+                sizeData,
+                fieldName,
+                fieldValue
             }
           
         },

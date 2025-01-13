@@ -1,8 +1,37 @@
-<script lang="ts" setup>
+<script setup>
+// replace with actual API endpoint and master key
+const config = useRuntimeConfig();
+const EndPoint = config.public.baseURl;
+const MasterKey = config.public.masterToken;
+const app_token = useTokenStore().getToken;
+const loading = ref('not');
+
+const headers = ref({
+    "Accept": "application/json",
+    "Authorization": `Bearer ${app_token}`,
+    "App-Master-Key": `${MasterKey}`
+})
+
 definePageMeta({
   layout: "dashboard",
   middleware: 'auth',
-})
+});
+
+const route = useRoute();
+const orderId = route.params.id;
+const details = ref(null);
+const fetchOrderDetails = async () => {
+    try {
+        details.value = await $fetch(`${EndPoint}/admin/${MasterKey}/orders/${orderId}`, {
+            method: 'GET',
+            headers: headers.value,
+        });
+        console.table(details.value);
+    } catch (err) {
+        console.log(err);
+    }
+};
+fetchOrderDetails();
 </script>
 
 <template>
@@ -38,7 +67,7 @@ definePageMeta({
           Bill to :
         </p>
         <p class="text-gray-500">
-          Md Majadul Islam
+          {{ details?.extend_props.contact.name }}
           <br />
           110/1, Mirpur-11, Dhaka
         </p>
@@ -150,7 +179,3 @@ definePageMeta({
     <button type="button" class="bg-red-800 text-white py-2 px-4 my-3 rounded-sm">Print</button>
   </div>
 </template>
-
-
-
-<style scoped></style>
