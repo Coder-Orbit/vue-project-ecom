@@ -13,10 +13,6 @@
 
     const updateId = ref(null)
 
-    const Namefield = ref(null)
-    const Valuefield = ref(null)
-    const filedGroup = ref(null)
-
     const loading = ref('not')
     const headers = ref({
         "Accept": "application/json",
@@ -89,7 +85,7 @@ const getData = async () => {
         });
 
         loading.value = "success";
-        // console.log("Web data:",web_settings.value);
+        console.log("Web data:",web_settings.value);
     } catch (err) {
         console.log(err);
     }
@@ -158,43 +154,6 @@ const deleteData = async (id) => {
     }
 }
 
-const nameFieldFunc = async (n) => {
-    if (n.target.name === "field_name") {
-        Namefield.value = n.target.value;
-    } else if (n.target.name === "value") {
-        Valuefield.value = n.target.value;
-    } else if (n.target.name === "group") {
-        filedGroup.value = n.target.value;
-    }
-    console.log("Name:",Namefield.value)
-    console.log("Value:",Valuefield.value)
-    console.log("Group:",filedGroup.value)
-
-    let url = `${EndPoint}/admin/${MasterKey}/web_settings?limit_per_page=10`;
-
-    if (Namefield.value) {
-        url += `&field_name=${Namefield.value}`;
-    }
-    if (Valuefield.value) {
-        url += `&value=${Valuefield.value}`;
-    }
-    if (filedGroup.value) {
-        url += `&group=${filedGroup.value}`;
-    }
-
-    try {
-        web_settings.value = await $fetch(url, {
-            method: 'get',
-            headers: headers.value,
-        });
-
-        loading.value = "success";
-        // console.log("Web data:",web_settings.value);
-    } catch (err) {
-        console.log(err);
-    }
-}
-
 </script>
 <template>
     <NuxtLayout :name="layout">
@@ -238,16 +197,16 @@ const nameFieldFunc = async (n) => {
                             <div class="flex w-full py-1 justify-center">
                                 <div class="max-w-full mr-2">
                                     <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Field Name <Icon name="clarity:info-solid"></Icon></label>
-                                    <input type="text" @keyup="((e) => nameFieldFunc(e))" name="field_name" v-model="extraProps.field_name" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
+                                    <input type="text" v-model="extraProps.field_name" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
                                 </div>
                                 <div class="max-w-full mr-2">
                                     <label for="dd-citye" class="text-sm w-full" title="Use value like: number, base64, url, email etc"> Field Value<Icon name="clarity:info-solid"></Icon></label>
-                                    <input type="text" @keyup="((e) => nameFieldFunc(e))" name="value" v-model="extraProps.value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
+                                    <input type="text" v-model="extraProps.value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
                                     <a target="_blank" class="text-xs text-red-500" href="https://www.base64-image.de/">Convert Image into base64</a>
                                 </div>
                                 <div class="max-w-full mr-2">
                                     <label for="dd-citye" class="text-sm w-full" title="Use group like: number, string"> Field Group <Icon name="clarity:info-solid"></Icon></label>
-                                    <input type="text" @keyup="((e) => nameFieldFunc(e))" name="group" v-model="extraProps.group" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Group"/>
+                                    <input type="text" v-model="extraProps.group" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Group"/>
                                 </div>
                                 <div class="max-w-full mt-1">
                                     <button class="bg-green-500 font-semibold text-sm text-white py-1 rounded-md px-4 mt-5" type="submit" @click="dataSubmit">Add <Icon name="fa-solid:paper-plane"></Icon></button>

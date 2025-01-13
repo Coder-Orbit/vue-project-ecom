@@ -418,7 +418,7 @@
             }
         )
 
-        console.table(resp);
+        console.log(resp);
 
         router.push('/product');
         loading.value = "success";
