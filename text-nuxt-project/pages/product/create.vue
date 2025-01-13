@@ -366,6 +366,7 @@
             
         }
 
+
         const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/product`,
             {
                 method: 'POST',
@@ -373,7 +374,9 @@
                 body: data
             }
         )
-        router.push('/product');
+
+        console.table(resp);
+        // router.push('/product');
         loading.value = "success";
 
     }
