@@ -94,7 +94,7 @@ export const useCouponStore = defineStore ("Coupon",{
                         });
                         const data = await res.json();
                         if (data === "Success") {
-                            return { success: true, message: 'coupon Deleted Successfully' };
+                            return { success: true, message: 'Coupon Deleted Successfully' };
                         } else {
                             return { success: false, message: 'Invalid credentials' };
                         }
@@ -170,27 +170,34 @@ export const useCouponStore = defineStore ("Coupon",{
                         return { success: false, message: 'An error Occurred During Update Coupon' };
                     }
                 },
-                        //Filtered Coupon Data In "/coupon/"Page
-        async filterdData(couponName) {
-            const config = useRuntimeConfig();
-            const EndPoint = config.public.baseURl;
-            const MasterKey = config.public.masterToken;
-            const app_token = useTokenStore().getToken;
-            try {
-                const res = await fetch(`${EndPoint}/admin/${MasterKey}/coupon?name=${couponName}`, {
-                    method: "GET",
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${app_token}`,
-                    },
-                });
-                const data = await res.json();
-                return data;
-            } catch (error) {
-                console.log(error);
-                return { success: false, message: 'An error occurred during filtering' };
-            }
-        }
+                //Filtered Coupon Data In "/coupon/"Page
+                async filterdData(couponName, couponStatus) {
+                    const config = useRuntimeConfig();
+                    const EndPoint = config.public.baseURl;
+                    const MasterKey = config.public.masterToken;
+                    const app_token = useTokenStore().getToken;
+                
+                    // Construct query parameters dynamically
+                    const queryParams = [];
+                    if (couponName) queryParams.push(`name=${encodeURIComponent(couponName)}`);
+                    if (couponStatus) queryParams.push(`status=${encodeURIComponent(couponStatus)}`);
+                    const queryString = queryParams.length ? `?${queryParams.join('&')}` : '';
+                
+                    try {
+                        const res = await fetch(`${EndPoint}/admin/${MasterKey}/coupon${queryString}`, {
+                            method: "GET",
+                            headers: {
+                                Accept: "application/json",
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${app_token}`,
+                            },
+                        });
+                        const data = await res.json();
+                        return data;
+                    } catch (error) {
+                        console.log(error);
+                        return { success: false, message: 'An error occurred during filtering' };
+                    }
+                }
     }
 })

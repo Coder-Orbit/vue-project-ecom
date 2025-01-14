@@ -37,7 +37,7 @@
 
     //FilterData
     const tempBrandName = ref("");
-
+    const tempBrandStatus = ref("")
 
     const filterData = async () => {
 
@@ -47,10 +47,16 @@
         else {
             brandName.value = "";
         }
+        
+        if (tempBrandStatus.value) {
+            brandStatus.value = tempBrandStatus.value;
+        } else {
+            brandStatus.value = "";
+        }
 
         if (brandName.value || brandStatus.value) {
             isLoading.value = 'loading';
-            const res = await store.filterdData(brandName.value, brandStatus.value);
+            const res = await store.filterdData(tempBrandName.value, tempBrandStatus.value);
 
             console.log(res)
 
@@ -237,7 +243,7 @@
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
-                        <select v-model="brandStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <select v-model="tempBrandStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                             <option value="1"> Active</option>
                             <option value="0"> Inactive</option>
                             <option value=""> All</option>

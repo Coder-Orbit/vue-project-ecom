@@ -31,6 +31,7 @@
 
 //sidebar
 const tempCategoryName = ref("");
+const tempStatusName = ref("");
 const categoryName = ref("");
 const categoryStatus = ref("");
 const CategoryCommition = ref("");
@@ -44,9 +45,17 @@ const applyFilter = async () => {
     else {
         categoryName.value = "";
     }
+
+    if (tempStatusName.value) {
+        categoryStatus.value = tempStatusName.value;
+    }
+    else {
+        categoryStatus.value = "";
+    }
+
     if (categoryName.value || categoryStatus.value || CategoryCommition.value) {
         isLoading.value = 'loading';
-        const res = await store.filterdData(categoryName.value, categoryStatus.value , CategoryCommition.value);
+        const res = await store.filterdData(tempCategoryName.value, tempStatusName.value , CategoryCommition.value);
         filted.value = res.data;
         filteredDataCount.value = res.data.length;
         isLoading.value = 'success';
@@ -241,7 +250,7 @@ const applyFilter = async () => {
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
-                        <select v-model="categoryStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <select v-model="tempStatusName" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                             <option value="1"> Active</option>
                             <option value="0"> Inactive</option>
                             <option value=""> All</option>
