@@ -168,13 +168,22 @@ export const useBrandStore = defineStore("brand", {
             }
         },
         //Filtered Brand Data In "/brand/"Page
-        async filterdData(brandName) {
+        async filterdData(brandName, brandStatus) {
             const config = useRuntimeConfig();
             const EndPoint = config.public.baseURl;
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
+        
             try {
-                const res = await fetch(`${EndPoint}/admin/${MasterKey}/brand?name=${brandName}`, {
+                // Construct query parameters dynamically
+                const queryParams = new URLSearchParams();
+                if (brandName && brandName !== undefined) queryParams.append('name', brandName);
+                if (brandStatus !== null) queryParams.append('status', brandStatus);
+        
+                // Build the full URL with query parameters
+                const url = `${EndPoint}/admin/${MasterKey}/brand?${queryParams.toString()}`;
+        
+                const res = await fetch(url, {
                     method: "GET",
                     headers: {
                         Accept: "application/json",
@@ -182,6 +191,7 @@ export const useBrandStore = defineStore("brand", {
                         Authorization: `Bearer ${app_token}`,
                     },
                 });
+        
                 const data = await res.json();
                 return data;
             } catch (error) {

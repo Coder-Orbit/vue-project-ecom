@@ -165,7 +165,7 @@ const applyFilter = async () => {
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                                <tr v-for="category in (categoryName && categoryName.length > 0 ? filted : categoryData)" :key="category.unique_id" class="bg-white odd:bg-gray-100">
+                                <tr v-for="category in (categoryName && categoryName.length > 0 || categoryStatus ? filted : categoryData)" :key="category.unique_id" class="bg-white odd:bg-gray-100">
                                     <!-- Serial ID -->
                                     <td class="p-1 text-center text-xs">
                                         {{category.id}}
