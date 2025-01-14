@@ -8,9 +8,9 @@ definePageMeta({
 });
 
 //Define Store
-const feedbackStore = useFeedbackStore();
-const feedbackData = computed(() => feedbackStore.feedbacks);
-const pagination = computed(() => feedbackStore.pagination);
+const store = useFeedbackStore();
+const feedbackData = computed(() => store.feedbacks);
+const pagination = computed(() => store.pagination);
 //For Loading Component
 const isLoading = ref("success");
 //For Right Side Filter
@@ -20,14 +20,48 @@ const toast = useToast();
 //Pagination Initial PageNumber
 const pageNumber = ref(1);
 
+const customerName = ref("")
+const tempCustomerName =  ref("")
+const customerStatus = ref("");
+const tempCustomerStatus = ref("")
+const filteredDataCount = ref();
+const filted = ref();
+
+// Watch customerName field changes and apply filter
+const applyFilter = async () => {
+            // Update customerName from tempCustomerName
+        if (tempCustomerName.value) {
+            customerName.value = tempCustomerName.value;
+        } else {
+            customerName.value = "";
+        }
+
+        // Update customerStatus from tempCustomerStatus
+        if (tempCustomerStatus.value) {
+            customerStatus.value = tempCustomerStatus.value;
+        } else {
+            customerStatus.value = "";
+        }
+    if (customerName.value || customerStatus.value) {
+        isLoading.value = 'loading';
+        const res = await store.filterdData(tempCustomerName.value, tempCustomerStatus.value);
+        console.log("Response: ",res.data)
+        filted.value = res.data.data;
+        console.log("Filed",filted)
+        filteredDataCount.value = res.data.length;
+        isLoading.value = 'success';
+    }
+};
+
+
 // On Load or Reload Get New Updated Data
 const loadFeedbacks = async () => {
   isLoading.value = "Loading";
-  await feedbackStore.getAllFeedbacks(
+  await store.getAllFeedbacks(
     pageNumber.value,
-    feedbackStore.pagination.perPage
+    store.pagination.perPage
   );
-  feedbackData.value = feedbackStore.feedbacks;
+  feedbackData.value = store.feedbacks;
   console.log(feedbackData.value);
   isLoading.value = "success";
 };
@@ -39,7 +73,7 @@ onBeforeMount(async () => {
 
 // Watch for changes in the store Coupon and update CouponData accordingly
 watch(
-  () => feedbackStore.feedbacks,
+  () => store.feedbacks,
   (newFeedback) => {
     feedbackData.value = newFeedback;
   }
@@ -47,26 +81,27 @@ watch(
 // Watch PageNumber Change
 watch(pageNumber, async (newPage) => {
   isLoading.value = "loading";
-  await feedbackStore.getAllFeedbacks(newPage, pagination.value.perPage);
+  await store.getAllFeedbacks(newPage, pagination.value.perPage);
   isLoading.value = "success";
 });
 // OnPage Change Get New Data
 const onPageChange = (newPage) => {
   pageNumber.value = newPage;
-  feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+  store.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
 };
 // On Search Get New Coupon Data
 const handleSearch = () => {
   pageNumber.value = 1;
-  feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+  store.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
 };
 // On Apply Filter Get New Coupon Data
 const goToPage = (page) => {
   if (page > 0 && page <= pagination.value.totalPages) {
     pageNumber.value = page;
-    feedbackStore.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
+    store.getAllFeedbacks(pageNumber.value, pagination.value.perPage);
   }
 };
+
 //Status update
 const updateStatus = async (id, status, rattings, comments) => {
   isLoading.value = "loading";
@@ -78,7 +113,7 @@ const updateStatus = async (id, status, rattings, comments) => {
       comments: comments,
     });
     console.log(feedbackData);
-    const res =  await feedbackStore.updateFeedback(feedbackData, id);
+    const res =  await store.updateFeedback(feedbackData, id);
     if (res.msg === "feeback_update") {
       toast.add({
                 severity: 'success',
@@ -106,6 +141,9 @@ const updateStatus = async (id, status, rattings, comments) => {
         isLoading.value = "success";
     }
 };
+
+console.log("FeedBack:",feedbackData)
+console.log("")
 
 </script>
 <template>
@@ -155,11 +193,8 @@ const updateStatus = async (id, status, rattings, comments) => {
             </thead>
             <!--Table Body-->
             <tbody>
-              <tr
-                v-for="review in feedbackData.data"
-                :key="review.id"
-                class="bg-white odd:bg-gray-100"
-              >
+              <!-- <tr v-for="vendor in (vendorName && vendorName.length > 0 || vendorStatus ? filted : vendorData)" :key="vendor.unique_id" class="bg-white odd:bg-gray-100"></tr> -->
+              <tr v-for="review in (customerName && customerName.length > 0 || customerStatus ? filted : feedbackData.data)" :key="review.id" class="bg-white odd:bg-gray-100">
               <!--Feedback Id-->
                 <td class="p-1 text-center text-xs">{{ review.id }}</td>
                 <!--Feedback Name-->
@@ -248,10 +283,10 @@ const updateStatus = async (id, status, rattings, comments) => {
         position="right"
       >
         <div class="w-full">
-          <label for="dd-city" class="text-sm w-full">Customer Id</label>
+          <label for="dd-city" class="text-sm w-full">Customer Name</label>
           <input
             type="text"
-            v-model="value"
+            v-model="tempCustomerName"
             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
             placeholder="Customer Id"
           />
@@ -260,18 +295,20 @@ const updateStatus = async (id, status, rattings, comments) => {
           <label for="dd-city" class="text-sm w-full">Status</label>
           <select
             name="status"
+            v-model="tempCustomerStatus"
             id="commission_type"
             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
           >
             <option value="1">Active</option>
             <option value="0">Inactive</option>
+            <option value="">All</option>
           </select>
         </div>
 
         <div class="font-semibold flex mt-2 place-content-end">
           <button
             class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md"
-            @click="visibleRight = true"
+            @click="applyFilter"
           >
             <Icon name="fluent:search-12-filled"></Icon>
             Search

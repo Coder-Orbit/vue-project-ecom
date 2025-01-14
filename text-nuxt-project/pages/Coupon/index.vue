@@ -35,15 +35,42 @@
     // Date Formatter
     const { dateMonthFunction } = useDataDate();
     //FilterData
-    watch(couponName, async (newValue) => {
-        if (newValue || couponStatus.value) {
-            isLoading.value = 'loading';
-            const res = await store.filterdData(newValue, couponStatus.value);
-            filted.value = res.data;
-            filteredDataCount.value = res.data.length
-            isLoading.value = 'success';
+    const tempCouponName = ref("")
+    const tempCouponStatus = ref("")
+
+    const filterCoupons = async () => {
+        // Update couponName from tempCouponName
+        if (tempCouponName.value) {
+            couponName.value = tempCouponName.value;
+        } else {
+            couponName.value = "";
         }
-    });
+
+        // Update couponStatus from tempCouponStatus
+        if (tempCouponStatus.value) {
+            couponStatus.value = tempCouponStatus.value;
+        } else {
+            couponStatus.value = "";
+        }
+
+        // Check if there is a filter applied
+        if (couponName.value || couponStatus.value) {
+            isLoading.value = 'loading';
+            try {
+                const res = await store.filterdData(tempCouponName.value, tempCouponStatus.value);
+                filted.value = res.data;
+                // console.log("Response::", res, "Name:", tempCouponName.value, "Status:", tempCouponStatus.value);
+                filteredDataCount.value = res.data.length;
+                isLoading.value = 'success';
+            } catch (error) {
+                console.error("Error fetching filtered data:", error);
+                isLoading.value = 'error';
+            }
+        }
+    };
+
+    // watch(tempCouponName, filterCoupons);
+    watch(couponStatus, filterCoupons);
     // On Load or Reload Get New Updated Data
     const loadCoupons = async () => {
         isLoading.value = 'Loading';
@@ -53,15 +80,21 @@
     };
     // Ensure data is loaded before the component mounts
     onBeforeMount(async () => {
-    await loadCoupons();
+     await loadCoupons();
     });
     // Watch for changes in the store Coupon and update CouponData accordingly
-    watch(
-        () => store.coupons,
-        (newCoupons) => {
-            couponData.value = newCoupons;
-        }
-    );
+    // watch(
+    //     () => store.coupons,
+    //     (newCoupons) => {
+    //         couponData.value = newCoupons;
+    //     }
+    // );
+    // const updateCouponData = () => {
+    //     couponData.value = store.coupons;
+    // };
+    // onMounted(() => {
+    //     updateCouponData();
+    // })
     // Watch PageNumber Change
     watch(pageNumber,async (newPage) => {
         isLoading.value = 'loading';
@@ -159,7 +192,7 @@
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                                <tr v-for="coupon in (couponName && couponName.length > 0 ? filted : couponData)" :key="coupon.unique_id" class="bg-white odd:bg-gray-100">
+                                <tr v-for="coupon in (couponName && couponName.length > 0 || couponStatus ? filted : couponData)" :key="coupon.unique_id" class="bg-white odd:bg-gray-100">
                                     <!-- Serial ID -->
                                     <td class="p-1 text-left text-sm w-8">{{ coupon.id }}</td>
                                     <!-- Icon -->
@@ -177,7 +210,7 @@
                                     <!--End Offer-->
                                     <td class="p-1 text-left text-sm">{{coupon.end_offer}}</td>
                                     <!--Status-->
-                                    <td class="p-1 text-left text-xs">{{ coupon.status === '1' ? 'Active' : 'Inactive' }}</td>
+                                    <td class="p-1 text-left text-xs">{{ coupon.status == '1' ? 'Active' : 'Inactive' }}</td>
                                     <!--Created Date-->
                                     <td class="p-1 text-left text-xs">{{  dateMonthFunction(coupon.created_at)  }}</td>
                                     <!--Created By-->
@@ -220,11 +253,11 @@
                 <Sidebar v-model:visible="visibleRight" header="Coupon Filter" position="right">
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Coupon Name</label>
-                        <input type="text" v-model="couponName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Coupon Name"/>
+                        <input type="text" v-model="tempCouponName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Coupon Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
-                        <select v-model="couponStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <select v-model="tempCouponStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                             <option value="1"> Active</option>
                             <option value="0"> Inactive</option>
                             <option value=""> All</option>
@@ -234,18 +267,18 @@
                     <div class="font-semibold flex mt-2 place-content-end">
                         
 
-                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="visibleRight = true">
+                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="filterCoupons">
                             <Icon name="fluent:search-12-filled"></Icon>
                             Search
                         </button>
 
                         
                     </div>
-                                            <!-- Show the length of filtered data -->
-                                            <div class="mt-2 text-sm text-gray-600">
-            <span v-if="filteredDataCount">Showing {{ filteredDataCount }} results</span>
-            <span v-else>No results found</span>
-          </div>
+                    <!-- Show the length of filtered data -->
+                    <div class="mt-2 text-sm text-gray-600">
+                        <span v-if="filteredDataCount">Showing {{ filteredDataCount }} results</span>
+                        <span v-else>No results found</span>
+                    </div>
 
 
                 </Sidebar>

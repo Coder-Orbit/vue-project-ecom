@@ -30,19 +30,36 @@
     const { dateMonthFunction } = useDataDate();
 //sidebar
 const vendorName = ref();
+const tempVendorName =  ref()
 const vendorStatus = ref("");
+const tempVendorStatus = ref("")
 const filteredDataCount = ref();
 const filted = ref();
 // Watch vendorName field changes and apply filter
-watch(vendorName, async (newValue) => {
-  if (newValue || vendorStatus.value) {
-    isLoading.value = 'loading';
-    const res = await store.filterdData(newValue, vendorStatus.value);
-    filted.value = res.data;
-    filteredDataCount.value = res.data.length
-    isLoading.value = 'success';
-  }
-});
+const applyFilter = async () => {
+            // Update vendorName from tempVendorName
+        if (tempVendorName.value) {
+            vendorName.value = tempVendorName.value;
+        } else {
+            vendorName.value = "";
+        }
+
+        // Update vendorStatus from tempVendorStatus
+        if (tempVendorStatus.value) {
+            vendorStatus.value = tempVendorStatus.value;
+        } else {
+            vendorStatus.value = "";
+        }
+    if (vendorName.value || vendorStatus.value) {
+        isLoading.value = 'loading';
+        const res = await store.filterdData(tempVendorName.value, tempVendorStatus.value);
+        filted.value = res.data;
+        filteredDataCount.value = res.data.length;
+        isLoading.value = 'success';
+    }
+};
+
+// watch([vendorName, vendorStatus], applyFilter);
 
     // On Load or Reload Get New Updated Data
     const loadVendors = async () => {
@@ -155,7 +172,7 @@ watch(vendorName, async (newValue) => {
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                                <tr v-for="vendor in (vendorName && vendorName.length > 0 ? filted : vendorData)" :key="vendor.unique_id" class="bg-white odd:bg-gray-100">
+                                <tr v-for="vendor in (vendorName && vendorName.length > 0 || vendorStatus ? filted : vendorData)" :key="vendor.unique_id" class="bg-white odd:bg-gray-100">
                                     <!-- Serial ID -->
                                     <td class="p-1 text-center text-xs">{{  vendor.id }}</td>
                                     <!-- Icon -->
@@ -167,7 +184,7 @@ watch(vendorName, async (newValue) => {
                                     <!--Description-->
                                     <td class="p-1 text-left text-xs">{{ vendor.description }}</td>
                                     <!--Status-->
-                                    <td class="p-1 text-left text-xs">{{ vendor.status === '1' ? 'Active' : 'Inactive' }}</td>
+                                    <td class="p-1 text-left text-xs">{{ vendor.status == '1' ? 'Active' : 'Inactive' }}</td>
                                     <!--Created_At-->
                                     <td class="p-1 text-left text-xs">{{ dateMonthFunction(vendor.created_at)  }}</td>
                                     <!--Created By-->
@@ -210,11 +227,11 @@ watch(vendorName, async (newValue) => {
                 <Sidebar v-model:visible="visibleRight" header="Vendor Filter" position="right">
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Vendor Name</label>
-                        <input type="text" v-model="vendorName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
+                        <input type="text" v-model="tempVendorName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Vendor Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
-                        <select v-model="vendorStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                        <select v-model="tempVendorStatus" name="status" id="commission_type" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
                             <option value="1"> Active</option>
                             <option value="0"> Inactive</option>
                             <option value=""> All</option>
@@ -223,7 +240,7 @@ watch(vendorName, async (newValue) => {
 
                     <div class="font-semibold flex mt-2 place-content-end">
 
-                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="visibleRight = true">
+                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="applyFilter">
                             <Icon name="fluent:search-12-filled"></Icon>
                             Search
                         </button>

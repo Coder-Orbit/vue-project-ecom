@@ -172,13 +172,21 @@ export const useVendorStore = defineStore("vendor", {
             }
         },
         //Filtered Vendor Data In "/Vendor/"Page
-        async filterdData(vendorName) {
+        async filterdData(vendorName, vendorStatus) {
             const config = useRuntimeConfig();
             const EndPoint = config.public.baseURl;
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
+            
+            // Construct query parameters conditionally
+            const queryParameters = [];
+            if (vendorName) queryParameters.push(`name=${encodeURIComponent(vendorName)}`);
+            if (vendorStatus) queryParameters.push(`status=${encodeURIComponent(vendorStatus)}`);
+        
+            const queryString = queryParameters.length ? `?${queryParameters.join('&')}` : '';
+        
             try {
-                const res = await fetch(`${EndPoint}/admin/${MasterKey}/vendor?name=${vendorName}`, {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/vendor${queryString}`, {
                     method: "GET",
                     headers: {
                         Accept: "application/json",
@@ -186,10 +194,15 @@ export const useVendorStore = defineStore("vendor", {
                         Authorization: `Bearer ${app_token}`,
                     },
                 });
+        
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+        
                 const data = await res.json();
                 return data;
             } catch (error) {
-                console.log(error);
+                console.error(error);
                 return { success: false, message: 'An error occurred during filtering' };
             }
         }

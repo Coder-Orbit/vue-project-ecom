@@ -10,6 +10,7 @@ export const useFeedbackStore = defineStore("feedback", {
         },
     }),
     getters: {
+        status: (state) => state.status,
         currentPage: (state) => state.pagination.currentPage,
         totalPages: (state) => state.pagination.totalPages,
         totalItems: (state) => state.pagination.totalItems,
@@ -65,5 +66,39 @@ export const useFeedbackStore = defineStore("feedback", {
                 console.log(error);
             }
         },
+        async filterdData(CustomerName, CustomerStatus) {
+            const config = useRuntimeConfig();
+            const EndPoint = config.public.baseURl;
+            const MasterKey = config.public.masterToken;
+            const app_token = useTokenStore().getToken;
+        
+            // Construct query parameters conditionally
+            const queryParameters = [];
+            if (CustomerName) queryParameters.push(`name=${encodeURIComponent(CustomerName)}`);
+            if (CustomerStatus) queryParameters.push(`status=${encodeURIComponent(CustomerStatus)}`);
+        
+            const queryString = queryParameters.length ? `?${queryParameters.join('&')}` : '';
+        
+            try {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/feedbacks${queryString}`, {
+                    method: "GET",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${app_token}`,
+                    },
+                });
+        
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+        
+                const data = await res.json();
+                return data;
+            } catch (error) {
+                console.error(error);
+                return { success: false, message: 'An error occurred during filtering' };
+            }
+        }
     }
 });
