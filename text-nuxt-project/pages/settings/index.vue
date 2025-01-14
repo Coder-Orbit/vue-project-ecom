@@ -14,7 +14,7 @@
     const updateId = ref(null)
 
     const Namefield = ref(null)
-    const Valuefield = ref(null)
+    // const Valuefield = ref(null)
     const filedGroup = ref(null)
 
     const loading = ref('not')
@@ -89,7 +89,7 @@ const getData = async () => {
         });
 
         loading.value = "success";
-        // console.log("Web data:",web_settings.value);
+        console.log("Web data:",web_settings.value);
     } catch (err) {
         console.log(err);
     }
@@ -148,10 +148,11 @@ const editField = async (id) => {
 const deleteData = async (id) => {
     try {
         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/web_settings/${id}`, {
-            method: 'post',
+            method: "DELETE",
             headers: headers.value,
-            body: { _method: 'delete' },
+            // body: { _method: 'delete' },
         });
+        console.log(id)
         console.log("Delete", response)
     } catch (err) {
         console.log(err);
@@ -159,41 +160,44 @@ const deleteData = async (id) => {
 }
 
 const nameFieldFunc = async (n) => {
-    if (n.target.name === "field_name") {
-        Namefield.value = n.target.value;
-    } else if (n.target.name === "value") {
-        Valuefield.value = n.target.value;
-    } else if (n.target.name === "group") {
-        filedGroup.value = n.target.value;
-    }
-    console.log("Name:",Namefield.value)
-    console.log("Value:",Valuefield.value)
-    console.log("Group:",filedGroup.value)
+    const fieldMapping = {
+        field_name: Namefield,
+        // value: Valuefield,
+        group: filedGroup,
+    };
 
+    // Dynamically update the corresponding field
+    if (fieldMapping[n.target.name]) {
+        fieldMapping[n.target.name].value = n.target.value || null;
+    }
+
+    console.log("Name:", Namefield.value);
+    // console.log("Value:", Valuefield.value);
+    console.log("Group:", filedGroup.value);
+
+    // Construct URL dynamically
     let url = `${EndPoint}/admin/${MasterKey}/web_settings?limit_per_page=10`;
+    const params = {
+        field_name: Namefield.value,
+        // value: Valuefield.value,
+        group: filedGroup.value,
+    };
 
-    if (Namefield.value) {
-        url += `&field_name=${Namefield.value}`;
-    }
-    if (Valuefield.value) {
-        url += `&value=${Valuefield.value}`;
-    }
-    if (filedGroup.value) {
-        url += `&group=${filedGroup.value}`;
-    }
+    // Add parameters to the URL if they exist
+    Object.entries(params).forEach(([key, val]) => {
+        if (val) url += `&${key}=${val}`;
+    });
 
     try {
         web_settings.value = await $fetch(url, {
-            method: 'get',
+            method: 'GET',
             headers: headers.value,
         });
-
         loading.value = "success";
-        // console.log("Web data:",web_settings.value);
     } catch (err) {
-        console.log(err);
+        console.error(err);
     }
-}
+};
 
 </script>
 <template>

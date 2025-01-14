@@ -173,6 +173,7 @@ export const useSlideStore = defineStore("slide", {
       const EndPoint = config.public.baseURl;
       const MasterKey = config.public.masterToken;
       const app_token = useTokenStore().getToken;
+      // console.log(slideName, slideStatus)
       try {
         const res = await fetch(`${EndPoint}/admin/${MasterKey}/slide?name=${slideName}`, {
           method: "GET",

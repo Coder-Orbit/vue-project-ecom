@@ -34,16 +34,36 @@
     const toast = useToast();
     // Date Formatter
     const { dateMonthFunction } = useDataDate();
+
     //FilterData
-    watch(brandName, async (newValue) => {
-        if (newValue || brandStatus.value) {
+    const tempBrandName = ref("");
+
+
+    const filterData = async () => {
+
+        if (tempBrandName.value) {
+            brandName.value = tempBrandName.value;
+        }
+        else {
+            brandName.value = "";
+        }
+
+        if (brandName.value || brandStatus.value) {
             isLoading.value = 'loading';
-            const res = await store.filterdData(newValue, brandStatus.value);
+            const res = await store.filterdData(brandName.value, brandStatus.value);
+
+            console.log(res)
+
             filted.value = res.data;
-            filteredDataCount.value = res.data.length
+
+            filteredDataCount.value = res.data.length;
+
             isLoading.value = 'success';
         }
-    });
+    };
+
+
+
     // On Load or Reload Get New Updated Data
     const loadBrands = async () => {
         isLoading.value = 'Loading';
@@ -56,18 +76,19 @@
     await loadBrands();
     });
     // Watch for changes in the store Brand and update BrandData accordingly
-    watch(
-    () => store.brands,
-    (newbrands) => {
-        brandData.value = newbrands;
-    }
-    );
+    const updateBrandData = () => {
+        brandData.value = store.brands;
+    };
+    onMounted(() => {
+        updateBrandData();
+    })
     // Watch PageNumber Change
     watch(pageNumber,async (newPage) => {
     isLoading.value = 'loading';
     await store.getAllBrands(newPage, pagination.value.perPage);
     isLoading.value = 'success';
     });
+    
     // OnPage Change Get New Data
     const onPageChange = (newPage) => {
         pageNumber.value = newPage;
@@ -152,12 +173,12 @@
                                     <th class="p-1 text-left">Status</th>
                                     <th class="p-1 text-left">Created Date</th>
                                     <th class="p-1 text-center">Created By</th>
-                                    <th class="p-1 text-center w-24">...</th>
+                                    <th class="p-1 text-center w-24">Actions</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
                             <tbody>
-                                <tr v-for="brand in (brandName && brandName.length > 0 ? filted : brandData)" :key="brand.unique_id" class="bg-white odd:bg-gray-100">
+                                <tr v-for="brand in (brandName && brandName.length > 0 || brandStatus ? filted : brandData)" :key="brand.unique_id" class="bg-white odd:bg-gray-100">
                                     <!-- Serial ID -->
                                     <td class="p-1 text-center text-xs">{{ brand.id }}</td>
                                     <!-- Icon -->
@@ -171,7 +192,7 @@
                                     <!--Commission_Type-->
                                     <td class="p-1 text-left text-xs">{{ brand.commission_type }}</td>
                                     <!--Status-->
-                                    <td class="p-1 text-left text-xs">{{ brand.status }}</td>
+                                    <td class="p-1 text-left text-xs">{{ brand.status == '1' ? 'Active' : 'Inactive'  }}</td>
                                     <!--Created Date-->
                                     <td class="p-1 text-left text-xs">{{  dateMonthFunction(brand.created_at)  }}</td>
                                     <!--Creaeted By-->
@@ -212,7 +233,7 @@
                 <Sidebar v-model:visible="visibleRight" header="Brand Filter" position="right">
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Brand Name</label>
-                        <input type="text" v-model="brandName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
+                        <input type="text" v-model="tempBrandName" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Brand Name"/>
                     </div>
                     <div class="w-full mt-2">
                         <label for="dd-city" class="text-sm w-full">Status</label>
@@ -226,7 +247,7 @@
                     <div class="font-semibold flex mt-2 place-content-end">
                         
 
-                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="visibleRight = true">
+                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="filterData">
                             <Icon name="fluent:search-12-filled"></Icon>
                             Search
                         </button>

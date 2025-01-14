@@ -33,16 +33,17 @@ const toast = useToast();
 const { dateMonthFunction } = useDataDate();
 //sidebar
 const slideName = ref();
-const SlideStatus = ref("");
+// const SlideStatus = ref("");
 const filteredDataCount = ref();
 const filted = ref();
+
 // Watch slideName field changes and apply filter
-watch(slideName, async (newValue) => {
-  if (newValue || SlideStatus.value) {
+watch([slideName], async ([newSlideName]) => {
+  if (newSlideName) {
     isLoading.value = 'loading';
-    const res = await store.filterdData(newValue, SlideStatus.value);
+    const res = await store.filterdData(newSlideName);
     filted.value = res.data;
-    filteredDataCount.value = res.data.length
+    filteredDataCount.value = res.data.length;
     isLoading.value = 'success';
   }
 });
@@ -53,6 +54,7 @@ const loadSlides = async () => {
   isLoading.value = 'Loading';
   await store.getAllSlides(pageNumber.value, store.pagination.perPage);
   slideData.value = store.slides;
+  console.log(slideData.value)
   isLoading.value = 'success';
 };
 
@@ -76,9 +78,9 @@ watch(slideName, async (newValue) => {
   isLoading.value = 'success';
 });*/
 
-watch(SlideStatus, (newValue) => {
-  console.log('Slide Status changed:', newValue);
-});
+// watch(SlideStatus, (newValue) => {
+//   console.log('Slide Status changed:', newValue);
+// });
 
 
 // OnPage Change Get New Data
@@ -188,7 +190,7 @@ const openDeleteModal = (slideId) => {
                 <!-- Description -->
                 <td class="p-1 text-left text-xs">{{ slide.description }}</td>
                 <!-- Status -->
-                <td class="p-1 text-left text-xs">{{ slide.status === '1' ? 'Active' : 'Inactive' }}</td>
+                <td class="p-1 text-left text-xs">{{ slide.status == '1' ? 'Active' : 'Inactive' }}</td>
                 <!-- Created Date -->
                 <td class="p-1 text-left text-xs">{{ dateMonthFunction(slide.created_at) }}</td>
                 <!-- Created By -->
@@ -239,7 +241,7 @@ const openDeleteModal = (slideId) => {
               class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
               placeholder="Slide Name" />
           </div>
-          <div class="w-full mt-2">
+          <!-- <div class="w-full mt-2">
             <label for="status" class="text-sm w-full">Status</label>
             <select v-model="SlideStatus" @change="handleSearch" name="status" id="status"
               class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
@@ -247,7 +249,7 @@ const openDeleteModal = (slideId) => {
               <option value="1">Active</option>
               <option value="0">Inactive</option>
             </select>
-          </div>
+          </div> -->
           <div class="font-semibold flex mt-2 place-content-end">
             <button
               class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md"
