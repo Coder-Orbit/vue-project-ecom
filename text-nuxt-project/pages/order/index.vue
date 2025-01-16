@@ -173,11 +173,11 @@ const fetchFilteredProducts = async () => {
 
 
 
-const toggleDropdown = (orderID) => {
-  idChecker.value = orderID;
-  console.log(idChecker.value);
-  isDropdownVisible.value = isDropdownVisible.value === orderID ? null : orderID;
-};
+// const toggleDropdown = (orderID) => {
+//   idChecker.value = orderID;
+//   console.log(idChecker.value);
+//   isDropdownVisible.value = isDropdownVisible.value === orderID ? null : orderID;
+// };
 
 const updateStatus = async () => {
   loading.value = "not";
@@ -209,6 +209,7 @@ const updateStatus = async () => {
 const openDeleteModal = (id, orderID) => {
     selectedStatus.value = id;
     currentOrderID.value = orderID;
+    console.log("OpenModal ID: ",id)
     // deleteModalVisible.value = true;
     deleteModalVisible.value = deleteModalVisible.value === null ? orderID : orderID;
 };
@@ -225,6 +226,43 @@ const testFunc = () => {
             </ul>`).join("")}
             `;
     console.log(statusValue.value);
+};
+
+// Props for reusability
+
+
+// Reactive variables
+// const statusValue = ref("");
+// const isDropdownVisible = ref(null);
+
+// Toggle dropdown visibility
+const toggleDropdown = (uniqueId) => {
+  console.log("Unique ID:", uniqueId);
+
+  // Toggle dropdown visibility
+  isDropdownVisible.value =
+    isDropdownVisible.value === uniqueId ? null : uniqueId;
+
+  // Generate the dynamic HTML for the dropdown
+  statusValue.value = `
+    <ul class="py-2 text-xs text-gray-700 dark:text-gray-200">
+      ${status.value
+        .map(
+          (option) => `
+          <li class="cursor-pointer">
+            <a
+              href="#"
+              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+              @click.prevent=openDeleteModal(${option.id}, '${uniqueId}')"
+            >
+              ${option.name}
+            </a>
+          </li>
+        `
+        )
+        .join("")}
+    </ul>
+  `;
 };
 
 </script>
@@ -285,11 +323,14 @@ const testFunc = () => {
                             <td class="p-1 text-left text-xs">{{ order.due }}</td>
                             <td class="p-1">
                                 <!-- Button to toggle dropdown -->
-                                <button @click="testFunc" class="text-dark rounded-lg text-xs px-2 py-1 text-left inline-flex items-center" type="button">
+                                <button @click="toggleDropdown(order.unique_id)" class="text-dark rounded-lg text-xs px-2 py-1 text-left inline-flex items-center" type="button">
                                     {{ order.status.name }} <Icon name="material-symbols-light:keyboard-arrow-down-rounded" width="2em" height="2em"/>
                                 </button>
                                 <!-- Dropdown menu -->
-                                <div v-html="statusValue" class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"/>
+                                <div class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700" ref="dropdownContainer" v-show="isDropdownVisible === order.unique_id">
+                                    <div v-html="statusValue" />
+                                </div>
+                                
                             </td>
                             <td class="p-1 text-xs grid text-center justify-items-center">
                                 <div class="flex">
