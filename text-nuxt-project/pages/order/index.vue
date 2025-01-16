@@ -50,6 +50,7 @@ onMounted(async () => {
         method: 'get',
         headers: headers.value,
         });
+        console.log("Response:",response)
         coreofOrders.value = response.orders;
         // console.log(response.orders);
         orders.value = response.orders.data;
@@ -329,6 +330,8 @@ const toggleDropdown = (uniqueId) => {
                                 <!-- Dropdown menu -->
                                 <div class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700" ref="dropdownContainer" v-show="isDropdownVisible === order.unique_id">
                                     <div v-html="statusValue" />
+                                    <!-- <div></div> -->
+                                    <template>{{ statusValue }}</template>
                                 </div>
                                 
                             </td>

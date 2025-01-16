@@ -3,28 +3,137 @@
     import InputGroupAddon from 'primevue/inputgroupaddon';
     import Sidebar from 'primevue/sidebar';
 
+    const { dateMonthFunction, dateFunction } = useDataDate();
+    const visibleRight = ref(false);
 
+    const transaction = ref(null)
+    const pageNumber = ref(1)
+    const coreTranstion = ref(null)
 
+    const universalQuery = ref("")
+    const trasactionQuery = ref("");
+    const orderIDQuery = ref("");
+    const fromDateQuery = ref("")
+    const toDateQuery = ref("")
 
-    import { ref } from "vue";
+    const loading = ref('not')
 
-    const router = useRouter();
+    // replace with actual API endpoint and master key
+    const config = useRuntimeConfig();
+    const EndPoint = config.public.baseURl;
+    const MasterKey = config.public.masterToken;
+    const app_token = useTokenStore().getToken;
+
+    const headers = ref({
+    "Accept": "application/json",
+    "Authorization": `Bearer ${app_token}`,
+    "App-Master-Key": `${MasterKey}`
+    })
 
     definePageMeta({
         layout: "dashboard",
         middleware: "auth",
     })
 
-    const visibleRight = ref(false);
-    
+    onMounted( async () => {
+        loading.value = "not";
+        try {
 
+            const response = await $fetch(`${EndPoint}/admin/${MasterKey}/transaction?orderBy=desc&page=1`, {
+            method: 'get',
+            headers: headers.value,
+            });
+            coreTranstion.value = response.trasactions.links
+            transaction.value = response.trasactions.data
+            // console.log(response)
+
+        } catch (error) {
+            console.log(error);
+        }
+        loading.value = "success";
+
+    }
+
+    )
+
+    const paginate = async (page) => {
+    loading.value = "not";
+
+    pageNumber.value = page;
+
+    if(page === "&laquo; Previous"){
+        pageNumber.value  = ((coreTranstion.value.current_page-1) == 0 ? 1 : (coreTranstion.value.current_page-1));
+
+    }else if( page === "Next &raquo;"){
+
+        pageNumber.value  = ((coreTranstion.value.current_page+1) == coreTranstion.value.last_page ? coreTranstion.value.last_page : (coreTranstion.value.current_page+1));
+        
+    }
+    console.log("Page Number:", pageNumber.value, coreTranstion.value, transaction.value)
+
+    try {
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/transaction?page=${pageNumber.value}`, {
+            method: 'get',
+            headers: headers.value,
+        });
+        transaction.value = response.trasactions.data;
+        coreTranstion.value = response.trasactions.links
+    } catch (error) {
+        console.log(error);
+    }
+
+    loading.value = "success";
+    }
+
+
+
+    const fetchFilteredTransaction = async () => {
+        loading.value = "not"
+
+        try {
+            console.log(dateFunction(fromDateQuery.value))
+            console.log(toDateQuery.value)
+
+            const fromDateParams = fromDateQuery.value ? fromDateQuery.value.toISOString().split('T')[0] : '';
+            const toDateParams = toDateQuery.value ? toDateQuery.value.toISOString().split('T')[0] : '';
+            const dateRange = fromDateParams && toDateParams ? `${fromDateParams},${toDateParams}` : undefined;
+
+            const params = {
+                name: universalQuery.value,
+                and_transaction_id: trasactionQuery.value || undefined,
+                and_order_id: orderIDQuery.value || undefined,
+                and_between_transaction_date: dateRange
+            }
+
+            const filteredParams = Object.fromEntries(
+                Object.entries(params).filter(([_, value]) => value !== undefined)
+            );
+
+            const response = await $fetch(`${EndPoint}/admin/${MasterKey}/transaction?`,{
+                method: "GET",
+                headers: headers.value,
+                params: filteredParams
+            })
+            console.log(response)
+
+            transaction.value = response.trasactions.data;
+
+            loading.value = "success";
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
 </script>
 <template>
     <NuxtLayout :name="layout">
             <div class="w-full px-3 mt-1">
 
-                
+                <div v-if="loading !== 'success'" class="min-h-screen w-full top-0 left-0 z-30 flex items-center fixed">
+                    <div class="w-12 mx-auto">
+                        <img alt="loading..." src="/spinner.gif" />
+                    </div>
+                </div>
 
                 <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                     <div class="flex w-full justify-between bg-gray-400 text-white">
@@ -49,286 +158,30 @@
                     <div class=" h-[calc(100vh-10.4rem)] overflow-y-auto border-b px-3 pt-3">
                         <table class=" w-full table-auto">
                             <thead>
-                                <tr class="w-full bg-gray-300 text-sm">
+                                <tr class="w-full bg-gray-300 text-sm" >
                                     <th class="p-1 text-left text-sm w-8">SL</th>
                                     <th class="p-1 text-left text-sm">Order Id</th>
                                     <th class="p-1 text-left text-sm">Transaction Id</th>
                                     <th class="p-1 text-left text-sm">Payment Method</th>
-                                    <th class="p-1 text-left text-sm">Total Amount</th>
-                                    <th class="p-1 text-left text-sm">Advance</th>
-                                    <th class="p-1 text-left text-sm">Due</th>
+                                    <th class="p-1 text-left text-sm">Debit</th>
+                                    <th class="p-1 text-left text-sm">Credit</th>
+                                    <th class="p-1 text-left text-sm">Total</th>
                                     <th class="p-1 text-center text-sm">Date</th>
                                     <th class="p-1 text-center w-24">...</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">1</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
+                                <tr v-for="transac in transaction" class="bg-white odd:bg-gray-100" :key="transac.id">
+                                    <td class="p-1 text-center text-xs">{{ transac.id }}</td>
+                                    <td class="p-1 text-left text-xs">{{ transac.order_id }}</td>
+                                    <td class="p-1 text-left text-xs">{{ transac.transaction_id }}</td>
+                                    <td class="p-1 text-left text-xs">{{ transac.payment_method }}</td>
+                                    <td class="p-1 text-left text-xs">{{ transac.debit }}</td>
+                                    <td class="p-1 text-left text-xs">{{ transac.credit }}</td>
+                                    <td class="p-1 text-left text-xs">{{ transac.total_amount }}</td>
+                                    <td class="p-1 text-center text-xs">{{dateMonthFunction(transac.updated_at)}}</td>
                                     <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">2</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">3</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">4</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">5</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">6</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">7</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">8</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">9</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">10</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">11</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">12</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">13</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">14</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">15</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">16</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
-                                            <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
-                                        </NuxtLink>
-                                    </td>
-                                </tr>
-
-                                <tr class="bg-white odd:bg-gray-100">
-                                    <td class="p-1 text-center text-xs">17</td>
-                                    <td class="p-1 text-left text-xs">1688272740</td>
-                                    <td class="p-1 text-left text-xs">8Pp7WIySGTkEZXj</td>
-                                    <td class="p-1 text-left text-xs">Promo Code</td>
-                                    <td class="p-1 text-left text-xs">200</td>
-                                    <td class="p-1 text-left text-xs">150</td>
-                                    <td class="p-1 text-left text-xs">50</td>
-                                    <td class="p-1 text-center text-xs">2024-06-09 12:09</td>
-                                    <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" to="/product/details">
+                                        <NuxtLink class="text-right" :to="`/transaction/details/${transac.order_id}`">
                                             <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                         </NuxtLink>
                                     </td>
@@ -336,56 +189,53 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="order_title text-sm flex justify-between h-full ">
-                        <div class="mt-[2px] ml-3 ">
+
+                    <div class="order_title text-sm flex justify-between h-full">
+
+                        <div class="mt-[2px] ml-3">
                             <InputGroup>
-                                <input type="number" class="border border-r-0 p-1 focus:outline-none"  placeholder="Pagen Number" />
-                                <icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" name="nonicons:go-16" color="#000" />
+                                <input type="number" v-model="pageNumber" class="border border-r-0 p-1 focus:outline-none" placeholder="Page Number" />
+                                <Icon class="text-3xl bg-gray-200 px-2 w-12 rounded-r cursor-pointer" @click="paginate(pageNumber)" name="nonicons:go-16" color="#000" />
                             </InputGroup>
                         </div>
-                        <div class="flex -mt-1">
-                            <a class="p-2 mt-1 text-black " href="#">&laquo;</a>
-                            <a class="p-1 px-2 mt-1 border-t-4 border-red-500 text-red-500" href="#">1</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">2</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">3</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">4</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">5</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">...</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">6</a>
-                            <a class="p-2 mt-1 text-black m-1" href="#">&raquo;</a>
+
+                        <div class="flex -mt-1 h-dvh">
+                            <a v-for="(page, index) in coreTranstion" :key="index" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500': page.active}" class="px-2 pt-2 mt-1 block text-black" href="#" />
                         </div>
+
                     </div>
                 </div>
 
                 <Sidebar v-model:visible="visibleRight" header="Transaction Filter" position="right">
+                    
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">All</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="All"/>
+                        <input type="text" v-model="universalQuery" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="All"/>
                     </div>
+
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Transaction Id</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Transaction Id"/>
+                        <input type="text" v-model="trasactionQuery" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Transaction Id"/>
                     </div>
+
                     <div class="w-full">
                         <label for="dd-city" class="text-sm w-full">Order Id</label>
-                        <input type="text" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Order Id"/>
+                        <input type="text" v-model="orderIDQuery" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Order Id"/>
                     </div>
 
-                    <div class="w-full">
-                        <label for="dd-date" class="text-sm w-full">From Date</label>
-                        <input type="date" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Order Id"/>
-                    </div>
-
-                    <div class="w-full">
-                        <label for="dd-date" class="text-sm w-full">To Date</label>
-                        <input type="date" v-model="value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Order Id"/>
+                    <div class="w-full mt-2">
+                        <label for="dd-city" class="text-sm w-full">Date Range</label>
+                        <div>
+                            <Calendar :pt="{input: {class: 'px-4 py-1 border',},}" class="w-[48%] mr-1 text-sm outline-none focus:border-red-200 rounded-md" v-model="fromDateQuery" placeholder="Start Date"/>
+                            <Calendar :pt="{input: { class: 'px-4 py-1 border',},}" class="w-1/2 text-sm outline-none focus:border-red-200 rounded-md" v-model="toDateQuery" placeholder="End Date"/>
+                        </div>
                     </div>
 
 
                     <div class="font-semibold flex mt-2 place-content-end">
                         
 
-                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="visibleRight = true">
+                        <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform  hover:text-black px-4 py-1 text-sm rounded-md" @click="fetchFilteredTransaction">
                             <Icon name="fluent:search-12-filled"></Icon>
                             Search
                         </button>
