@@ -1,14 +1,5 @@
 <script setup>
-const props = defineProps({
-    color: {
-        type: String,
-        required: true,
-    },
-    sizes: {
-        type: Object,
-        required: true,
-    },
-});
+const props = defineProps(['additionals', 'color']);
 
 console.log(props)
 
@@ -19,29 +10,27 @@ console.log(props)
         <table class="table-auto w-full">
             <thead>
                 <tr class="border bg-gray-200">
-                    <th :colspan="(Object.keys(sizes).length+1)" class="border text-left px-2 text-sm">Color: {{ color  }}</th>
+                    <th class="border text-center px-2 text-sm">Color</th>
+                    <th class="border text-center px-2 text-sm">Size</th>
+                    <th class="border text-center px-2 text-sm">Regular Price</th>
+                    <th class="border text-center px-2 text-sm">Current Price</th>
+                    <th class="border text-center px-2 text-sm">Discount</th>
+                    <th class="border text-center px-2 text-sm">Discount Type</th>
+                    <th class="border text-center px-2 text-sm">Stock</th>
+                    <th class="border text-center px-2 text-sm">Status</th>
                 </tr>
             </thead>
             <tbody>
-                <tr class="border">
-                    <th class="border p-1 px-2 text-left w-48 text-sm">Size</th>
-
-                    <td class="border p-1 px-2 text-center text-xs" v-for="(size, indexKey) in sizes" :key="indexKey">{{ size.size }}</td>
+                <tr class="border" v-for="additional in props.additionals" :key="additional.color" >
+                    <td class="border p-1 px-2 text-center text-xs"  >{{ additional.color }}</td>
+                    <td class="border p-1 px-2 text-center text-xs"  >{{ additional.size }}</td>
+                    <td class="border p-1 px-2 text-center text-xs"  >{{ additional.regular_price }}</td>
+                    <td class="border p-1 px-2 text-center text-xs"  >{{ additional.current_price }}</td>
+                    <td class="border p-1 px-2 text-center text-xs"  >{{ additional.discount }}</td>
+                    <td class="border p-1 px-2 text-center text-xs"  >{{ additional.discount_type == 1 ? "Fixed" : "Parcentage" }}</td>
+                    <td class="border p-1 px-2 text-center text-xs"  >{{ additional.stock }}</td>
+                    <td class="border p-1 px-2 text-center text-xs"  >{{ additional.status  == 1 ? "Active" : "Inactive" }}</td>
                 </tr>
-                <tr class="border">
-                    <td class="border p-1 px-2 text-sm">Stock</td>
-                    <td class="border p-1 px-2 text-center text-xs" v-for="(size, indexKey) in sizes" :key="indexKey">{{ size.stock }}</td>
-                </tr>
-                <tr class="border">
-                    <td class="border p-1 px-2 text-sm">Discount Price</td>
-                    <td class="border p-1 px-2 text-center text-xs" v-for="(size, indexKey) in sizes" :key="indexKey">{{ size.current_price }}</td>
-                    
-                </tr>
-                <tr class="border">
-                    <td class="border p-1 px-2 text-sm">Regular Price</td>
-                    <td class="border p-1 px-2 text-center text-xs" v-for="(size, indexKey) in sizes" :key="indexKey">{{ size.regular_price }}</td>
-                </tr>
-                
             </tbody>
         </table>
     </div>

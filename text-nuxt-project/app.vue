@@ -8,5 +8,4 @@
         </template>
         <NuxtPage />
     </ClientOnly>
-
 </template>

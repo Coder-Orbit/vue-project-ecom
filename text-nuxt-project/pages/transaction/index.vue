@@ -12,6 +12,7 @@
 
     definePageMeta({
         layout: "dashboard",
+        middleware: "auth",
     })
 
     const visibleRight = ref(false);
