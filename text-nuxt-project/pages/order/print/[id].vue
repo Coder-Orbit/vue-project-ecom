@@ -74,12 +74,12 @@ function printPage() {
           Bill to :
         </p>
         <p class="text-gray-500">
-            {{ details?.extend_props.contact.name }}
+            Name: {{ details?.extend_props.contact.name }}
           <br />
-          {{ details?.extend_props.contact.address }}
+          Address: {{ details?.extend_props.contact.address }}
         </p>
         <p class="text-gray-500">
-            {{ details?.created_by.email }}
+            Email: {{ details?.created_by.email }}
         </p>
       </div>
 
@@ -121,50 +121,50 @@ function printPage() {
                 <div class="w-8/12">
                     <img src="https://i.ibb.co.com/6gDfDYK/qr-code.png" alt="" height="100" width="100">
                 </div>
-                <div class="w-4/12">
-                    <table>
+                <div class="w-4/12 text-right">
+                    <table class="inline-table">
                         <tbody>
                       <tr>
                           <th scope="row" colspan="3"
                               class="hidden pl-4 pr-3 pt-6 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">
-                              Subtotal
+                              Subtotal:
                           </th>
                           <th scope="row"
-                              class="pl-6 pr-3 pt-6 text-left text-sm font-normal text-gray-500 sm:hidden">Subtotal
+                              class="pl-6 pr-3 pt-6 text-left text-sm font-normal text-gray-500 sm:hidden">Subtotal:
                           </th>
-                          <td class="pl-3 pr-6 pt-6 text-left text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.total"/></td>
+                          <td class="pl-3 pr-6 pt-6 text-right text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.total"/></td>
                       </tr>
                         <tr>
-                          <th scope="row" colspan="3" class="hidden pl-4 pr-3 pt-4 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">Tax</th>
-                          <td class="pl-3 pr-6 pt-4 text-left text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.order_items.reduce((total, item) => total + item.extend_props.tax, 0)"/></td>
+                          <th scope="row" colspan="3" class="hidden pl-4 pr-3 pt-4 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">Tax:</th>
+                          <td class="pl-3 pr-6 pt-4 text-right text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.order_items.reduce((total, item) => total + item.extend_props.tax, 0)"/></td>
                         </tr>
                       <tr>
                           <th scope="row" colspan="3"
                               class="hidden pl-4 pr-3 pt-4 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">
-                              Discount
+                              Discount:
                           </th>
                           <th scope="row"
-                              class="pl-6 pr-3 pt-4 text-left text-sm font-normal text-gray-500 sm:hidden">Discount
+                              class="pl-6 pr-3 pt-4 text-left text-sm font-normal text-gray-500 sm:hidden">Discount:
                           </th>
-                          <td class="pl-3 pr-6 pt-4 text-left text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.discount"/></td>
+                          <td class="pl-3 pr-6 pt-4 text-right text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.discount"/></td>
                       </tr>
                       <tr>
                           <th scope="row" colspan="3"
                               class="hidden pl-4 pr-3 pt-4 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">
-                              Shipping Fee
+                              Shipping Fee:
                           </th>
                           <th scope="row"
-                              class="pl-6 pr-3 pt-4 text-left text-sm font-normal text-gray-500 sm:hidden">Shipping Fee
+                              class="pl-6 pr-3 pt-4 text-left text-sm font-normal text-gray-500 sm:hidden">Shipping Fee:
                           </th>
-                          <td class="pl-3 pr-6 pt-4 text-left text-sm text-gray-500 sm:pr-0"><Currency :amount="0"/></td>
+                          <td class="pl-3 pr-6 pt-4 text-right text-sm text-gray-500 sm:pr-0"><Currency :amount="0"/></td>
                       </tr>
                       <tr>
                           <th scope="row" colspan="3"
                               class="hidden pl-4 pr-3 pt-4 text-right text-sm font-semibold text-gray-900 sm:table-cell sm:pl-0">
-                              Total
+                              Total:
                           </th>
                           <th scope="row"
-                              class="pl-6 pr-3 pt-4 text-left text-sm font-semibold text-gray-900 sm:hidden">Total
+                              class="pl-6 pr-3 pt-4 text-left text-sm font-semibold text-gray-900 sm:hidden">Total:
                           </th>
                       <td class="pl-3 pr-4 pt-4 text-right text-sm font-semibold text-gray-900 sm:pr-0"><Currency :amount="details?.total - details?.discount"/></td>
                       </tr>
@@ -182,6 +182,7 @@ function printPage() {
   </div>
 
 <div class="flex justify-center print:hidden">
-    <button type="button" class="bg-red-800 text-white py-2 px-4 my-3 rounded-sm" @click="printPage">Print</button>
+  <button type="button" class="bg-red-800 text-white py-2 px-4 my-3 rounded-sm m-2" @click="$router.back()">Back</button>
+    <button type="button" class="bg-red-800 text-white py-2 px-4 my-3 rounded-sm m-2" @click="printPage">Print</button>
 </div>
 </template>
