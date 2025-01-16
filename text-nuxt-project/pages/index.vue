@@ -1,28 +1,43 @@
 <script setup>
+import { useRouter } from "vue-router";
+import { useToast } from "primevue/usetoast";
 
-const loading =  ref(false);
-
-const form = ref({
-    email: "majadul.dev@gmail.com",
-    password: "12345678"
+const router = useRouter();
+const store = useLoginStore();
+const toast = useToast();
+const form = reactive({
+    email:"majadul.dev@gmail.com",
+    password: "12345678",
 });
 
-async function handleLogin() {
+definePageMeta({
+    middleware: ['auth'],
+})
 
-    loading.value = true;    
-    
+async function handleLogin() {
+    console.log("hello");
+  const result = await store.login(form);
+  if (result.success) {
+    router.push('/dashboard');
+  } else {
+    toast.add({
+      severity: 'error',
+      summary: 'Login Failed',
+      detail: result.message,
+      life: 3000,
+    });
+  }
 }
 
 </script>
 
 <template>
+
     <div>
-        
-        <div v-if="loading" class="min-h-screen w-full bg-black bg-opacity-[.3] flex items-center fixed">
+        <div v-if="store.loading" class="min-h-screen w-full bg-black bg-opacity-[.3] flex items-center fixed">
             <div class="w-12 mx-auto"><img alt="loading..." src="/spinner.gif"></div>
         </div>
-        
-
+        <Toast />
         <div class="min-h-screen bg-gray-100 fixed w-full -z-50">
         <div class="place-content-center">
             <div class="p-3 mt-12 w-24 mx-auto"><img alt="logo" src="/logo.png"></div>
@@ -60,5 +75,6 @@ async function handleLogin() {
         position: absolute;
         bottom: 0;
         z-index: -1;
+        width: 100%;
     }
 </style>

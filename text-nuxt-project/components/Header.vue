@@ -1,11 +1,11 @@
 <script setup>
-
-
 import Menu from 'primevue/menu';
-
-
 import { ref } from "vue";
-
+const  store = useTokenStore();
+const loginStore = useLoginStore();
+const username = computed(() => loginStore.userData.name);
+const email = computed(() => loginStore.userData.email);
+const pin = computed(() => loginStore.userData.otp);
 const menu = ref();
 const notice = ref();
 const items = ref([
@@ -13,16 +13,16 @@ const items = ref([
         label: 'Options',
         items: [
             {
-                label: 'Username',
-                icon: 'pi pi-refresh'
+                label: `${username.value}`,
+                icon: 'pi pi-user'
             },
             {
-                label: 'Email',
-                icon: 'pi pi-refresh'
+                label: `${email.value}`,
+                icon: 'pi pi-envelope'
             },
             {
-                label: 'Pin',
-                icon: 'pi pi-refresh'
+                label: `${pin.value}`,
+                icon: 'pi pi-key'
             },
             
         ]
@@ -41,12 +41,14 @@ const items = ref([
             },
             {
                 label: 'Logout',
-                icon: 'pi pi-sign-out'
+                icon: 'pi pi-sign-out',
+                command: () => {
+                    store.removeToken();
+                }
             }
         ]
     }
 ]);
-
 const noteces = ref([
     {
         label: 'Options',

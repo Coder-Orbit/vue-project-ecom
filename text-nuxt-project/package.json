@@ -15,7 +15,7 @@
     "@editorjs/code": "^2.9.0",
     "@editorjs/delimiter": "^1.4.0",
     "@editorjs/editorjs": "^2.29.1",
-    "@editorjs/embed": "^2.7.2",
+    "@editorjs/embed": "^2.7.6",
     "@editorjs/header": "^2.8.1",
     "@editorjs/image": "^2.9.0",
     "@editorjs/inline-code": "^1.5.0",
@@ -32,6 +32,8 @@
     "@pinia/nuxt": "^0.5.1",
     "autoprefixer": "^10.4.19",
     "chart.js": "^4.4.2",
+    "dotenv": "^16.4.5",
+    "moment-timezone": "^0.5.45",
     "nuxt": "^3.11.2",
     "nuxt-editorjs": "^1.0.4",
     "postcss": "^8.4.38",
@@ -49,5 +51,6 @@
     "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "nuxt-icon": "^0.6.10",
     "nuxt-primevue": "^0.3.1"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
