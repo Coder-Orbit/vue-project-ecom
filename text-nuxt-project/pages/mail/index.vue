@@ -5,7 +5,7 @@ import { onMounted, reactive, ref } from "vue";
 const toast = useToast();
 //loading
 const isLoading = ref(false);
-const mailStore = useMailStore();
+
 
 const config = useRuntimeConfig();
 const EndPoint = config.public.baseURl;
@@ -55,22 +55,27 @@ const dataSubmit = async () => {
                 // status: fromData.value.status,
             }),
         });
+        console.log();
 
-        if (res) {
+        if (res.error != undefined || res?.status != "Success") {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: res.error != undefined ? res.error : "Please check the all fields and try again!" ,
+                life: 2000,
+            });
+        }else{
+            
             toast.add({
                 severity: "success",
                 summary: "Mail Configuration",
                 detail: "Mail Configuration updated successfully.",
                 life: 2000,
             });
-        } else {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: "An error occurred.",
-                life: 2000,
-            });
+            
         }
+
+        
 
     } catch (error) {
         console.log(error);
@@ -158,8 +163,8 @@ const statusMethod = async(id)=>{
             },
 
         });
-    
-        if (res) {
+        console.log('status',res);
+        if (res?.ok) {
             toast.add({
                 severity: "success",
                 summary: "Mail Configuration status",
