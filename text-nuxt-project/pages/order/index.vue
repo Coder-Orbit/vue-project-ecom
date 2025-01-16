@@ -252,7 +252,7 @@ const fetchFilteredProducts = async () => {
                           <Icon name="iconoir:filter-solid"></Icon>
                           Filter
                       </button>
-                  </div>
+                    </div>
               </div>
 
               <!-- Table list goes here -->
