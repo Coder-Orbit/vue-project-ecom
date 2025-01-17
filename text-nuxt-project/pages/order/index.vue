@@ -59,6 +59,8 @@ onMounted(async () => {
     } catch (err) {
     console.log(err);
   }
+//   updateStatus()
+//   openStatusUpdateModal()
 });
 
 const paginate = async (page) => {
@@ -205,9 +207,12 @@ const updateStatus = async () => {
     console.error("Error updating Status:", error);
     }
 };
+// onMounted( async() =>{
+//     updateStatus()
+// })
 
 // Open the confirm modal for the specific slide
-const openDeleteModal = (id, orderID) => {
+const openStatusUpdateModal = (id, orderID) => {
     selectedStatus.value = id;
     currentOrderID.value = orderID;
     console.log("OpenModal ID: ",id)
@@ -238,32 +243,12 @@ const testFunc = () => {
 
 // Toggle dropdown visibility
 const toggleDropdown = (uniqueId) => {
-  console.log("Unique ID:", uniqueId);
+    console.log("Unique ID:", uniqueId);
 
-  // Toggle dropdown visibility
-  isDropdownVisible.value =
+    // Toggle dropdown visibility
+    isDropdownVisible.value =
     isDropdownVisible.value === uniqueId ? null : uniqueId;
 
-  // Generate the dynamic HTML for the dropdown
-  statusValue.value = `
-    <ul class="py-2 text-xs text-gray-700 dark:text-gray-200">
-      ${status.value
-        .map(
-          (option) => `
-          <li class="cursor-pointer">
-            <a
-              href="#"
-              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              @click.prevent=openDeleteModal(${option.id}, '${uniqueId}')"
-            >
-              ${option.name}
-            </a>
-          </li>
-        `
-        )
-        .join("")}
-    </ul>
-  `;
 };
 
 </script>
@@ -323,17 +308,26 @@ const toggleDropdown = (uniqueId) => {
                             <td class="p-1 text-left text-xs">{{ order.advance }}</td>
                             <td class="p-1 text-left text-xs">{{ order.due }}</td>
                             <td class="p-1">
-                                <!-- Button to toggle dropdown -->
-                                <button @click="toggleDropdown(order.unique_id)" class="text-dark rounded-lg text-xs px-2 py-1 text-left inline-flex items-center" type="button">
-                                    {{ order.status.name }} <Icon name="material-symbols-light:keyboard-arrow-down-rounded" width="2em" height="2em"/>
-                                </button>
-                                <!-- Dropdown menu -->
-                                <div class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700" ref="dropdownContainer" v-show="isDropdownVisible === order.unique_id">
-                                    <div v-html="statusValue" />
-                                    <!-- <div></div> -->
-                                    <template>{{ statusValue }}</template>
+
+                                <div class="w-7/12">
+                                    <Dropdown v-model="selectedStatus" :options="status" optionLabel="name" optionValue="id" filter :placeholder="`${order.status.name}`" class="w-full" @change="toggleDropdown(order.unique_id)">
+                                        
+                                        <template #value="slotProps">
+                                            <div v-if="slotProps.value && isDropdownVisible === order.unique_id" class="flex align-items-center" >
+                                                <div>{{ getStatusName(slotProps.value) }}</div>
+                                            </div>
+                                            <span v-else>{{ slotProps.placeholder }}</span>
+                                        </template>
+                                        
+                                        <template #option="slotProps">
+                                            <div class="flex align-items-center cursor-pointer" @click.prevent="openStatusUpdateModal(slotProps.option.id, order.unique_id)">
+                                                <div>{{ slotProps.option.name }}</div>
+                                            </div>
+                                        </template>
+                                    
+                                    </Dropdown>
                                 </div>
-                                
+
                             </td>
                             <td class="p-1 text-xs grid text-center justify-items-center">
                                 <div class="flex">
@@ -377,7 +371,7 @@ const toggleDropdown = (uniqueId) => {
             </div>
             
             <!-- Status & Vendor-->
-                <div class="w-full grid grid-cols-2 gap-2 mt-2">
+            <div class="w-full grid grid-cols-2 gap-2 mt-2">
                 <div>
                     <label for="dd-city" class="text-sm w-full">Status</label>
                     <Dropdown v-model="selectedStatus" :options="status" optionLabel="name" optionValue="id" filter placeholder="Select a Status" class="w-full md:w-14rem">
@@ -397,39 +391,39 @@ const toggleDropdown = (uniqueId) => {
                 <div>
                     <label for="dd-city" class="text-sm w-full">Vendor</label>
                     <Dropdown v-model="selectedVendor" :options="vendor" optionLabel="name" optionValue="id" filter placeholder="Select a Vendor" class="w-full md:w-14rem">
-                    <template #value="slotProps">
-                        <div v-if="slotProps.value" class="flex align-items-center">
-                            <div>{{ getVendorName(slotProps.value) }}</div>
-                        </div>
-                        <span v-else>{{ slotProps.placeholder }}</span>
-                    </template>
-                    <template #option="slotProps">
-                        <div class="flex align-items-center">
-                            <div>{{ slotProps.option.name }}</div>
-                        </div>
-                    </template>
+                        <template #value="slotProps">
+                            <div v-if="slotProps.value" class="flex align-items-center">
+                                <div>{{ getVendorName(slotProps.value) }}</div>
+                            </div>
+                            <span v-else>{{ slotProps.placeholder }}</span>
+                        </template>
+                        <template #option="slotProps">
+                            <div class="flex align-items-center">
+                                <div>{{ slotProps.option.name }}</div>
+                            </div>
+                        </template>
                     </Dropdown>
                 </div>
-                </div>
-                <div class="font-semibold flex mt-2 place-content-end">
-                    <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md" @click="fetchFilteredProducts">
-                        <Icon name="fluent:search-12-filled"></Icon> Search
-                    </button>
-                </div>
+            </div>
+            <div class="font-semibold flex mt-2 place-content-end">
+                <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md" @click="fetchFilteredProducts">
+                    <Icon name="fluent:search-12-filled"></Icon> Search
+                </button>
+            </div>
 
-                <div class="mt-2 text-sm text-gray-600">
-                    <span v-if="totalOrders">Showing {{ totalOrders }} results</span>
-                    <span v-else>No results found</span>
-                </div>
+            <div class="mt-2 text-sm text-gray-600">
+                <span v-if="totalOrders">Showing {{ totalOrders }} results</span>
+                <span v-else>No results found</span>
+            </div>
         </Sidebar>
 
-        <Dialog v-model:visible="deleteModalVisible" modal header="Delete Slide" :style="{ width: '25rem' }">
+        <Dialog v-model:visible="deleteModalVisible" modal header="Update Status" :style="{ width: '25rem' }">
             <span class="p-text-secondary flex items-center justify-center flex-col mb-5">
-                <Icon name="material-symbols:delete-sweep-rounded" width="120px" height="120px" class="mr-2 text-red-500" /> Are you sure you want to delete this slide?
+                <Icon name="material-symbols:playlist-add-check-rounded" width="120px" height="120px" class="mr-2 text-red-500" /> Are you sure you want to update status?
             </span>
             <div class="flex justify-around">
                 <Button class="bg-yellow-600 text-red-100 px-4 py-2" type="button" label="Cancel" severity="secondary" @click="deleteModalVisible = false"></Button>
-                <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Delete" @click="updateStatus" :loading="deleteLoading"></Button>
+                <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Update" @click="updateStatus" :loading="deleteLoading"></Button>
             </div>
         </Dialog>
 
