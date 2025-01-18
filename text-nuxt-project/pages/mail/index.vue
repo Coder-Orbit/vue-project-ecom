@@ -14,6 +14,7 @@ const app_token = useTokenStore().getToken;
 
 const getMailData = ref();
 const popUp = ref('');
+const singleId = ref();
 
 definePageMeta({
     layout: "dashboard",
@@ -32,11 +33,21 @@ const fromData = ref({
     // status: 1,
 });
 
-// Data submit 
+
+// Data submit  for add data or edit data
 const dataSubmit = async () => {
 
     try {
-        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/mail_configuration`, {
+        let url;
+        // if find the single id the working for update url ,else working add url
+        if(singleId.value != null){
+            url = `mail_configuration/${singleId.value}`;
+        }else{
+            url = "mail_configuration"
+        }
+
+
+        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/${url}`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -44,32 +55,75 @@ const dataSubmit = async () => {
                 Authorization: `Bearer ${app_token}`,
             },
 
-            body: JSON.stringify({
-                smtp_username: fromData.value.smtp_username,
-                smtp_name: fromData.value.smtp_name,
-                smtp_port: fromData.value.smtp_port,
-                smtp_password: fromData.value.smtp_password,
-                smtp_encryption: fromData.value.smtp_encryption,
-                from_address: fromData.value.from_address,
-                from_name: fromData.value.from_name,
-                // status: fromData.value.status,
-            }),
-        });
-        console.log();
+            // body: JSON.stringify({
+            //     smtp_username: fromData.value.smtp_username,
+            //     smtp_name: fromData.value.smtp_name,
+            //     smtp_port: fromData.value.smtp_port,
+            //     smtp_password: fromData.value.smtp_password,
+            //     smtp_encryption: fromData.value.smtp_encryption,
+            //     from_address: fromData.value.from_address,
+            //     from_name: fromData.value.from_name,
 
-        if (res.error != undefined || res?.status != "Success") {
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: res.error != undefined ? res.error : "Please check the all fields and try again!" ,
-                life: 2000,
-            });
-        }else{
-            
+                
+            // }),
+            body:JSON.stringify(fromData.value)
+        });
+
+
+        // res.error.hasOwn('name');
+
+  
+
+        // console.log(res.error.hasOwnProperty('smtp name'));
+        
+
+        if ( res?.status === "Success") {
+
             toast.add({
                 severity: "success",
                 summary: "Mail Configuration",
                 detail: "Mail Configuration updated successfully.",
+                life: 2000,
+            });
+            getData();
+
+             fromData.value = {
+                smtp_name: "",
+                smtp_username: "",
+                from_address: "",
+                smtp_password: "",
+                from_name: "",
+                smtp_port: "",
+                smtp_encryption: "TLS",
+                // status: 1,
+            };
+
+        }else if (res ==='update' ) {
+            toast.add({
+                severity: "success",
+                summary: "Mail Configuration",
+                detail: "Mail Configuration updated successfully.",
+                life: 2000,
+            });
+            getData();
+
+             fromData.value = {
+                smtp_name: "",
+                smtp_username: "",
+                from_address: "",
+                smtp_password: "",
+                from_name: "",
+                smtp_port: "",
+                smtp_encryption: "TLS",
+                // status: 1,
+            };
+           
+        }else{
+
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: res.error != undefined ? res.error : "Please check the all fields and try again!" ,
                 life: 2000,
             });
             
@@ -88,7 +142,6 @@ const dataSubmit = async () => {
 // Data fetching 
 onMounted(async () => {
 
-    
     getData();
 
 });
@@ -107,12 +160,12 @@ const getData = async () => {
         });
 
         getMailData.value = await res.json();
-        console.log(getMailData.value)
+        
 
 
 
     } catch (error) {
-
+      console.log(error);
     }
 }
 
@@ -146,7 +199,7 @@ const deleteHandler = async(id) => {
 
         getData();
 
-    console.log('delete id',res);
+    
 }
 
 
@@ -181,6 +234,49 @@ const statusMethod = async(id)=>{
             });
         }
     
+}
+
+
+// single data fetching for edit 
+
+const editHandler = async(id)=>{
+
+    try {
+        const res = await fetch(`${EndPoint}/admin/${MasterKey}/mail_configuration/${id}`, {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${app_token}`,
+            },
+
+        });
+
+        const getItem = await res.json();
+      
+
+        if (res?.ok && Array.isArray(getItem.data) && getItem.data.length > 0) {
+            const item = getItem.data[0];  
+            singleId.value = id;
+           
+            fromData.value = {
+                smtp_name: item.smtp_name ,
+                smtp_username: item.smtp_username,
+                from_address: item.from_address,
+                smtp_password: item.smtp_password,
+                from_name: item.from_name,
+                smtp_port: item.smtp_port,
+                smtp_encryption: item.smtp_encryption,
+                
+            };
+        }
+        
+        
+
+    } catch (error) {
+      console.log(error);
+    }
+   
 }
 
 
@@ -220,6 +316,7 @@ const statusMethod = async(id)=>{
                                         <input type="text" v-model="fromData.smtp_username"
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
                                             placeholder="example: Mohammad Noor" />
+              
                                     </div>
                                 </div>
 
@@ -329,7 +426,7 @@ const statusMethod = async(id)=>{
                                         <td class="py-3 px-1 text-xs  text-center">
 
                                             <div class="flex gap-2 text-center justify-center items-center">
-                                                <span class="cursor-pointer">
+                                                <span class="cursor-pointer" @click="editHandler(item.id)">
                                                     <Icon name="ic:baseline-edit" width="1.4em" height="1.4em" />
                                                 </span>
                                                 <span class="cursor-pointer text-red-700" @click="showPopUP(item.id)">
