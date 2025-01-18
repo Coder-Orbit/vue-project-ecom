@@ -1,128 +1,134 @@
 <script setup>
-    import InputGroup from 'primevue/inputgroup';
-    import InputGroupAddon from 'primevue/inputgroupaddon';
-    import Sidebar from 'primevue/sidebar';
+import InputGroup from 'primevue/inputgroup';
+import InputGroupAddon from 'primevue/inputgroupaddon';
+import Sidebar from 'primevue/sidebar';
 
-    const { dateMonthFunction, dateFunction } = useDataDate();
-    const visibleRight = ref(false);
+const { dateMonthFunction, dateFunction } = useDataDate();
+const visibleRight = ref(false);
 
-    const transaction = ref(null)
-    const pageNumber = ref(1)
-    const coreTranstion = ref(null)
+const transaction = ref(null)
+const pageNumber = ref(1)
+const coreTranstion = ref(null)
 
-    const universalQuery = ref("")
-    const trasactionQuery = ref("");
-    const orderIDQuery = ref("");
-    const fromDateQuery = ref("")
-    const toDateQuery = ref("")
+const universalQuery = ref("")
+const trasactionQuery = ref("");
+const orderIDQuery = ref("");
+const fromDateQuery = ref("")
+const toDateQuery = ref("")
 
-    const loading = ref('not')
+const loading = ref('not')
 
-    // replace with actual API endpoint and master key
-    const config = useRuntimeConfig();
-    const EndPoint = config.public.baseURl;
-    const MasterKey = config.public.masterToken;
-    const app_token = useTokenStore().getToken;
+const test = ref()
+// replace with actual API endpoint and master key
+const config = useRuntimeConfig();
+const EndPoint = config.public.baseURl;
+const MasterKey = config.public.masterToken;
+const app_token = useTokenStore().getToken;
 
-    const headers = ref({
-    "Accept": "application/json",
-    "Authorization": `Bearer ${app_token}`,
-    "App-Master-Key": `${MasterKey}`
-    })
+const headers = ref({
+"Accept": "application/json",
+"Authorization": `Bearer ${app_token}`,
+"App-Master-Key": `${MasterKey}`
+})
 
-    definePageMeta({
-        layout: "dashboard",
-        middleware: "auth",
-    })
+definePageMeta({
+    layout: "dashboard",
+    middleware: "auth",
+})
 
-    onMounted( async () => {
-        loading.value = "not";
-        try {
+onMounted( async () => {
+    loading.value = "not";
+    try {
 
-            const response = await $fetch(`${EndPoint}/admin/${MasterKey}/transaction?orderBy=desc&page=1`, {
-            method: 'get',
-            headers: headers.value,
-            });
-            coreTranstion.value = response.trasactions.links
-            transaction.value = response.trasactions.data
-            // console.log(response)
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/transaction?orderBy=desc&page=1`, {
+        method: 'get',
+        headers: headers.value,
+        });
+        coreTranstion.value = response.trasactions.links
+        transaction.value = response.trasactions
+        
+        console.log(transaction.value)
 
-        } catch (error) {
-            console.log(error);
-        }
-        loading.value = "success";
-
+    } catch (error) {
+        console.log(error);
     }
+    loading.value = "success";
 
-    )
+}
 
-    const paginate = async (page) => {
+)
+
+const paginate = async (page) => {
     loading.value = "not";
 
-    pageNumber.value = page;
+    
 
     if(page === "&laquo; Previous"){
-        pageNumber.value  = ((coreTranstion.value.current_page-1) == 0 ? 1 : (coreTranstion.value.current_page-1));
+        pageNumber.value  = ((transaction.value.current_page-1));
 
-    }else if( page === "Next &raquo;"){
+    }else if(page === "Next &raquo;"){
 
-        pageNumber.value  = ((coreTranstion.value.current_page+1) == coreTranstion.value.last_page ? coreTranstion.value.last_page : (coreTranstion.value.current_page+1));
+        pageNumber.value  = ((transaction.value.current_page+1));
         
+    }else{
+        pageNumber.value = page;
     }
-    console.log("Page Number:", pageNumber.value, coreTranstion.value, transaction.value)
+    // console.log("Page Number:", pageNumber.value)
 
     try {
         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/transaction?page=${pageNumber.value}`, {
             method: 'get',
             headers: headers.value,
         });
-        transaction.value = response.trasactions.data;
+        test.value = response.trasactions
+        transaction.value = response.trasactions;
         coreTranstion.value = response.trasactions.links
+        // console.log("Current Page:",transaction.value.current_page)
     } catch (error) {
         console.log(error);
     }
 
     loading.value = "success";
-    }
+}
 
 
 
-    const fetchFilteredTransaction = async () => {
-        loading.value = "not"
+const fetchFilteredTransaction = async () => {
+    loading.value = "not"
 
-        try {
-            console.log(dateFunction(fromDateQuery.value))
-            console.log(toDateQuery.value)
+    try {
+        console.log(dateFunction(fromDateQuery.value))
+        console.log(toDateQuery.value)
 
-            const fromDateParams = fromDateQuery.value ? fromDateQuery.value.toISOString().split('T')[0] : '';
-            const toDateParams = toDateQuery.value ? toDateQuery.value.toISOString().split('T')[0] : '';
-            const dateRange = fromDateParams && toDateParams ? `${fromDateParams},${toDateParams}` : undefined;
+        const fromDateParams = fromDateQuery.value ? fromDateQuery.value.toISOString().split('T')[0] : '';
+        const toDateParams = toDateQuery.value ? toDateQuery.value.toISOString().split('T')[0] : '';
+        const dateRange = fromDateParams && toDateParams ? `${fromDateParams},${toDateParams}` : undefined;
 
-            const params = {
-                name: universalQuery.value,
-                and_transaction_id: trasactionQuery.value || undefined,
-                and_order_id: orderIDQuery.value || undefined,
-                and_between_transaction_date: dateRange
-            }
-
-            const filteredParams = Object.fromEntries(
-                Object.entries(params).filter(([_, value]) => value !== undefined)
-            );
-
-            const response = await $fetch(`${EndPoint}/admin/${MasterKey}/transaction?`,{
-                method: "GET",
-                headers: headers.value,
-                params: filteredParams
-            })
-            console.log(response)
-
-            transaction.value = response.trasactions.data;
-
-            loading.value = "success";
-        } catch (error) {
-            console.log(error)
+        const params = {
+            name: universalQuery.value,
+            and_transaction_id: trasactionQuery.value || undefined,
+            and_order_id: orderIDQuery.value || undefined,
+            and_between_transaction_date: dateRange
         }
+
+        const filteredParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined)
+        );
+
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/transaction?`,{
+            method: "GET",
+            headers: headers.value,
+            params: filteredParams
+        })
+        console.log(response)
+
+        transaction.value = response.trasactions.data;
+
+        loading.value = "success";
+    } catch (error) {
+        console.log(error)
     }
+}
 
 </script>
 <template>
@@ -140,6 +146,7 @@
                         
                         <div class="font-semibold mt-1 ml-3">Transaction</div>
                         <div class="font-semibold ml-1 flex">
+
                             <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
                                 <Icon name="gg:arrow-left-o"></Icon>
                                 Back
@@ -171,7 +178,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="transac in transaction" class="bg-white odd:bg-gray-100" :key="transac.id">
+                                <tr v-for="transac in transaction?.data" class="bg-white odd:bg-gray-100" :key="transac.id">
                                     <td class="p-1 text-center text-xs">{{ transac.id }}</td>
                                     <td class="p-1 text-left text-xs">{{ transac.order_id }}</td>
                                     <td class="p-1 text-left text-xs">{{ transac.transaction_id }}</td>

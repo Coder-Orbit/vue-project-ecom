@@ -20,6 +20,7 @@ definePageMeta({
 const route = useRoute();
 const orderId = route.params.id;
 const details = ref(null);
+
 const fetchOrderDetails = async () => {
     try {
         details.value = await $fetch(`${EndPoint}/admin/${MasterKey}/orders/${orderId}`, {
@@ -32,6 +33,7 @@ const fetchOrderDetails = async () => {
     }
     
 };
+
 fetchOrderDetails();
 
 function printPage() {
@@ -47,8 +49,7 @@ function printPage() {
     <div class="grid grid-cols-2 items-center">
       <div>
         <!--  Company logo  -->
-        <img src="https://coderorbit.com/_next/static/media/coderorbit.3e82d816.png" alt="company-logo" height="100"
-          width="100">
+        <img src="https://coderorbit.com/_next/static/media/coderorbit.3e82d816.png" alt="company-logo" height="100" width="100">
       </div>
 
       <div class="text-right">
@@ -183,6 +184,6 @@ function printPage() {
 
 <div class="flex justify-center print:hidden">
   <button type="button" class="bg-red-800 text-white py-2 px-4 my-3 rounded-sm m-2" @click="$router.back()">Back</button>
-    <button type="button" class="bg-red-800 text-white py-2 px-4 my-3 rounded-sm m-2" @click="printPage">Print</button>
+  <button type="button" class="bg-red-800 text-white py-2 px-4 my-3 rounded-sm m-2" @click="printPage">Print</button>
 </div>
 </template>

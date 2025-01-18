@@ -18,6 +18,30 @@ const app_token = useTokenStore().getToken;
 const loading = ref('not')
 const products = ref([])
 const pageNumber = ref(1)
+
+const searchQuery = ref("");
+const status = ref("");
+const minPrice = ref();
+const maxPrice = ref();
+const stDate = ref();
+const enDate = ref();
+const totalProducts = ref(0);
+
+const colors = ref([]);
+const sizes = ref([]);
+const selectedColor = ref(null);
+const selectedSize = ref(null);
+
+const visibleRight = ref(false);
+
+// Get Brand Name from api
+const brand = ref([]); // Holds the dropdown options
+const selectedBrand = ref(null); // Holds the selected brand ID
+
+
+const vendor = ref([]); // Holds the dropdown options
+const selectedVendor = ref(null); // Holds the selected vendor ID
+
 const headers = ref({
     "Accept": "application/json",
     "Authorization": `Bearer ${app_token}`,
@@ -72,8 +96,9 @@ const paginate = async (page) => {
                     headers: headers.value,
                 }
             );
-        }
+            console.log("Curr",products.value.current_page)
 
+    }
     catch (error) {
         console.log(error);
     }
@@ -82,62 +107,52 @@ const paginate = async (page) => {
 }
 
 
-const visibleRight = ref(false);
 
-// Get Brand Name from api
-const brand = ref([]); // Holds the dropdown options
-const selectedBrand = ref(null); // Holds the selected brand ID
 
-    onMounted(async () => {
-        try {
-            const response = await $fetch(`${EndPoint}/admin/${MasterKey}/brand?`, {
-                method: 'GET',
-                headers: headers.value,
-                });
-                // Map API data to the required format
-                brand.value = response.data.map(b => ({
-                    name: b.name, // Dropdown label
-                    id: b.id, // Dropdown value
-                }));
-            } catch (error) {
-                console.error('Error fetching brands:', error);
-            }
-        });
-        // Utility function to get the name of the selected brand
-        const getBrandName = (id) => {
-            const selected = brand.value.find(b => b.id === id);
-            return selected ? selected.name : '';
-        };
-
-const vendor = ref([]); // Holds the dropdown options
-const selectedVendor = ref(null); // Holds the selected vendor ID
-
-        onMounted(async () => {
-            try {
-                const response = await $fetch(`${EndPoint}/admin/${MasterKey}/vendor?`, {
-                    method: 'GET',
-                    headers: headers.value,
-                });
-                // Map API data to the required format
-                vendor.value = response.data.map(b => ({
-                    name: b.name, // Dropdown label
-                    id: b.id, // Dropdown value
-                }));
-            } catch (error) {
-                console.error('Error fetching vendor:', error);
-            }
-        });
-
-        // Utility function to get the name of the selected vendor
-        const getVendorName = (id) => {
-            const selected = vendor.value.find(b => b.id === id);
-            return selected ? selected.name : '';
+onMounted(async () => {
+    try {
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/brand?`, {
+            method: 'GET',
+            headers: headers.value,
+            });
+            // Map API data to the required format
+            brand.value = response.data.map(b => ({
+                name: b.name, // Dropdown label
+                id: b.id, // Dropdown value
+            }));
+        } catch (error) {
+            console.error('Error fetching brands:', error);
+        }
+    });
+    
+// Utility function to get the name of the selected brand
+const getBrandName = (id) => {
+    const selected = brand.value.find(b => b.id === id);
+    return selected ? selected.name : '';
 };
 
-const colors = ref([]);
-const sizes = ref([]);
-const selectedColor = ref(null);
-const selectedSize = ref(null);
+
+onMounted(async () => {
+    try {
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/vendor?`, {
+            method: 'GET',
+            headers: headers.value,
+        });
+        // Map API data to the required format
+        vendor.value = response.data.map(b => ({
+            name: b.name, // Dropdown label
+            id: b.id, // Dropdown value
+        }));
+    } catch (error) {
+        console.error('Error fetching vendor:', error);
+    }
+});
+
+// Utility function to get the name of the selected vendor
+const getVendorName = (id) => {
+    const selected = vendor.value.find(b => b.id === id);
+    return selected ? selected.name : '';
+};
 
 // Function to fetch and set additional options
 onMounted(async () => {
@@ -172,13 +187,6 @@ onMounted(async () => {
 
 
 // Implemented the search functionality
-const searchQuery = ref("");
-const status = ref("");
-const minPrice = ref();
-const maxPrice = ref();
-const stDate = ref();
-const enDate = ref();
-const totalProducts = ref(0);
 const fetchFilteredProducts = async () => {
     loading.value = "not";
     try {
