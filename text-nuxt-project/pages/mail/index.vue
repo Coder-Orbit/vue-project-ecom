@@ -33,6 +33,19 @@ const fromData = ref({
     // status: 1,
 });
 
+// Working From Error 
+const fromError = ref({
+    smtp_name: "",
+    smtp_username: "",
+    from_address: "",
+    smtp_password: "",
+    from_name: "",
+    smtp_port: "",
+    smtp_encryption:""
+
+})
+
+
 
 // Data submit  for add data or edit data
 const dataSubmit = async () => {
@@ -47,7 +60,7 @@ const dataSubmit = async () => {
         }
 
 
-        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/${url}`, {
+         const res= await $fetch(`${EndPoint}/admin/${MasterKey}/${url}`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -69,13 +82,6 @@ const dataSubmit = async () => {
             body:JSON.stringify(fromData.value)
         });
 
-
-        // res.error.hasOwn('name');
-
-  
-
-        // console.log(res.error.hasOwnProperty('smtp name'));
-        
 
         if ( res?.status === "Success") {
 
@@ -127,14 +133,33 @@ const dataSubmit = async () => {
                 life: 2000,
             });
             
+            
         }
 
         
 
     } catch (error) {
-        console.log(error);
-        return { success: false, message: 'An error occurred during Request' };
+        // console.log('xhr',xhr);
+        // return { success: false, message: 'An error occurred during Request' };
+        console.log(error.response);
+
+        fromError.value = {
+            smtp_name: error.response?._data?.smtp_name != undefined ?  error.response?._data.smtp_name[0] : '',
+            smtp_username: error.response?._data?.smtp_username != undefined ?  error.response?._data.smtp_username[0] : '',
+            from_address: error.response?._data?.from_address != undefined ?  error.response?._data.from_address[0] : '',
+            smtp_password: error.response?._data?.smtp_password != undefined ?  error.response?._data.smtp_password[0] : '',
+            from_name: error.response?._data?.from_name != undefined ?  error.response?._data.from_name[0] : '',
+            smtp_port: error.response?._data?.smtp_port != undefined ?  error.response?._data.smtp_port[0] : '',
+            
+            // from_address: error.response?._data.from_address[0],
+            // smtp_password: error.response?._data.smtp_password[0],
+            // from_name: error.response?._data.from_name[0],
+            // smtp_port: error.response?._data.smtp_port[0],
+            
+        }
     }
+
+    console.log(fromError.value)
 
 
 }
@@ -307,48 +332,43 @@ const editHandler = async(id)=>{
                                 <div class="grid grid-cols-2 gap-2">
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Smtp Name</label>
-                                        <input type="text" v-model="fromData.smtp_name"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                            placeholder="example: smtp.mailtrap.io" />
+                                        <!-- <input type="text" v-model="fromData.smtp_name" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="example: smtp.mailtrap.io" /> -->
+                                        <input type="text" v-model="fromData.smtp_name" :class="['w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md',fromError.smtp_name?'border-[red]':'']" placeholder="example: smtp.mailtrap.io" />
+                                        <span v-if="fromError.smtp_name" class="text-sm text-[red]">{{ fromError.smtp_name }}</span>
+            
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">User Name</label>
-                                        <input type="text" v-model="fromData.smtp_username"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                            placeholder="example: Mohammad Noor" />
-              
+                                        <input type="text" v-model="fromData.smtp_username" :class="['w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md',fromError.smtp_username?'border-[red]':'']" placeholder="example: Mohammad Noor" />
+                                        <span v-if="fromError.smtp_username" class="text-sm text-[red]">{{ fromError.smtp_username }}</span>
                                     </div>
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-2 mt-2">
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">From Address</label>
-                                        <input type="email" v-model="fromData.from_address"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                            placeholder="from address" />
+                                        <input type="email" v-model="fromData.from_address" :class="['w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md',fromError.from_address?'border-[red]':'']" placeholder="from address" />
+                                        <span v-if="fromError.from_address" class="text-sm text-[red]">{{ fromError.from_address }}</span>
                                     </div>
 
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Smtp Password</label>
-                                        <input type="text" v-model="fromData.smtp_password"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                            placeholder="mail password" />
+                                        <input type="text" v-model="fromData.smtp_password" :class="['w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md',fromError.smtp_password?'border-[red]':'']" placeholder="mail password" />
+                                        <span v-if="fromError.smtp_password" class="text-sm text-[red]">{{ fromError.smtp_password }}</span>
                                     </div>
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-2 mt-2">
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">From Name</label>
-                                        <input type="text" v-model="fromData.from_name"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                            placeholder="example: Admin / Info" />
+                                        <input type="text" v-model="fromData.from_name" :class="['w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md',fromError.from_name?'border-[red]':'']" placeholder="example: Admin / Info" />
+                                        <span v-if="fromError.from_name" class="text-sm text-[red]">{{ fromError.from_name }}</span>
                                     </div>
 
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Smtp Port</label>
-                                        <input type="text" v-model="fromData.smtp_port"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                            placeholder="example: 995 / 25 / 587 / ect" />
+                                        <input type="text" v-model="fromData.smtp_port" :class="['w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md',fromError.smtp_port?'border-[red]':'']" placeholder="example: 995 / 25 / 587 / ect" />
+                                        <span v-if="fromError.smtp_port" class="text-sm text-[red]">{{ fromError.smtp_port }}</span>
                                     </div>
                                 </div>
 
@@ -356,7 +376,7 @@ const editHandler = async(id)=>{
                                     <!-- <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Smtp Encryption</label>
                                         <input type="text" v-model="fromData.smtp_encryption"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+                                            :class="['w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md',fromError.smtp_name?'border-[red]':'']"
                                             placeholder="example: TLS / SSL" />
                                     </div> -->
 
@@ -372,7 +392,7 @@ const editHandler = async(id)=>{
                                     <!-- <div class="w-full">
                                         <label for="commission_type" class="text-sm w-full">Status</label>
                                         <select name="status" v-model="fromData.status" id="commission_type"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                                            :class="['w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md',fromError.smtp_name?'border-[red]':'']">
                                             <option value="1">Active</option>
                                             <option value="0">Inactive</option>
                                         </select>
