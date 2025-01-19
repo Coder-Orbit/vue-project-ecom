@@ -530,11 +530,6 @@ const fetchFilteredProducts = async () => {
                 </div>
                 <!-- size & Color-->
                 <div class="w-full grid grid-cols-2 gap-2 mt-2">
-                    <!-- <div>
-                        <label for="dd-city" class="text-sm w-full">Size</label>
-                        <Dropdown v-model="selectedSize" :options="sizes" optionLabel="name" placeholder="Select Size"
-                            class="text-sm border m-0  outline-none focus:border-red-200 rounded-md" />
-                    </div> -->
                     <!-- Color Filter -->
                     <div class="w-full mt-2">
                         <label for="size-filter" class="text-sm w-full"

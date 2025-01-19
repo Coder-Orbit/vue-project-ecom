@@ -47,7 +47,7 @@ onMounted( async () => {
         coreTranstion.value = response.trasactions.links
         transaction.value = response.trasactions
         
-        console.log(transaction.value)
+        console.log("response.trasactions:",response.trasactions)
 
     } catch (error) {
         console.log(error);
@@ -83,7 +83,7 @@ const paginate = async (page) => {
         test.value = response.trasactions
         transaction.value = response.trasactions;
         coreTranstion.value = response.trasactions.links
-        // console.log("Current Page:",transaction.value.current_page)
+        
     } catch (error) {
         console.log(error);
     }
@@ -97,7 +97,7 @@ const fetchFilteredTransaction = async () => {
     loading.value = "not"
 
     try {
-        console.log(dateFunction(fromDateQuery.value))
+        // console.log(dateFunction(fromDateQuery.value))
         console.log(toDateQuery.value)
 
         const fromDateParams = fromDateQuery.value ? fromDateQuery.value.toISOString().split('T')[0] : '';
@@ -122,7 +122,7 @@ const fetchFilteredTransaction = async () => {
         })
         console.log(response)
 
-        transaction.value = response.trasactions.data;
+        transaction.value = response.trasactions;
 
         loading.value = "success";
     } catch (error) {
@@ -188,7 +188,7 @@ const fetchFilteredTransaction = async () => {
                                     <td class="p-1 text-left text-xs">{{ transac.total_amount }}</td>
                                     <td class="p-1 text-center text-xs">{{dateMonthFunction(transac.updated_at)}}</td>
                                     <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" :to="`/transaction/details/${transac.order_id}`">
+                                        <NuxtLink class="text-right" :to="`/transaction/details/${transac.user_id}`">
                                             <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                         </NuxtLink>
                                     </td>
