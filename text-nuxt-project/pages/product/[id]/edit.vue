@@ -83,16 +83,7 @@
     ]);
 
 
-    const extraFields = ref([
-        {
-            fieldName: "",
-            fieldValue: "",
-        },
-        {
-            fieldName: "",
-            fieldValue: "",
-        }
-    ]);
+    const extraFields = ref({});
 
 
 
@@ -133,7 +124,7 @@
             startDate.value = product.value.data.start_offer;
             endDate.value = product.value.data.end_offer;
             minimumNumber.value = product.value.data.minimum_order;
-            editorUpdateData.value = product.value.data.description;
+            editorOldData.value = product.value.data.description; //Replaced from editorUpdateData
 
             selectedCategory.value = product.value.data.category;
             selectedBrand.value = product.value.data.brand_id;
@@ -155,6 +146,7 @@
             getThana(selectedDistrict);
             // console.log(countries);
 
+            console.log("Extra Fields>>>>",extraFields.value)
             loading.value = "success";
         
             const editor = await uploadEditorJS()
@@ -230,6 +222,7 @@
 
                 }
             })
+            console.log("Edit>>>>>",product.value)
         } catch (err) {
         console.log(err)
         }
@@ -288,14 +281,12 @@
         });
     }
 
-
-
     // Add extra field function goes here
     const addMoreField = () => {
         extraFields.value = [
             ...extraFields.value, {
-                fieldName: "",
-                fieldValue: "",
+                field_name: "",
+                field_value: "",
             }
         ];
     }
@@ -418,7 +409,8 @@
             }
         )
 
-        console.log(resp);
+        console.log("Response>>>>",resp);
+        console.log("Data>>>", data)
 
         router.push('/product');
         loading.value = "success";
@@ -598,11 +590,11 @@
                                                             
                                                             <div class="w-full mr-2">
                                                                 <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Field Name <Icon name="clarity:info-solid"></Icon></label>
-                                                                <input type="text" v-model="extra.fieldName"  class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
+                                                                <input type="text" v-model="extra.field_name"  class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
                                                             </div>
                                                             <div class="w-full mr-2">
                                                                 <label for="dd-citye" class="text-sm w-full"> Field Value</label>
-                                                                <input type="text" v-model="extra.fieldValue" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
+                                                                <input type="text" v-model="extra.field_value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
                                                             </div>
                                                             <div class="bg-red-500 h-8 flex place-items-center p-2 rounded-md mt-[1.4rem] cursor-pointer" @click="removeMoreField(index)"><Icon class="text-white" name="humbleicons:times"></Icon></div>
                                                             

@@ -237,12 +237,12 @@
 
     const extraFields = ref([
         {
-            fieldName: "",
-            fieldValue: "",
+            field_name: "",
+            field_value: "",
         },
         {
-            fieldName: "",
-            fieldValue: "",
+            field_name: "",
+            field_value: "",
         }
     ]);
 
@@ -250,8 +250,8 @@
     const addMoreField = () => {
         extraFields.value = [
             ...extraFields.value, {
-                fieldName: "",
-                fieldValue: "",
+                field_name: "",
+                field_value: "",
             }
         ];
     }
@@ -375,7 +375,8 @@
             }
         )
 
-        console.table(resp);
+        console.log("Response>>>",resp);
+        console.log("Sended Data>>>",data)
         // router.push('/product');
         loading.value = "success";
 
@@ -554,11 +555,11 @@
                                                             
                                                             <div class="w-full mr-2">
                                                                 <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Field Name <Icon name="clarity:info-solid"></Icon></label>
-                                                                <input type="text" v-model="extra.fieldName"  class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
+                                                                <input type="text" v-model="extra.field_name"  class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
                                                             </div>
                                                             <div class="w-full mr-2">
                                                                 <label for="dd-citye" class="text-sm w-full"> Field Value</label>
-                                                                <input type="text" v-model="extra.fieldValue" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
+                                                                <input type="text" v-model="extra.field_value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
                                                             </div>
                                                             <div class="bg-red-500 h-8 flex place-items-center p-2 rounded-md mt-[1.4rem] cursor-pointer" @click="removeMoreField(index)"><Icon class="text-white" name="humbleicons:times"></Icon></div>
                                                             

@@ -64,7 +64,7 @@ onMounted(async () => {
         )
 
         loading.value = "success";
-        console.table(products.value);
+        console.log("All Products>>>>>>",products.value);
 
 
     } catch (err) {
@@ -96,7 +96,7 @@ const paginate = async (page) => {
                     headers: headers.value,
                 }
             );
-            console.log("Curr",products.value.current_page)
+            // console.log("Curr",products.value.current_page)
 
     }
     catch (error) {
@@ -162,7 +162,7 @@ onMounted(async () => {
             method: "GET",
             headers: headers.value,
         });
-        console.log("Response:", response); // Debug: Log the response to verify
+        // console.log("Response:", response); // Debug: Log the response to verify
 
         // Extract only the colors from the response
         if (response.colors) {
@@ -177,7 +177,7 @@ onMounted(async () => {
                 name: s.size, // Extract the size name
             }));
         }
-        console.log("Sizes:", sizes.value); // Debug: Log colors to verify
+        // console.log("Sizes:", sizes.value); // Debug: Log colors to verify
         loading.value = "success";
     } catch (err) {
         console.log("Error fetching colors:", err);
@@ -237,7 +237,7 @@ const fetchFilteredProducts = async () => {
         loading.value = "success";
 
         // Debugging logs
-        console.log("Sizes:", selectedSize.value);
+        // console.log("Sizes:", selectedSize.value);
         console.log("Filtered products:", products.value);
     } catch (error) {
         console.log(error);
