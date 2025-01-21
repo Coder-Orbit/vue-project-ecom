@@ -324,6 +324,31 @@ const toggle = (index) => {
             </ul>
         </li>
 
+        <!-- Page -->
+        <li class="relative cursor-pointer" @click="toggle('page')">
+            <div exact class="flex border-b py-1">
+                <Icon name="fluent:box-16-filled" width="1em" height="1em" class="ml-3" /> 
+                <div class="text-left text-sm ml-1 -mt-[2px]"> Page</div> 
+                <Icon name="ic:round-keyboard-arrow-right" :class="`${ activeMenu == 'page' || currentPath == '/page' || currentPath == '/page/create' || currentPath == '/page/*/edit' ? 'rotate-90' : ''}`" class="absolute right-0 ease-in duration-300" width="1.2em" height="1.2em"/>
+            </div>
+
+            <ul :class="`${ activeMenu == 'page' || currentPath == '/page' || currentPath == '/page/create' || currentPath == '/page/*/edit' ? 'block' : 'hidden'}`">
+                <li class="relative">
+                    <NuxtLink exact to="/page" class="flex border-b py-1 pl-4">
+                        <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
+                        <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
+                    </NuxtLink>
+                </li>
+
+                <li class="relative">
+                    <NuxtLink exact to="/page/create" class="flex border-b py-1 pl-4">
+                        <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 
+                        <div class="text-left text-sm ml-1 -mt-[2px]">Add</div>
+                    </NuxtLink>
+                </li>
+            </ul>
+        </li>
+
 
         <!-- Orders -->
         <li class="relative cursor-pointer" @click="toggle('order')">
