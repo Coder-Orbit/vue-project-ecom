@@ -32,7 +32,6 @@
 
     import MultiSelect from 'primevue/multiselect';
     
-
     const uploadEditorJS = () => import('@editorjs/editorjs')
     const ImageTool = window.ImageTool;
     const loading = ref('not')
@@ -125,7 +124,7 @@
             endDate.value = product.value.data.end_offer;
             minimumNumber.value = product.value.data.minimum_order;
             editorOldData.value = product.value.data.description; //Replaced from editorUpdateData
-
+            // gallery.value = product.value.data.gallery; // added gallery in get method
             selectedCategory.value = product.value.data.category;
             selectedBrand.value = product.value.data.brand_id;
             selectedVendor.value = product.value.data.vendor_id;
@@ -286,7 +285,7 @@
         extraFields.value = [
             ...extraFields.value, {
                 field_name: "",
-                field_value: "",
+                value: "",
             }
         ];
     }
@@ -410,7 +409,8 @@
         )
 
         console.log("Response>>>>",resp);
-        console.log("Data>>>", data)
+        console.log("Data>>>>",data);
+        console.log("Dates>>>", startDate.value)
 
         router.push('/product');
         loading.value = "success";
@@ -594,7 +594,7 @@
                                                             </div>
                                                             <div class="w-full mr-2">
                                                                 <label for="dd-citye" class="text-sm w-full"> Field Value</label>
-                                                                <input type="text" v-model="extra.field_value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
+                                                                <input type="text" v-model="extra.value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
                                                             </div>
                                                             <div class="bg-red-500 h-8 flex place-items-center p-2 rounded-md mt-[1.4rem] cursor-pointer" @click="removeMoreField(index)"><Icon class="text-white" name="humbleicons:times"></Icon></div>
                                                             

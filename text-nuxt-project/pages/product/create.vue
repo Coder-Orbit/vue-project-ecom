@@ -32,6 +32,7 @@
 
     import MultiSelect from 'primevue/multiselect';
     
+    const { dateMonthFunction, dateFunction } = useDataDate();
 
     const uploadEditorJS = () => import('@editorjs/editorjs')
     const ImageTool = window.ImageTool;
@@ -238,11 +239,11 @@
     const extraFields = ref([
         {
             field_name: "",
-            field_value: "",
+            value: "",
         },
         {
             field_name: "",
-            field_value: "",
+            value: "",
         }
     ]);
 
@@ -251,7 +252,7 @@
         extraFields.value = [
             ...extraFields.value, {
                 field_name: "",
-                field_value: "",
+                value: "",
             }
         ];
     }
@@ -559,7 +560,7 @@
                                                             </div>
                                                             <div class="w-full mr-2">
                                                                 <label for="dd-citye" class="text-sm w-full"> Field Value</label>
-                                                                <input type="text" v-model="extra.field_value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
+                                                                <input type="text" v-model="extra.value" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Value"/>
                                                             </div>
                                                             <div class="bg-red-500 h-8 flex place-items-center p-2 rounded-md mt-[1.4rem] cursor-pointer" @click="removeMoreField(index)"><Icon class="text-white" name="humbleicons:times"></Icon></div>
                                                             
