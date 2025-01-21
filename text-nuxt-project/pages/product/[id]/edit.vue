@@ -82,8 +82,20 @@
     ]);
 
 
-    const extraFields = ref({});
-
+    const extraFields = ref([]);
+    // Add extra field function goes here
+    const addMoreField = () => {
+        if (!Array.isArray(extraFields.value)) {
+            extraFields.value = []; // Initialize as an empty array if it's not already an array
+        }
+        extraFields.value = [
+            ...extraFields.value, 
+            {
+            field_name: "",
+            value: "",
+            }
+        ];
+    };
 
 
     // replace with actual API endpoint and master key
@@ -280,15 +292,7 @@
         });
     }
 
-    // Add extra field function goes here
-    const addMoreField = () => {
-        extraFields.value = [
-            ...extraFields.value, {
-                field_name: "",
-                value: "",
-            }
-        ];
-    }
+
 
     // Remove extra field
     const removeMoreField = (index) => {

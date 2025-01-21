@@ -30,10 +30,10 @@ const Description = ref('');
 const selectedCategory = ref('');
 const extraProps = ref([]);
 const extraFields = ref([
-    {
-        fieldName: "",
-        fieldValue: "",
-    },
+    // {
+    //     fieldName: "",
+    //     fieldValue: "",
+    // },
 ]);
 
 // Add extra field function goes here

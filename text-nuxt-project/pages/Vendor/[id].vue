@@ -13,10 +13,10 @@ const VendorStore = useVendorStore();
 const Vendor = ref({});
 // Initialize router and route
 const router = useRouter();
-    // Extra fields
-    const extraProps = ref([]);
-    const extraFields = ref([]);
-    //Loading And Toast
+// Extra fields
+const extraProps = ref([]);
+const extraFields = ref([]);
+//Loading And Toast
 const loading = ref('Stop');
 const toast = useToast();
 // Assume you have a dynamic route with the slide ID

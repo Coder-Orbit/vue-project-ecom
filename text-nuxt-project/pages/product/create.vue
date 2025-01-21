@@ -84,9 +84,9 @@
         { name: 'Inactive', id: 0 }
     ]);
 
+    const extraFields = ref([]);
 
-
-        // replace with actual API endpoint and master key
+    // replace with actual API endpoint and master key
     const config = useRuntimeConfig();
     const EndPoint = config.public.baseURl;
     const MasterKey = config.public.masterToken;
@@ -233,19 +233,6 @@
             console.log('Saving failed: ', error)
         });
     }
-
-
-
-    const extraFields = ref([
-        {
-            field_name: "",
-            value: "",
-        },
-        {
-            field_name: "",
-            value: "",
-        }
-    ]);
 
     // Add extra field function goes here
     const addMoreField = () => {
