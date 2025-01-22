@@ -33,6 +33,7 @@ import RadioButton from 'primevue/radiobutton';
 import MultiSelect from 'primevue/multiselect';
 
 
+
 const uploadEditorJS = () => import('@editorjs/editorjs')
 const ImageTool = window.ImageTool;
 const loading = ref('not')
@@ -42,11 +43,13 @@ const editorOldData = ref(null)
 
 const productName = ref('');
 const selectedStatus = ref();
-const selectedLayout = ref(1);
+const selectedLayout = ref();
 
 
 const active = ref(0);
-const router = useRouter();
+const route = useRoute();
+const productId = route.params.id;
+
 
 const status = ref([
     { name: 'Active', id: 1 },
@@ -79,10 +82,37 @@ const headers = ref({
 onMounted(async () => {
 
     try {
-
-
-
         loading.value = "success";
+
+        // get single product
+
+        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/page/${productId}`,{
+                method: 'GET',
+                headers: headers.value,
+                
+            })
+
+        
+
+        if(res?.data){
+            productName.value = res?.data.name
+            selectedStatus.value = res?.data.status
+            selectedLayout.value = res?.data.layout
+           
+            extraFields.value = res?.data?.extend_props?.map((item) => ({
+                field_name: item.field_name || "", 
+                value: item.value || "",           
+            }));
+
+            editorOldData.value = res?.data.description
+            
+
+
+         
+
+        }
+
+      
 
         const editor = await uploadEditorJS()
         Editor.value = new editor.default({
@@ -151,6 +181,12 @@ onMounted(async () => {
     } catch (err) {
         console.log(err)
     }
+
+
+    
+
+
+    
 })
 
 
@@ -199,15 +235,21 @@ const submitData = async () => {
 
     let data = {
         name: productName.value,
-        description: editorOldData.value,
+        
         status: selectedStatus.value,
         layout: selectedLayout.value,
-        extend_props: extraFields.value
+        extend_props: extraFields.value,
+        description: editorOldData.value,
+    
+        
+
+
+     
 
     }
+     
 
-
-    const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/page`,
+    const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/page/${productId}`,
         {
             method: 'POST',
             headers: headers.value,
@@ -221,6 +263,9 @@ const submitData = async () => {
 
 }
 
+
+
+
 </script>
 <template>
     <NuxtLayout :name="layout">
@@ -230,11 +275,10 @@ const submitData = async () => {
                     <div class="w-12 mx-auto"><img alt="loading..." src="/spinner.gif"></div>
                 </div> -->
 
-
+              
 
             <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                 <div class="flex w-full justify-between bg-gray-400 text-white">
-
                     <div class="font-semibold mt-1 ml-3">Add Page</div>
                     <div class="font-semibold ml-1 flex">
                         <button @click="$router.back()"
