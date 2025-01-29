@@ -63,8 +63,10 @@ async function handleLogin() {
             </div>
         
             <img class="background" src="/landscape.svg" />
+
+            
         
-    </div>
+        </div>
     </div>
 </template>
 
