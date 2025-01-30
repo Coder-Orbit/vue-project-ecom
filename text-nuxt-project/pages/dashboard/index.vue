@@ -57,7 +57,7 @@ import { ref, onMounted } from "vue";
                 barGrapCurrent.value = data.value.current_weeks_orders?.data;
                 barGrapPrevious.value = data.value.previous_weeks_orders?.data;
 
-                console.log(summary);
+                // console.log(summary);
 
             }
         catch (error) {

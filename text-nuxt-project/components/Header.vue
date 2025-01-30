@@ -3,6 +3,19 @@ import Menu from 'primevue/menu';
 import { ref } from "vue";
 const  store = useTokenStore();
 const loginStore = useLoginStore();
+
+const store2 = usePermissionStore();
+const permissions = ref(null); // Store API response
+
+async function fetchPermissions() {
+    const response = await store2.getPermissions();
+    console.log("Permissions:", response);
+    if (response.success) {
+        permissions.value = response; // Save the permissions data
+    }
+}
+fetchPermissions();
+
 const username = computed(() => loginStore.userData.name);
 const email = computed(() => loginStore.userData.email);
 const pin = computed(() => loginStore.userData.otp);
