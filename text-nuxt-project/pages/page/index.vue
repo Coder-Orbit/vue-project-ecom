@@ -235,6 +235,7 @@ const openDeleteModal = (pageId) => {
                             <tr class="w-full bg-gray-300 text-sm">
                                 <th class="p-1 text-center text-sm">SL</th>
                                 <th class="p-1 text-left text-sm">Name</th>
+                                <th class="p-1 text-left text-sm">Slug</th>
                                 <th class="p-1 text-left text-sm">Field_Name</th>
                                 <th class="p-1 text-left text-sm">Field_Value</th>
                                 <th class="p-1 text-left text-sm">Layout</th>
@@ -246,6 +247,7 @@ const openDeleteModal = (pageId) => {
                             <tr v-for="(page, index) in pages?.data" class="bg-white odd:bg-gray-100" :key="page.id">
                                 <td class="p-1 text-center text-xs">{{ page.id }}</td>
                                 <td class="p-1 text-left text-xs">{{ page.name }}</td>
+                                <td class="p-1 text-left text-xs">{{ page.slug }}</td>
 
                                 <td class="p-1 text-left text-xs">
                                     <div v-if="page?.extend_props?.length">
@@ -254,7 +256,7 @@ const openDeleteModal = (pageId) => {
                                         </div>
                                     </div>
                                     <div v-else>
-                                        <span class="text-red-500">Not assigned</span>
+                                        <span class="text-gray-500">---</span>
                                     </div>
                                 </td>
 
@@ -265,7 +267,7 @@ const openDeleteModal = (pageId) => {
                                         </div>
                                     </div>
                                     <div v-else>
-                                        <span class="text-red-500">Not assigned</span>
+                                        <span class="text-gray-500">---</span>
                                     </div>
                                 </td>
 
@@ -305,42 +307,14 @@ const openDeleteModal = (pageId) => {
                         class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
                         placeholder="Page Name" />
                     </div>
-                    <div class="w-full">
-                        <label for="fieldName" class="text-sm w-full">Field Name</label>
-                        <input type="text" v-model="fieldName"
-                        class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                        placeholder="Field Name" />
-                    </div>
-                    <div class="w-full">
-                        <label for="fieldValue" class="text-sm w-full">Field Value</label>
-                        <input type="text" v-model="fieldValue"
-                        class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                        placeholder="Field Value" />
-                    </div>
-                    <!-- Status & Layout-->
-                    <div class="w-full grid grid-cols-2 gap-2 mt-2">
+                    <!-- Status-->
+                    <div class="w-full grid grid-cols-1 gap-2 mt-2">
                         <div>
                             <label for="dd-city" class="text-sm w-full">Status</label>
                             <Dropdown v-model="selectedStatus" :options="status" optionLabel="name" optionValue="id" filter placeholder="Select a Status" class="w-full md:w-14rem">
                                 <template #value="slotProps">
                                     <div v-if="slotProps.value" class="flex align-items-center">
                                         <div>{{ getStatusName(slotProps.value) }}</div>
-                                    </div>
-                                    <span v-else>{{ slotProps.placeholder }}</span>
-                                </template>
-                                <template #option="slotProps">
-                                    <div class="flex align-items-center">
-                                        <div>{{ slotProps.option.name }}</div>
-                                    </div>
-                                </template>
-                            </Dropdown>
-                        </div>
-                        <div>
-                            <label for="dd-city" class="text-sm w-full">Layout</label>
-                            <Dropdown v-model="selectedLayout" :options="layouts" optionLabel="name" optionValue="id" filter placeholder="Select a layouts" class="w-full md:w-14rem">
-                                <template #value="slotProps">
-                                    <div v-if="slotProps.value" class="flex align-items-center">
-                                        <div>{{ getLayoutsName(slotProps.value) }}</div>
                                     </div>
                                     <span v-else>{{ slotProps.placeholder }}</span>
                                 </template>
