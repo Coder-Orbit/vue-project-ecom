@@ -98,7 +98,7 @@ export const useCategoryStore = defineStore("category", {
                     },
                 });
                 const data = await res.json();
-                console.log("Data:>",data);
+                // console.log("Data:>",data);
                 this.categories = data.data;
                 this.pagination.currentPage = data.current_page;
                 this.pagination.totalPages = data.last_page;

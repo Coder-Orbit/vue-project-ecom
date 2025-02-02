@@ -21,6 +21,19 @@ definePageMeta({
     middleware: ["auth"],
 });
 
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+// Function to check access
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
+
 // working Noor
 const fromData = ref({
     smtp_name: "",
@@ -324,10 +337,10 @@ const editHandler = async(id)=>{
                     </div>
                 </div>
                 <!-- Body Content goes here -->
-                <div class="h-[calc(100vh-8rem)] overflow-y-auto border-b px-3 pt-2">
+                <div  class="h-[calc(100vh-8rem)] overflow-y-auto border-b px-3 pt-2">
 
                     <div class="flex w-full justify-center">
-                        <div class="w-1/2">
+                        <div v-if="visibleAllow(16, 2)" class="w-1/2">
                             <form @submit.prevent="dataSubmit">
                                 <div class="grid grid-cols-2 gap-2">
                                     <div class="w-full">
@@ -438,22 +451,21 @@ const editHandler = async(id)=>{
                                         <td class="py-3 px-1 text-left text-xs">{{ item.smtp_port }}</td>
                                         <td class="py-3 px-1 text-left text-xs">{{ item.smtp_encryption }}</td>
                                         <td class="py-3 px-1 text-center text-xs" >
-                                            <span class="text-green-700 cursor-pointer" v-if="item.status == 1">Active</span>
-                                            <span class="text-red-700 cursor-pointer" v-else>Inactive</span>
+                                            <span class="text-green-700" v-if="item.status == 1">Active</span>
+                                            <span class="text-red-700" v-else>Inactive</span>
                                         </td>
 
                                                 
                                         <td class="py-3 px-1 text-xs  text-center">
 
                                             <div class="flex gap-2 text-center justify-center items-center">
-                                                <span class="cursor-pointer" @click="editHandler(item.id)">
-                                                    <Icon name="ic:baseline-edit" width="1.4em" height="1.4em" />
+                                                <span v-if="visibleAllow(16, 2)" class="cursor-pointer bg-yellow-500 p-1 text-white rounded" @click="editHandler(item.id)">
+                                                    <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                                                 </span>
-                                                <span class="cursor-pointer text-red-700" @click="showPopUP(item.id)">
-                                                    <Icon name="streamline:recycle-bin-2" width="1.4em" height="1.4em" />
+                                                <span v-if="visibleAllow(16, 4)" class="cursor-pointer p-1 text-white rounded bg-red-500" @click="showPopUP(item.id)">
+                                                    <Icon name="material-symbols:delete" width="1.4em" height="1.4em" />
                                                 </span>
-                                                
-                                                <span class="cursor-pointer" @click="statusMethod(item.id)">
+                                                <span class="cursor-pointer bg-yellow-200 p-1 text-white rounded" @click="statusMethod(item.id)">
                                                     <Icon v-if="item.status == 1" name="uil:times-square" width="1.4em" height="1.4em" class="text-red-600"/>
                                                     <Icon v-else name="el:check" width="1.4em" height="1.4em" class="text-green-600"/>
                                                 </span>
@@ -508,7 +520,6 @@ const editHandler = async(id)=>{
                                             </div>
                                         </div>
                                     </tr>
-
 
                                 </tbody>
                             </table>

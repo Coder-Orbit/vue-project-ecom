@@ -30,6 +30,19 @@ definePageMeta({
     middleware: "auth",
 })
 
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+// Function to check access
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
+
 onMounted(async () => {
     getData()
 });
@@ -209,13 +222,13 @@ const nameFieldFunc = async (n) => {
                 <div class="w-full flex justify-center">
                     <div class="w-9/12 justify-center">
                         <div class="w-full mt-2 justify-center">
-                            <Fieldset legend="Extra Props" :pt="{ root: {class: 'border p-2'},legend:{class: 'p-0 m-0'}, togglerIcon:{}}">
+                            <Fieldset v-if="visibleAllow(18,2)" legend="Extra Props" :pt="{ root: {class: 'border p-2'},legend:{class: 'p-0 m-0'}, togglerIcon:{}}">
                                 <template #legend>
                                     <div class="flex align-items-center pl-2">
                                         <span class="font-bold">Web Settings Information</span>
                                     </div>
                                 </template>
-                                <div class="flex w-full py-1 justify-center">
+                                <div  class="flex w-full py-1 justify-center">
                                     <div class="max-w-full mr-2">
                                         <label for="dd-citwy" class="text-sm w-full" title="Use field name like: filedName, field_name or filedname"> Field Name <Icon name="clarity:info-solid"></Icon></label>
                                         <input type="text" @keyup="((e) => nameFieldFunc(e))" name="field_name" v-model="extraProps.field_name" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Field Name"/>
@@ -254,10 +267,10 @@ const nameFieldFunc = async (n) => {
                                         <td class="p-1 text-left text-xs">{{ data.group }}</td>                       
                                         <td class="p-1 text-xs grid text-center justify-items-center w-24">
                                             <div class="flex justify-center space-x-1">
-                                                <Button class="bg-yellow-500 p-1 text-white rounded" @click="editField(data.id)">
+                                                <Button v-if="visibleAllow(18,3)" class="bg-yellow-500 p-1 text-white rounded" @click="editField(data.id)">
                                                     <Icon name="subway:pencil" width="1.4em" height="1.4em"/> 
                                                 </Button>
-                                                <Button class="p-1 text-white rounded bg-red-500" @click="deleteData(data.id)">
+                                                <Button v-if="visibleAllow(18,4)" class="p-1 text-white rounded bg-red-500" @click="deleteData(data.id)">
                                                     <Icon name="material-symbols:delete" width="1.4em" height="1.4em"/>
                                                 </Button>
                                             </div>

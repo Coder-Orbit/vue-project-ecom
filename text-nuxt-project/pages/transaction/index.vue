@@ -31,6 +31,19 @@ const headers = ref({
 "App-Master-Key": `${MasterKey}`
 })
 
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+// Function to check access
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
+
 definePageMeta({
     layout: "dashboard",
     middleware: "auth",
@@ -174,7 +187,7 @@ const fetchFilteredTransaction = async () => {
                                     <th class="p-1 text-left text-sm">Credit</th>
                                     <th class="p-1 text-left text-sm">Total</th>
                                     <th class="p-1 text-center text-sm">Date</th>
-                                    <th class="p-1 text-center w-24">...</th>
+                                    <th class="p-1 text-center w-24">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -188,7 +201,7 @@ const fetchFilteredTransaction = async () => {
                                     <td class="p-1 text-left text-xs">{{ transac.total_amount }}</td>
                                     <td class="p-1 text-center text-xs">{{dateMonthFunction(transac.updated_at)}}</td>
                                     <td class="p-1 text-xs  text-center">
-                                        <NuxtLink class="text-right" :to="`/transaction/details/${transac.user_id}`">
+                                        <NuxtLink v-if="visibleAllow(15, 1)" class="text-right" :to="`/transaction/details/${transac.user_id}`">
                                             <Icon name="mdi:eye" width="1.4em" height="1.4em"/>
                                         </NuxtLink>
                                     </td>

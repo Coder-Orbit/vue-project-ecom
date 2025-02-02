@@ -11,6 +11,20 @@
         layout: "dashboard",
         middleware: ['auth'],
     })
+    
+    const permissionStore = usePermissionStore();
+    const { accessMenu, allAccess } = storeToRefs(permissionStore);
+    const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+    console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+    // Function to check access
+    const visibleAllow = (menu_id, access_id) => {
+        if (accessMenuKeys.value.includes("super_admin")) {
+            return true; // If user has "super_admin" access, return true
+        }
+        return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+    };
+
     // Coupon Row data And Pagination From Store
     const store = useCouponStore();
     const couponData = computed(() => store.coupons);
@@ -163,7 +177,7 @@
                                 <Icon name="iconoir:filter-solid"></Icon>
                                 Filter
                             </button>
-                            <NuxtLink to="Coupon/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
+                            <NuxtLink v-if="visibleAllow(12, 2)" to="Coupon/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
                                 <Icon name="zondicons:add-outline"></Icon>
                                 Add
                             </NuxtLink>
@@ -218,12 +232,12 @@
                                     <!--& Others Button-->
                                     <td class="p-1 text-center text-xs flex">
                                         <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
+                                        <div v-if="visibleAllow(12, 3)" class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
                                             <NuxtLink :to="`/coupon/${ coupon.id }`">
                                                 <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                                             </NuxtLink>
                                         </div>
-                                        <button @click="openDeleteModal(coupon.id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                        <button v-if="visibleAllow(12, 4)" @click="openDeleteModal(coupon.id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
                                 </tr>
                             </tbody>

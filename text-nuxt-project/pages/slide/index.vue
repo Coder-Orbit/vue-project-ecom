@@ -13,6 +13,19 @@ definePageMeta({
   middleware: ['auth'],
 });
 
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+// Function to check access
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
+
 // Slide Row data And Pagination From Store
 const store = useSlideStore();
 const slideData = computed(() => store.slides);
@@ -150,7 +163,7 @@ const openDeleteModal = (slideId) => {
               <Icon name="iconoir:filter-solid"></Icon>
               Filter
             </button>
-            <NuxtLink to="slide/create"
+            <NuxtLink v-if="visibleAllow(10,2)"  to="slide/create"
               class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
               <Icon name="zondicons:add-outline"></Icon>
               Add
@@ -197,15 +210,15 @@ const openDeleteModal = (slideId) => {
                 <td class="p-1 text-center text-xs">{{ slide.created_by == '1' ? "Admin" : "Majedul Islam" }}</td>
                 <!-- Actions -->
                 <td class="p-1 text-center text-xs flex">
-                  <div class="rounded-md bg-cyan-400 p-1 text-white" title="View">
+                  <div v-if="visibleAllow(10,1)" class="rounded-md bg-cyan-400 p-1 text-white" title="View">
                     <Icon name="mdi:eye" width="1.4em" height="1.4em" />
                   </div>
-                  <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
+                  <div v-if="visibleAllow(10,3)" class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
                     <NuxtLink :to="`/slide/${slide.id}`">
                       <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                     </NuxtLink>
                   </div>
-                  <Button @click="openDeleteModal(slide.id)" class="rounded-md bg-red-600 p-1 text-white"
+                  <Button v-if="visibleAllow(10,4)" @click="openDeleteModal(slide.id)" class="rounded-md bg-red-600 p-1 text-white"
                     title="Delete">
                     <Icon name="bxs:trash" width="1.4em" height="1.4em" />
                   </Button>

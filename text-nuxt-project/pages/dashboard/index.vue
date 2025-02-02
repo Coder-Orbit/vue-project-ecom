@@ -1,15 +1,22 @@
 <script setup>
-import Chart from 'primevue/chart';
-import Card from 'primevue/card';
+    import Chart from 'primevue/chart';
+    import Card from 'primevue/card';
+    import Paginator from 'primevue/paginator';
 
-import Paginator from 'primevue/paginator';
+    const { dateMonthFunction } = useDataDate();
+     
+    const permissionStore = usePermissionStore();
+    const { accessMenu, allAccess } = storeToRefs(permissionStore);
+    const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+    console.log("Permission Fetch Result allAccess:", allAccess.value);
 
-const { dateMonthFunction } = useDataDate();
-
-
-
-import { ref, onMounted } from "vue";
-
+    // Function to check access
+    const visibleAllow = (menu_id, access_id) => {
+        if (accessMenuKeys.value.includes("super_admin")) {
+            return true; // If user has "super_admin" access, return true
+        }
+        return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+    };
 
     const summary = ref([]);
     const loading = ref('not');
@@ -225,7 +232,7 @@ const paginate = async (page) => {
 <template>
     <NuxtLayout :name="layout">
         <Spiner :loading="loading" />
-        <div class="w-full px-3 mt-1">
+        <div v-if="visibleAllow(1,1)" class="w-full px-3 mt-1">
             <div class="grid grid-cols-4 gap-3 w-full">
                 <!-- Total Sales -->
                 <div class="shadow-md bg-white w-full h-36 overflow-hidden rounded-md relative">
@@ -234,7 +241,7 @@ const paginate = async (page) => {
                             <Icon class="text-center w-full text-yellow-500"  name="mdi:checkbox-marked-circle-outline" width="1.4em" height="1.4em" />
                         </div>
                         <div class="font-semibold mt-1 ml-1">Total Sales</div>
-                        
+                       
                     </div>
 
                     <div class="flex w-full justify-between">
@@ -493,6 +500,10 @@ const paginate = async (page) => {
                 
             </div>
             
+        </div>
+        <div v-else class="flex justify-center">
+            <h1 class="text-4xl font-bold text-gray-700 mt-60">Welcome to Dashboard</h1>
+            <img class="fixed bottom-9 right-3 w-[6%]" src="https://media-hosting.imagekit.io//637bdf52a73e44ad/qr-code.png?Expires=1833079546&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=UgwnqVGfo7THSXISIFsOZsNVIpN-o-q9EiMqfasKpvDX1xBTUVZOlnJ8YrnaC9AKo-rDkCjCQ-moMI63cVGS-U-14cNsnR3NRqZikvMrWke7UmQGGh1dSzaOJxJXwmyZHPCPfbKKMDdhDz4MbR~4s7qixIiAsweanPaDjFQTlSfh~26W~De63QsXAR8zZR9y4PdK0OYk-N7vuBDIqJJRWbpyq8e6U49P3vEXhUWJuE61TtpjkdAg-DPvinB3gwy-nJEjx3xN3geaR-5RjfxR3FljnKrhoPTlSBPvMRNtQPjJVuqZoVk81wj8N7Px8Q5mL2fv-dKOp1ae48rubTo9Ag__" alt="">
         </div>
     </NuxtLayout>
 </template>

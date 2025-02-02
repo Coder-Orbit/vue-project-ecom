@@ -53,6 +53,19 @@ definePageMeta({
     middleware: "auth",
 });
 
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+// Function to check access
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
+
 onMounted(async () => {
 
     try {
@@ -267,7 +280,7 @@ const fetchFilteredProducts = async () => {
                             <Icon name="iconoir:filter-solid"></Icon>
                             Filter
                         </button>
-                        <NuxtLink to="product/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm" >
+                        <NuxtLink v-if="visibleAllow(8,2)" to="product/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm" >
                             <Icon name="zondicons:add-outline"></Icon>
                             Add
                         </NuxtLink>
@@ -289,7 +302,7 @@ const fetchFilteredProducts = async () => {
                                 <th class="p-1 text-left text-sm">Size</th>
                                 <th class="p-1 text-left text-sm">Vendor</th>
                                 <th class="p-1 text-left">Status</th>
-                                <th class="p-1 text-center w-24">...</th>
+                                <th class="p-1 text-center w-24">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -306,19 +319,19 @@ const fetchFilteredProducts = async () => {
                                 <td class="p-1 text-center text-xs">{{ product.vendor?.name }}</td>
                                 <td class="p-1 text-center text-xs">{{ product.status ? "Active" : "Inactive" }}</td>
                                 <td class="p-1 text-center text-xs flex">
-                                    <div class="rounded-s-sm bg-blue-600 px-2 py-1 mt-1 text-white" title="Additional Product">
+                                    <div v-if="visibleAllow(8,3)" class="rounded-s-sm bg-blue-600 px-2 py-1 mt-1 text-white" title="Additional Product">
                                         <NuxtLink :to="`/product/additional/${product.id}`"><Icon name="fa6-solid:clone" width="1em" height="1em"/></NuxtLink>
                                     </div>
 
-                                    <NuxtLink class="bg-cyan-400 px-2 py-1 mt-1 text-white" title="View" :to="`/product/details/${product.id}`">
+                                    <NuxtLink v-if="visibleAllow(8,1)" class="bg-cyan-400 px-2 py-1 mt-1 text-white" title="View" :to="`/product/details/${product.id}`">
                                         <Icon name="mdi:eye" width="1em" height="1em"/>
                                     </NuxtLink>
 
-                                    <NuxtLink class="bg-green-600 px-2 py-1 mt-1 text-white" title="View" :to="`/product/medias/${product.id}`">
+                                    <NuxtLink v-if="visibleAllow(8,3)" class="bg-green-600 px-2 py-1 mt-1 text-white" title="View" :to="`/product/medias/${product.id}`">
                                         <Icon name="ic:sharp-perm-media" width="1em" height="1em"/>
                                     </NuxtLink>
 
-                                    <NuxtLink :to="`/product/${product.id}/edit`" class="bg-yellow-500 px-2 py-1 mt-1 text-white" title="Edit" >
+                                    <NuxtLink v-if="visibleAllow(8,3)" :to="`/product/${product.id}/edit`" class="bg-yellow-500 px-2 py-1 mt-1 text-white" title="Edit" >
                                         <Icon name="subway:pencil" width="1em" height="1em"/>
                                     </NuxtLink>
                                 </td>

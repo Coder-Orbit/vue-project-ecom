@@ -10,7 +10,7 @@ const permissions = ref(null); // Store API response
 
 async function fetchPermissions() {
     const response = await store2.getPermissions();
-    console.log("Permissions:", response);
+    // console.log("Permissions:", response);
     if (response.success) {
         permissions.value = response; // Save the permissions data
     }

@@ -43,18 +43,6 @@ definePageMeta({
   middleware: 'auth',
 });
 
-const permissionStore = usePermissionStore();
-const { accessMenu, allAccess } = storeToRefs(permissionStore);
-const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
-console.log("Permission Fetch Result allAccess:", allAccess.value);
-
-// Function to check access
-const visibleAllow = (menu_id, access_id) => {
-    if (accessMenuKeys.value.includes("super_admin")) {
-        return true; // If user has "super_admin" access, return true
-    }
-    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
-};
 
 onMounted(async () => {
     getOrderData()
@@ -129,12 +117,12 @@ const paginate = async (page) => {
 
 const getAllStatus = async () => {
     try {
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/status?`, {
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/roleAccess?`, {
             method: 'GET',
             headers: headers.value,
         });
         // Map API data to the required format
-        status.value = response.data.map(b => ({
+        status.value = response.roles.map(b => ({
             name: b.name, // Dropdown label
             id: b.id, // Dropdown value
         }));
@@ -263,7 +251,7 @@ const toggleDropdown = (uniqueId) => {
             </div>
             <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
             <div class="flex w-full justify-between bg-gray-400 text-white">
-                <div class="font-semibold mt-1 ml-3">All Orders</div>
+                <div class="font-semibold mt-1 ml-3">All Users</div>
                 <div class="font-semibold ml-1 flex">
                     <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
                         <Icon name="gg:arrow-left-o"></Icon> Back
@@ -271,6 +259,9 @@ const toggleDropdown = (uniqueId) => {
                     <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black text-sm px-4 py-2" @click="visibleRight = true">
                         <Icon name="iconoir:filter-solid"></Icon> Filter
                     </button>
+                    <NuxtLink to="users/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm" >
+                            <Icon name="zondicons:add-outline"></Icon> Add
+                    </NuxtLink>
                 </div>
             </div>
             <!-- Table list goes here -->
@@ -279,62 +270,28 @@ const toggleDropdown = (uniqueId) => {
                     <thead>
                         <tr class="w-full bg-gray-300 text-sm">
                             <th class="p-1 text-left text-sm w-8 pl-6">SL</th>
-                            <th class="p-1 text-left text-sm">Order Id</th>
                             <th class="p-1 text-left text-sm">Name</th>
-                            <th class="p-1 text-left text-sm">Contact No</th>
-                            <th class="p-1 text-left text-sm">Items</th>
-                            <th class="p-1 text-left text-sm">Amount</th>
-                            <th class="p-1 text-left text-sm">Discount</th>
-                            <th class="p-1 text-left text-sm">Total</th>
-                            <th class="p-1 text-left text-sm">Advance</th>
-                            <th class="p-1 text-left text-sm">Due</th>
-                            <th class="p-1 text-left text-sm">Status</th>
+                            <th class="p-1 text-left text-sm">Email</th>
+                            <th class="p-1 text-left text-sm">Mobile</th>
+                            <th class="p-1 text-left text-sm">Address</th>
+                            <th class="p-1 text-left text-sm">Total Orders</th>
+                            <th class="p-1 text-left text-sm">Register Date</th>
                             <th class="p-1 text-center text-sm">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(order) in orders" class="bg-white odd:bg-gray-100" :key="order.id">
-                            <td class="p-1 text-left text-xs pl-6"> {{ order.id }} </td>
-                            <td class="p-1 text-left text-xs">{{ order.unique_id }}</td>
-                            <td class="p-1 text-left text-xs">{{ order.extend_props.contact.name }}</td>
-                            <td class="p-1 text-left text-xs">{{ order.extend_props.contact.mobile }}</td>
-                            <td class="p-1 text-left text-xs">
-                                <ol class="list-decimal pl-5">
-                                    <li v-for="item in order.order_items" :key="item.id">{{ item.item_name.length > 20 ? item.item_name.substring(0, 20) + '...' : item.item_name }}</li>
-                                </ol>
-                            </td>
-                            <td class="p-1 text-left text-xs">{{ order.total }}</td>
-                            <td class="p-1 text-left text-xs">{{ order.discount }}</td>
-                            <td class="p-1 text-left text-xs">{{ order.total }}</td>
-                            <td class="p-1 text-left text-xs">{{ order.advance }}</td>
-                            <td class="p-1 text-left text-xs">{{ order.due }}</td>
-                            <td class="p-1">
-                                <div class="w-7/12">
-                                    <Dropdown v-model="inlineStatus" :options="status" optionLabel="name" optionValue="id" filter :placeholder="`${order.status.name}`" class="w-full" @change="toggleDropdown(order.unique_id)">
-                                        
-                                        <template #value="slotProps">
-                                            <div v-if="slotProps.value && isDropdownVisible === order.unique_id" class="flex align-items-center" >
-                                                <div>{{ getStatusName(slotProps.value) }}</div>
-                                            </div>
-                                            <span v-else>{{ slotProps.placeholder }}</span>
-                                        </template>
-                                        
-                                        <template #option="slotProps">
-                                            <div class="flex align-items-center cursor-pointer" @click.prevent="openStatusUpdateModal(slotProps.option.id, order.unique_id)">
-                                                <div>{{ slotProps.option.name }}</div>
-                                            </div>
-                                        </template>
-                                    
-                                    </Dropdown>
-                                </div>
-                            </td>
+                            <td class="p-1 text-left text-xs pl-6"> 1 </td>
+                            <td class="p-1 text-left text-xs">User name</td>
+                            <td class="p-1 text-left text-xs">...@gmail.com</td>
+                            <td class="p-1 text-left text-xs">0123456789</td>
+                            <td class="p-1 text-left text-xs">11/C, House-01, Lane-10, Road-11, Dhaka 1216</td>
+                            <td class="p-1 text-left text-xs">20</td>
+                            <td class="p-1 text-left text-xs">15-Jan-2025 17:7</td>
                             <td class="p-1 text-xs grid text-center justify-items-center">
-                                <div v-if="visibleAllow(9,1)" class="flex">
-                                    <NuxtLink class="bg-cyan-400 p-1 text-white rounded" :to="`/order/details/${order.unique_id}`">
-                                        <Icon name="mdi:eye" width="1.4em" height="1.4em" />
-                                    </NuxtLink>
-                                    <NuxtLink class="p-1 text-white rounded bg-red-500 ml-1" :to="`/order/print/${order.unique_id}`">
-                                        <Icon name="material-symbols:print-rounded" width="1.4em" height="1.4em" />
+                                <div class="flex">
+                                    <NuxtLink class="bg-cyan-400 p-1 text-white rounded" to="/users/edit">
+                                        <Icon name="mdi:pencil" width="1.4em" height="1.4em" />
                                     </NuxtLink>
                                 </div>
                             </td>

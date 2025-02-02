@@ -10,7 +10,24 @@
         layout: "dashboard",
         middleware: ['auth'],
     })
-    // Category Row data And Pagination From Store
+
+    const permissionStore = usePermissionStore();
+    const { accessMenu, allAccess } = storeToRefs(permissionStore);
+    // console.log("Category Fetch Result accessMenu:", accessMenu.value);
+    const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+    // console.log("Category Fetch Result accessMenuKeys:", accessMenuKeys.value);
+    // console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+    // Function to check access
+    const visibleAllow = (menu_id, access_id) => {
+        // If user has "super_admin" access, return true
+        if (accessMenuKeys.value.includes("super_admin")) {
+            return true;
+        }
+        // Otherwise, check if the ID exists in allAccess
+        return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]);
+    };
+
     const store = useCategoryStore();
     const categoryData = computed(() => store.categories);
     const pagination = computed(() => store.pagination);
@@ -146,7 +163,7 @@ const applyFilter = async () => {
                                 <Icon name="iconoir:filter-solid"></Icon>
                                 Filter
                             </button>
-                            <NuxtLink to="category/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
+                            <NuxtLink to="category/create" v-if="visibleAllow(2,2)" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
                                 <Icon name="zondicons:add-outline"></Icon>
                                 Add
                             </NuxtLink>
