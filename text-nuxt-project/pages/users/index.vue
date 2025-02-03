@@ -6,24 +6,27 @@ import Calendar from "primevue/calendar";
 import Dropdown from "primevue/dropdown";
 import { ref } from "vue";
 
-const coreofOrders = ref([])
-const searchQuery = ref('');
+const coreOfUsersData = ref([])
+const name = ref('');
 const startDate = ref(null);
 const endDate = ref(null);
-const totalOrders = ref(0);
+const filteredCustomers = ref(0);
 const isDropdownVisible = ref(false);
 const currentOrderID = ref(null);
 const UpdateStatusModalVisible = ref(false);
 const updateStatusLoading = ref(false);
 const pageNumber = ref(1)
-const orders = ref([]);
+const customers = ref([]);
 const visibleRight = ref(false);
-const status = ref([]); // Holds the dropdown options
-const selectedStatus = ref(null); // Holds the selected staus ID
+const roles = ref([]); // Holds the dropdown options
+const selectedRole = ref(null); // Holds the selected staus ID
 const inlineStatus = ref(null);
 const vendor = ref([]); // Holds the dropdown options
 const selectedVendor = ref(null); // Holds the selected vendor ID
+const orderCounts = ref({}); // Store total orders per user
+const customer_id = ref([]);
 
+const {dateMonthFunction} = useDataDate();
 // replace with actual API endpoint and master key
 const config = useRuntimeConfig();
 const EndPoint = config.public.baseURl;
@@ -45,45 +48,53 @@ definePageMeta({
 
 
 onMounted(async () => {
-    getOrderData()
-    getAllStatus()
-    getAllVendors()
+    getAllCustomersData()
+    getAllCustomersID()
+    getAllRoles()
 });
 
-const getOrderData = async () => {
-    loading.value = "not";
+
+const fetchUserTotalOrders = async (id) => {
     try {
-        const stDateParams = startDate.value ? startDate.value.toISOString().split('T')[0] : '';
-        const enDateParams = endDate.value ? endDate.value.toISOString().split('T')[0] : '';
-        
-        // Create the parameters object and remove any null, undefined, or empty values
-        const params = {
-            name: searchQuery.value || undefined,
-            status: inlineStatus.value || undefined,
-            vendor_id: selectedVendor.value || undefined,
-            from_date: stDateParams || undefined,
-            to_date: enDateParams || undefined,
-        };
-
-        // Remove keys with undefined values
-        const filteredParams = Object.fromEntries(
-            Object.entries(params).filter(([_, value]) => value !== undefined)
-        );
-
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/orders?orderBy=desc&page=${pageNumber.value}`, {
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/orders?user_id=${id}`, {
             method: 'get',
             headers: headers.value,
-            params: filteredParams
         });
-        // console.log("Response:",response)
-        coreofOrders.value = response.orders;
-        console.log("Core",coreofOrders.value);
-        orders.value = response.orders.data;
-        loading.value = "success";
+        // console.log("Total Orders for User:", id, response.orders.total);
+        orderCounts.value[id] = response.orders.total; // Store count in reactive object
+    } catch (error) {
+        console.error('Error fetching user orders:', error);
+        orderCounts.value[id] = "Error"; // Handle error gracefully
+    }
+};
 
-        // console.table(orders.value)
-        // console.log("Page Number:",pageNumber.value)
-        // console.table(orders.value);
+const getAllCustomersID = async () => {
+    // loading.value = "not";
+    try {
+
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user?data=all`, {
+            method: 'get',
+            headers: headers.value,
+        });
+        customer_id.value = response;
+        customer_id.value.forEach(user => fetchUserTotalOrders(user.id));
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+const getAllCustomersData = async () => {
+    loading.value = "not";
+    try {
+
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user?orderBy=desc&page=${pageNumber.value}`, {
+            method: 'get',
+            headers: headers.value,
+        });
+        coreOfUsersData.value = response;
+        console.log("Core",coreOfUsersData.value);
+        customers.value = response.data;
+        loading.value = "success";
     } catch (err) {
         console.log(err);
     }
@@ -94,19 +105,19 @@ const paginate = async (page) => {
     pageNumber.value = page;
 
     if (page === "&laquo; Previous") {
-        pageNumber.value  = ((coreofOrders.value.current_page-1) == 0 ? 1 : (coreofOrders.value.current_page-1));
+        pageNumber.value  = ((coreOfUsersData.value.current_page-1) == 0 ? 1 : (coreOfUsersData.value.current_page-1));
     } else if (page === "Next &raquo;") {
-        pageNumber.value  = ((coreofOrders.value.current_page+1) == coreofOrders.value.last_page ? coreofOrders.value.last_page : (coreofOrders.value.current_page+1));
+        pageNumber.value  = ((coreOfUsersData.value.current_page+1) == coreOfUsersData.value.last_page ? coreOfUsersData.value.last_page : (coreOfUsersData.value.current_page+1));
     }
 
     try {
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/orders?page=${pageNumber.value}`, {
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user?page=${pageNumber.value}`, {
             method: 'get',
             headers: headers.value,
         });
-        orders.value = response;
-        console.log("Response PAge:",response);
-        orders.value = response.orders.data;
+        customers.value = response;
+        console.log("Response Customer:",response);
+        customers.value = response.data;
 
     } catch (error) {
         console.log(error);
@@ -115,64 +126,38 @@ const paginate = async (page) => {
     loading.value = "success";
 }
 
-const getAllStatus = async () => {
+const getAllRoles = async () => {
     try {
         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/roleAccess?`, {
             method: 'GET',
             headers: headers.value,
         });
         // Map API data to the required format
-        status.value = response.roles.map(b => ({
+        roles.value = response.roles.map(b => ({
             name: b.name, // Dropdown label
             id: b.id, // Dropdown value
         }));
     } catch (error) {
-        console.error('Error fetching Status:', error);
+        console.error('Error fetching:', error);
     }
 }
         
-// Utility function to get the name of the selected status
-const getStatusName = (id) => {
-    const selected = status.value.find(b => b.id === id);
+// Utility function to get the name of the selected roles
+const getRoleNames = (id) => {
+    const selected = roles.value.find(b => b.id === id);
     return selected ? selected.name : '';
 };
 
-const getAllVendors = async () => {
-    try {
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/vendor?`, {
-            method: 'GET',
-            headers: headers.value,
-        });
-        // Map API data to the required format
-        vendor.value = response.data.map(b => ({
-            name: b.name, // Dropdown label
-            id: b.id, // Dropdown value
-        }));
-    } catch (error) {
-        console.error('Error fetching vendor:', error);
-    }
-};
-
-// Utility function to get the name of the selected vendor
-const getVendorName = (id) => {
-    const selected = vendor.value.find(b => b.id === id);
-    return selected ? selected.name : '';
-};
-
+const email = ref('');
 // Implemented the search functionality
 const fetchFilteredOrders = async () => {
     loading.value = "not";
     try {
-        const stDateParams = startDate.value ? startDate.value.toISOString().split('T')[0] : '';
-        const enDateParams = endDate.value ? endDate.value.toISOString().split('T')[0] : '';
-        
         // Create the parameters object and remove any null, undefined, or empty values
         const params = {
-            name: searchQuery.value || undefined,
-            status: selectedStatus.value || undefined,
-            vendor_id: selectedVendor.value || undefined,
-            from_date: stDateParams || undefined,
-            to_date: enDateParams || undefined,
+            name: name.value || undefined,
+            email: email.value || undefined,
+            role_id: selectedRole.value || undefined,
         };
 
         // Remove keys with undefined values
@@ -180,14 +165,14 @@ const fetchFilteredOrders = async () => {
             Object.entries(params).filter(([_, value]) => value !== undefined)
         );
 
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/orders`, {
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user`, {
             method: 'get',
             headers: headers.value,
             params: filteredParams,
         });
 
-        orders.value = response.orders?.data || [];
-        totalOrders.value = orders.value.length;
+        customers.value = response?.data || [];
+        filteredCustomers.value = response?.total;
         loading.value = "success";
     } catch (error) {
         console.log(error);
@@ -195,50 +180,6 @@ const fetchFilteredOrders = async () => {
     }
 };
 
-const updateStatus = async () => {
-  loading.value = "not";
-  try {
-        updateStatusLoading.value = true;
-        isDropdownVisible.value = false;
-
-        // Perform the API call to update the status
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/order_status`,
-        {
-            method: "POST",
-            headers: headers.value,
-            body: JSON.stringify({ confirm_id: inlineStatus.value, order_id: currentOrderID.value }),
-        }
-        );
-        console.log(status.value)
-        console.log("Status updated successfully:", response);
-        updateStatusLoading.value = false;
-        UpdateStatusModalVisible.value = false;
-        loading.value = "success";
-        console.log("page",pageNumber.value)
-        // getOrderData()
-        fetchFilteredOrders()
-
-    } catch (error) {
-    console.error("Error updating Status:", error);
-    }
-};
-
-// Open the confirm modal for the specific slide
-const openStatusUpdateModal = (id, orderID) => {
-    inlineStatus.value = id;
-    currentOrderID.value = orderID;
-    console.log("OpenModal ID: ",id)
-    // UpdateStatusModalVisible.value = true;
-    UpdateStatusModalVisible.value = UpdateStatusModalVisible.value === null ? orderID : orderID;
-    // updateStatus()
-};
-
-// Toggle dropdown visibility
-const toggleDropdown = (uniqueId) => {
-    console.log("Unique ID:", uniqueId);
-    // Toggle dropdown visibility
-    isDropdownVisible.value === uniqueId ? null : uniqueId;
-};
 
 </script>
 <template>
@@ -251,7 +192,7 @@ const toggleDropdown = (uniqueId) => {
             </div>
             <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
             <div class="flex w-full justify-between bg-gray-400 text-white">
-                <div class="font-semibold mt-1 ml-3">All Users</div>
+                <div class="font-semibold mt-1 ml-3">All Customers</div>
                 <div class="font-semibold ml-1 flex">
                     <button @click="$router.back()" class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-1 text-sm transition delay-100">
                         <Icon name="gg:arrow-left-o"></Icon> Back
@@ -272,7 +213,7 @@ const toggleDropdown = (uniqueId) => {
                             <th class="p-1 text-left text-sm w-8 pl-6">SL</th>
                             <th class="p-1 text-left text-sm">Name</th>
                             <th class="p-1 text-left text-sm">Email</th>
-                            <th class="p-1 text-left text-sm">Mobile</th>
+                            <!-- <th class="p-1 text-left text-sm">Mobile</th> -->
                             <th class="p-1 text-left text-sm">Address</th>
                             <th class="p-1 text-left text-sm">Total Orders</th>
                             <th class="p-1 text-left text-sm">Register Date</th>
@@ -280,17 +221,17 @@ const toggleDropdown = (uniqueId) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(order) in orders" class="bg-white odd:bg-gray-100" :key="order.id">
-                            <td class="p-1 text-left text-xs pl-6"> 1 </td>
-                            <td class="p-1 text-left text-xs">User name</td>
-                            <td class="p-1 text-left text-xs">...@gmail.com</td>
-                            <td class="p-1 text-left text-xs">0123456789</td>
-                            <td class="p-1 text-left text-xs">11/C, House-01, Lane-10, Road-11, Dhaka 1216</td>
-                            <td class="p-1 text-left text-xs">20</td>
-                            <td class="p-1 text-left text-xs">15-Jan-2025 17:7</td>
+                        <tr v-for="(user) in customers" class="bg-white odd:bg-gray-100" :key="user.id">
+                            <td class="p-1 text-left text-xs pl-6"> {{ user.id }} </td>
+                            <td class="p-1 text-left text-xs">{{ user.name }}</td>
+                            <td class="p-1 text-left text-xs">{{ user.email }}</td>
+                            <!-- <td class="p-1 text-left text-xs">0123456789</td> -->
+                            <td class="p-1 text-left text-xs text-gray-500">{{ user?.extend_props?.address || "No address available"  }}</td>
+                            <td class="p-1 text-left text-xs">{{ orderCounts[user.id] ?? "Loading..." }}</td>
+                            <td class="p-1 text-left text-xs">{{ dateMonthFunction(user.created_at) }}</td>
                             <td class="p-1 text-xs grid text-center justify-items-center">
                                 <div class="flex">
-                                    <NuxtLink class="bg-cyan-400 p-1 text-white rounded" to="/users/edit">
+                                    <NuxtLink class="bg-cyan-400 p-1 text-white rounded" :to="`/users/edit/${user.id}`">
                                         <Icon name="mdi:pencil" width="1.4em" height="1.4em" />
                                     </NuxtLink>
                                 </div>
@@ -308,48 +249,27 @@ const toggleDropdown = (uniqueId) => {
                     </InputGroup>
                 </div>
                 <div class="flex -mt-1 h-dvh">
-                <a v-for="(page, index) in coreofOrders?.links" :key="index" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500': page.label == pageNumber}" class="px-2 pt-2 mt-1 block text-black" href="#" />
+                <a v-for="(page, index) in coreOfUsersData?.links" :key="index" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500': page.label == pageNumber}" class="px-2 pt-2 mt-1 block text-black" href="#" />
                 </div>
             </div>
             </div>
-            <Sidebar v-model:visible="visibleRight" header="Order Filter" position="right">
+            <Sidebar v-model:visible="visibleRight" header="user Filter" position="right">
             <div class="w-full">
                 <label for="dd-city" class="text-sm w-full">Name</label>
-                <input type="text" v-model="searchQuery" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Enter Name" />
+                <input type="text" v-model="name" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Enter Name" />
             </div>
-            <!-- Date Range-->
             <div class="w-full mt-2">
-                <label for="dd-city" class="text-sm w-full">Date Range</label>
-                <div>
-                    <Calendar :pt="{input: {class: 'px-4 py-1 border',},}" class="w-[48%] mr-1 text-sm outline-none focus:border-red-200 rounded-md" v-model="startDate" placeholder="Start Date" />
-                    <Calendar :pt="{input: {class: 'px-4 py-1 border',},}" class="w-1/2 text-sm outline-none focus:border-red-200 rounded-md" v-model="endDate" placeholder="End Date" />
-                </div>
+                <label for="dd-city" class="text-sm w-full">Email</label>
+                <input type="email" v-model="email" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Enter Name" />
             </div>
-            
-            <!-- Status & Vendor-->
-            <div class="w-full grid grid-cols-2 gap-2 mt-2">
+            <!-- Role -->
+            <div class="w-full grid grid-cols-1 mt-2">
                 <div>
-                    <label for="dd-city" class="text-sm w-full">Status</label>
-                    <Dropdown v-model="selectedStatus" :options="status" optionLabel="name" optionValue="id" filter placeholder="Select a Status" class="w-full md:w-14rem">
+                    <label for="dd-city" class="text-sm w-full">Roles</label>
+                    <Dropdown v-model="selectedRole" :options="roles" optionLabel="name" optionValue="id" filter placeholder="Select a Role" class="w-full md:w-14rem">
                         <template #value="slotProps">
                             <div v-if="slotProps.value" class="flex align-items-center">
-                                <div>{{ getStatusName(slotProps.value) }}</div>
-                            </div>
-                            <span v-else>{{ slotProps.placeholder }}</span>
-                        </template>
-                        <template #option="slotProps">
-                            <div class="flex align-items-center">
-                                <div>{{ slotProps.option.name }}</div>
-                            </div>
-                        </template>
-                    </Dropdown>
-                </div>
-                <div>
-                    <label for="dd-city" class="text-sm w-full">Vendor</label>
-                    <Dropdown v-model="selectedVendor" :options="vendor" optionLabel="name" optionValue="id" filter placeholder="Select a Vendor" class="w-full md:w-14rem">
-                        <template #value="slotProps">
-                            <div v-if="slotProps.value" class="flex align-items-center">
-                                <div>{{ getVendorName(slotProps.value) }}</div>
+                                <div>{{ getRoleNames(slotProps.value) }}</div>
                             </div>
                             <span v-else>{{ slotProps.placeholder }}</span>
                         </template>
@@ -368,35 +288,24 @@ const toggleDropdown = (uniqueId) => {
             </div>
 
             <div class="mt-2 text-sm text-gray-600">
-                <span v-if="totalOrders">Showing {{ totalOrders }} results</span>
+                <span v-if="filteredCustomers">Total {{ filteredCustomers }} results</span>
                 <span v-else>No results found</span>
             </div>
         </Sidebar>
-
-        <Dialog v-model:visible="UpdateStatusModalVisible" modal header="Update Status" :style="{ width: '25rem' }">
-            <span class="p-text-secondary flex items-center justify-center flex-col mb-5">
-                <Icon name="material-symbols:playlist-add-check-rounded" width="120px" height="120px" class="mr-2 text-red-500" /> Are you sure you want to update status?
-            </span>
-            <div class="flex justify-around">
-                <Button class="bg-yellow-600 text-red-100 px-4 py-2" type="button" label="Cancel" severity="secondary" @click="UpdateStatusModalVisible = false"></Button>
-                <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Update" @click="updateStatus" :loading="updateStatusLoading"></Button>
-            </div>
-        </Dialog>
-
     </div>
   </NuxtLayout>
 </template>
 
 
 <style>
-span.p-dropdown-label.p-inputtext.p-placeholder {
-  padding: 0px;
-  margin: 0px;
-}
-span.p-dropdown-label.p-inputtext {
-  padding: 0px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #767676d1;
-}
+    span.p-dropdown-label.p-inputtext.p-placeholder {
+        padding: 0px;
+        margin: 0px;
+    }
+    span.p-dropdown-label.p-inputtext {
+        padding: 0px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #767676d1;
+    }
 </style>

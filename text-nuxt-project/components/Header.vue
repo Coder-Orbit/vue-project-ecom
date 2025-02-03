@@ -5,7 +5,7 @@ const  store = useTokenStore();
 const loginStore = useLoginStore();
 
 const store2 = usePermissionStore();
-console.log("Store2", store2);
+// console.log("Store2", store2);
 const permissions = ref(null); // Store API response
 async function fetchPermissions() {
     const response = store2.getPermissions();

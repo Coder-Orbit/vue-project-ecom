@@ -305,7 +305,6 @@ const visibleAllow = (menu_id, access_id) => {
                         <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
                     </NuxtLink>
                 </li>
-
                 <li v-if="visibleAllow(2,2)" class="relative">
                     <NuxtLink exact to="/category/create" class="flex border-b py-1 pl-4">
                         <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 

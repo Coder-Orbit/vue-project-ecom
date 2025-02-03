@@ -1,12 +1,12 @@
 <script setup>
-
+import { useToast } from 'primevue/usetoast';
 // replace with actual API endpoint and master key
 const config = useRuntimeConfig();
 const EndPoint = config.public.baseURl;
 const MasterKey = config.public.masterToken;
 const app_token = useTokenStore().getToken;
 const loading = ref('not')
-
+const toast = useToast();
 
 const headers = ref({
     "Accept": "application/json",
@@ -18,8 +18,24 @@ definePageMeta({
   layout: "dashboard",
   middleware: 'auth',
 });
-const status = ref([]);
-const selectedStatus = ref(null); // Holds the selected role ID
+
+const roles = ref([]);
+const selectedRoles = ref(null); // Holds the selected role ID
+const route = useRoute();
+const user_id = route.params.id;
+const country = ref([]);
+const selectedCountry = ref(null); // Holds the selected role ID
+const name = ref('');
+const email = ref('');
+
+onMounted(async () => {
+    // Fetch all roles
+    await getAllStatus();
+    // Fetch all countries
+    await getAllCountry();
+    // Fetch user details
+    await getUser();
+});
 
 const getAllStatus = async () => {
     try {
@@ -29,7 +45,7 @@ const getAllStatus = async () => {
             headers: headers.value,
         });
         // Map API data to the required format
-        status.value = response.roles.map(b => ({
+        roles.value = response.roles.map(b => ({
             name: b.name, // Dropdown label
             id: b.id, // Dropdown value
         }));
@@ -38,16 +54,71 @@ const getAllStatus = async () => {
     }
     loading.value = "success";
 }
-// Utility function to get the name of the selected status
-const getStatusName = (id) => {
-    const selected = status.value.find(b => b.id === id);
+// Utility function to get the name of the selected roles
+const getRolesName = (id) => {
+    const selected = roles.value.find(b => b.id === id);
     return selected ? selected.name : '';
 };
-getAllStatus()
 
-const name = ref('User Name');
-const email = ref('....@gmail.com');
-const password = ref('temporary password');
+const getAllCountry = async () => {
+    try {
+        loading.value = "not";
+        const response = await $fetch(`${EndPoint}/countries?limit_per_page=100`, {
+            method: 'GET',
+            headers: headers.value,
+        });
+        // Map API data to the required format
+        country.value = response.data.map(b => ({
+            name: b.name, // Dropdown label
+            id: b.id, // Dropdown value
+        }));
+    } catch (error) {
+        console.error('Error fetching Country:', error);
+    }
+    loading.value = "success";
+}
+const getCountryName = (id) => {
+    const selected = country.value.find(b => b.id === id);
+    return selected ? selected.name : '';
+};
+
+const getUser = async () => {
+    try {
+        loading.value = "not";
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user/${user_id}`, {
+            method: 'GET',
+            headers: headers.value,
+        });
+        name.value = response.name;
+        email.value = response.email;
+        selectedCountry.value = response.country_id;
+        selectedRoles.value = response.role_id;
+    } catch (error) {
+        console.error('Error fetching User:', error);
+    }
+    loading.value = "success";
+}
+const router = useRouter();
+
+const updateCustomerInfo = async () => {
+    try {
+        loading.value = "not";
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user/${user_id}`, {
+            method: 'POST',
+            headers: headers.value,
+            body: JSON.stringify({
+                name: name.value,
+                email: email.value,
+                role_id: selectedRoles.value,
+                country_id: selectedCountry.value
+            }),
+        });
+        router.push('/users');
+    } catch (error) {
+        console.error('Error updating User:', error);
+    }
+    loading.value = "success";
+}
 </script>
 <template>
     <NuxtLayout :name="layout">
@@ -66,7 +137,7 @@ const password = ref('temporary password');
                     </div>
                 </div>
                 <div class="h-full overflow-y-auto w-full max-h-[calc(100vh-8.2rem)] flex flex-col bg-gray-100">
-                    <form @submit.prevent="submitData" enctype="multipart/form-data">
+                    <form @submit.prevent="updateCustomerInfo" enctype="multipart/form-data">
                         <div class="grid grid-cols-2 gap-2 mt-4 p-4 rounded-md">
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
@@ -77,15 +148,27 @@ const password = ref('temporary password');
                                 <input v-model="email" type="email" name="email" id="email" autocomplete="email" class="mt-1 p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             </div>
                             <div>
-                                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                                <input v-model="password" type="text" name="password" id="password" autocomplete="password" class="mt-1 p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            </div>
-                            <div>
                                 <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-                                <Dropdown v-model="selectedStatus" :options="status" optionLabel="name" optionValue="id" filter placeholder="Select a User Type" class="w-full md:w-14rem p-2 mt-1">
+                                <Dropdown v-model="selectedRoles" :options="roles" optionLabel="name" optionValue="id" filter placeholder="Select a User Type" class="w-full md:w-14rem p-2 mt-1">
                                     <template #value="slotProps">
                                         <div v-if="slotProps.value" class="flex align-items-center">
-                                            <div>{{ getStatusName(slotProps.value) }}</div>
+                                            <div>{{ getRolesName(slotProps.value) }}</div>
+                                        </div>
+                                        <span v-else>{{ slotProps.placeholder }}</span>
+                                    </template>
+                                    <template #option="slotProps">
+                                        <div class="flex align-items-center">
+                                            <div>{{ slotProps.option.name }}</div>
+                                        </div>
+                                    </template>
+                                </Dropdown>
+                            </div>
+                            <div>
+                                <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
+                                <Dropdown v-model="selectedCountry" :options="country" optionLabel="name" optionValue="id" filter placeholder="Select a User Type" class="w-full md:w-14rem p-2 mt-1">
+                                    <template #value="slotProps">
+                                        <div v-if="slotProps.value" class="flex align-items-center">
+                                            <div>{{ getCountryName(slotProps.value) }}</div>
                                         </div>
                                         <span v-else>{{ slotProps.placeholder }}</span>
                                     </template>
