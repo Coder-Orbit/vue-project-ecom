@@ -208,8 +208,7 @@ const applyFilter = async () => {
                                     <!--Created By-->
                                     <td class="p-1 text-center text-xs">{{ vendor.created_by =='1' ? "Admin":"Majedul Islam" }}</td>
                                     <!--& Others Button-->
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div v-if="visibleAllow(7,1)" class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                    <td class="p-1 text-center text-xs flex justify-center">
                                         <div v-if="visibleAllow(7,3)" class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
                                             <NuxtLink :to="`/vendor/${vendor.id}`">
                                                 <Icon name="subway:pencil" width="1.4em" height="1.4em" />

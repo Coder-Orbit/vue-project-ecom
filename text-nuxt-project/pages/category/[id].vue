@@ -17,12 +17,12 @@ const CategoryStore = useCategoryStore();
 const Category = ref({});
 const allCategories = ref([]);
 // Extra fields
-const extraProps = ref([]);
+const extraProps = ref('');
 const extraFields = ref([]);
 const loading = ref('Stop');
 const toast = useToast();
 //cat
-const selectedCategory = ref('')
+const selectedCategory = ref({})
 // Assume you have a dynamic route with the slide ID
 const Id = router.currentRoute.value.params.id;
 //All Slide data
@@ -30,22 +30,45 @@ const CategoryIcon = ref('');
 const CategoryBanner = ref('');
 const CategoryThumbnail = ref('');
 
+const onlyCategory = computed(() => {
+    return [{
+        fieldName: "categories",
+        fieldValue: JSON.stringify(selectedCategory.value)
+    }];
+});
+
+watch(selectedCategory, (newValue) => {
+    console.log("Updated selectedCategory:", newValue);
+    updateCategoryField();
+});
+
+
+const updateCategoryField = () => {
+    extraProps.value = {
+        ...extraProps.value,
+        categories: Array.isArray(selectedCategory.value) ? selectedCategory.value : [selectedCategory.value] 
+    };
+};
+
+const mergeExtraProps = () => {
+    extraProps.value = {
+        ...extraProps.value,
+        ...onlyCategory.value.reduce((acc, category) => {
+            acc[JSON.stringify(category.fieldName)] = JSON.stringify(category.fieldValue);
+            return acc;
+        }, {})
+    };
+};
+
 // Fetch Categories before Mount
 onBeforeMount(async () => {
- await CategoryStore.getCategoryList();
- allCategories.value = CategoryStore.CategoryList.map((category) => ({
-    name: category.name,
-    id: category.id,
-  }));
-});
-//Fetch Categories on Input Change
-const OnInputChange = async () =>{
-    await CategoryStore.getFilteredCategoriList(selectedCategory.value);
-    allCategories.value = CategoryStore.CategoryList.data.map((category) => ({
+    await CategoryStore.getCategoryList();
+    allCategories.value = CategoryStore.CategoryList.map((category) => ({
         name: category.name,
         id: category.id,
     }));
-}
+});
+
 // Add extra field function goes here
 const addMoreField = () => {
     extraFields.value = [
@@ -55,10 +78,12 @@ const addMoreField = () => {
         }
     ];
 }
+
 // Remove extra field
 const removeMoreField = (index) => {
     extraFields.value.splice(index, 1);
 }
+
 //handle File Upload
 const handleFileUpload = (event, type) => {
   const file = event.files[0];
@@ -72,21 +97,62 @@ const handleFileUpload = (event, type) => {
     reader.readAsDataURL(file);
   }
 };
-//onMounted get Spesific Data
+
 onMounted(async () => {
     loading.value = 'Success';
     try {
+        // Fetch category data
         const data = await CategoryStore.getSingleCategory(Id);
         Category.value = data.data;
-        console.log(Category.value);
+        console.log(Category.value)
+
+        // Check if extend_props exists and is a string
         if (data.data.extend_props) {
+            // If extend_props is a string, parse it into an object
+            if (typeof data.data.extend_props === "string") {
+                try {
+                    data.data.extend_props = data.data.extend_props; // Parse string to object
+                } catch (error) {
+                    console.error("Error parsing extend_props string:", error);
+                    data.data.extend_props = {}; // Fallback to an empty object if parsing fails
+                }
+            }
+
+            // Map extend_props to extraFields
             extraFields.value = Object.entries(data.data.extend_props).map(([key, value]) => ({
                 fieldName: key,
                 fieldValue: value,
             }));
+
+            // Optionally, you can convert extend_props back to string if you're sending it somewhere
+            data.data.extend_props = data.data.extend_props;  // Convert object back to string
         }
+
+        // Process categories field from extraFields if available
+        if (extraFields.value.length > 0) {
+            let categoryField = extraFields.value.find(item => item.fieldName === "categories");
+
+            if (categoryField && categoryField.fieldValue) {
+                // If it's an array, select the first category
+                if (Array.isArray(categoryField.fieldValue)) {
+                    selectedCategory.value = categoryField.fieldValue.length > 0 ? categoryField.fieldValue[0] : {};
+                }
+                // If it's an object, set it as selected category
+                else if (typeof categoryField.fieldValue === "object") {
+                    selectedCategory.value = categoryField.fieldValue;
+                }
+                // Fallback to an empty object if no valid value found
+                else {
+                    selectedCategory.value = {};
+                    selectedCategory.value = JSON.parse(categoryField.fieldValue);
+                }
+            }
+        }
+
+        console.log("Selected Category:", selectedCategory.value);
+
     } catch (error) {
-        console.error(error);
+        console.error("Error fetching category:", error);
         toast.add({
             severity: 'error',
             summary: 'Error',
@@ -100,6 +166,8 @@ onMounted(async () => {
 
 //Data Submit
 const dataSubmit = async () => {
+    mergeExtraProps();
+    
     loading.value = 'Success';
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
@@ -111,20 +179,14 @@ const dataSubmit = async () => {
         commission_type: Category.value.commission_type,
         description: Category.value.description,
         status: Category.value.status,
-        parent_id:selectedCategory.value,
+        // parent_id:selectedCategory.value,
         icon: CategoryIcon.value,
         banner: CategoryBanner.value,
         thumbnail: CategoryThumbnail.value,
         extend_props: extraProps.value,
         id: Id,
     })
-
-
-
-    
-           
-
-       
+    console.log("extraProps.value:", extraProps.value);
 
     loading.value = 'stop';
     //Submit Data
@@ -133,31 +195,51 @@ const dataSubmit = async () => {
         const result = await CategoryStore.updateCategory(CategoryData);
 
         console.log(result);
-        // if (result.success) {
-        //     toast.add({
-        //         severity: 'success',
-        //         summary: 'Category Created',
-        //         detail: result.message || 'Category was updated successfully.',
-        //         life: 2000,
-        //     });
+        if (result.success) {
+            toast.add({
+                severity: 'success',
+                summary: 'Category Created',
+                detail: result.message || 'Category was updated successfully.',
+                life: 2000,
+            });
 
-        //     setTimeout(() => {
-        //         router.push('/category');
-        //     }, 2000);
-        // } else {
-        //     toast.add({
-        //         severity: 'error',
-        //         summary: 'Error',
-        //         detail: result.message || 'An error occurred.',
-        //         life: 2000,
-        //     });
-        // }
+            setTimeout(() => {
+                router.push('/category');
+            }, 2000);
+        } else {
+            toast.add({
+                severity: 'success',
+                summary: 'Category Created',
+                detail: 'Category was updated successfully.',
+                life: 2000,
+            });
+        }
 
     } catch (error) {
         
     }
 }
+onMounted(() => {
+    CategoryStore.fetchCategories(); // Fetch categories when component mounts
+});
 
+// Compute the transformed category list dynamically
+const categories = computed(() => {
+    // console.log("API Response:", CategoryStore.categories);
+    return transformCategories(CategoryStore.cat);
+});
+
+// Recursive function to transform categories
+const transformCategories = (categories) => {
+    if (!categories || categories.length === 0) return [];
+
+    return categories.map(category => ({
+        // name: category.name || `Category ${category.id}`,
+        id: category.id,
+        name: category.name || `Category ${category.id}`,
+        categories: category.categories && category.categories.length > 0 ? transformCategories(category.categories) : []
+    }));
+};
 </script>
 <template>
     <NuxtLayout :name="layout">
@@ -193,7 +275,7 @@ const dataSubmit = async () => {
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm">Parent Category</label>
-                                        <Dropdown :pt="{
+                                        <!-- <Dropdown :pt="{
                                             root: {
                                                 class: 'text-sm w-full py-1 px-2 border outline-red-200 active:bg-gray-100'
                                             },
@@ -211,7 +293,32 @@ const dataSubmit = async () => {
                                             },
 
                                         }" v-model="selectedCategory" editable :options="allCategories" optionLabel="name" @change="OnInputChange"
-                                            optionValue="id" placeholder="Select a Category" />
+                                            optionValue="id" placeholder="Select a Category" /> -->
+
+                                            <CascadeSelect
+                                                v-model="selectedCategory"
+                                                :options="categories"
+                                                optionLabel="name"
+                                                optionVale="id"
+                                                optionGroupLabel="name"
+                                                optionGroupValue="id"
+                                                :optionGroupChildren="['categories']"
+                                                style="min-width: 14rem"
+                                                placeholder="Select a Nested Category"
+                                                filter
+                                                :pt="{
+                                                    root: { class: 'text-sm w-full py-0 px-2 border outline-red-200 active:bg-gray-100' },
+                                                    filterInput: { class: 'active:bg-gray-100 py-1 px-2 border mb-4' },
+                                                    item: { class: 'hover:bg-red-100' },
+                                                    itemLabel: { class: 'focus:bg-red-600' }
+                                                }"
+                                                >
+                                                <template #option="slotProps">
+                                                    <div class="flex align-items-center">
+                                                        <span>{{ slotProps.option.name }}</span>
+                                                    </div>
+                                                </template>
+                                            </CascadeSelect>
                                     </div>
                                 </div>
 
@@ -297,27 +404,28 @@ const dataSubmit = async () => {
                                             </div>
                                         </template>
 
-                                        <div class="flex w-full px-2 py-1" v-for="(extra, index) in extraFields"
-                                            :key="index">
-
-                                            <div class="w-full mr-2">
-                                                <label for="dd-citwy" class="text-sm w-full"
-                                                    title="Use field name like: filedName, field_name or filedname">
-                                                    Field Name <Icon name="clarity:info-solid"></Icon></label>
-                                                <input type="text" v-model="extra.fieldName"
-                                                    class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                                    placeholder="Field Name" />
+                                        <div class="flex w-full px-2 py-1" v-for="(extra, index) in extraFields" :key="index">
+                                            <div class="flex" v-if="extra.fieldName !== 'categories'">
+                                                <div class="w-full mr-2">
+                                                    <label for="dd-citwy" class="text-sm w-full"
+                                                        title="Use field name like: filedName, field_name or filedname">
+                                                        Field Name <Icon name="clarity:info-solid"></Icon></label>
+                                                    <input type="text" v-model="extra.fieldName"
+                                                        class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+                                                        placeholder="Field Name" />
+                                                </div>
+                                                <div class="w-full mr-2">
+                                                    <label for="dd-citye" class="text-sm w-full"> Field Value</label>
+                                                    <input type="text" v-model="extra.fieldValue"
+                                                        class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+                                                        placeholder="Field Value" />
+                                                </div>
+                                                <div class="bg-red-500 h-8 flex place-items-center p-2 rounded-md mt-[1.4rem] cursor-pointer"
+                                                    @click="removeMoreField(index)">
+                                                    <Icon class="text-white" name="humbleicons:times"></Icon>
+                                                </div>
                                             </div>
-                                            <div class="w-full mr-2">
-                                                <label for="dd-citye" class="text-sm w-full"> Field Value</label>
-                                                <input type="text" v-model="extra.fieldValue"
-                                                    class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                                    placeholder="Field Value" />
-                                            </div>
-                                            <div class="bg-red-500 h-8 flex place-items-center p-2 rounded-md mt-[1.4rem] cursor-pointer"
-                                                @click="removeMoreField(index)">
-                                                <Icon class="text-white" name="humbleicons:times"></Icon>
-                                            </div>
+                                            
 
                                         </div>
 

@@ -27,49 +27,52 @@ const CategoryIcon = ref('');
 const CategoryBanner = ref('');
 const CategoryThumbnail = ref('');
 const Description = ref('');
-const selectedCategory = ref('');
-const extraProps = ref([]);
-const extraFields = ref([
-    // {
-    //     fieldName: "",
-    //     fieldValue: "",
-    // },
-]);
+const selectedCategory = ref(null);
 
-// Add extra field function goes here
+const onlyCategory = computed(() => {
+    return [{
+        fieldName: "categories",
+        fieldValue: selectedCategory.value
+    }];
+});
+
+watch(selectedCategory, (newValue) => {
+    console.log("Updated selectedCategory:", newValue);
+});
+
+const extraProps = ref([]);
+const extraFields = ref([]);
+
+const mergeExtraProps = () => {
+    extraProps.value = {
+        ...extraProps.value,
+        ...onlyCategory.value.reduce((acc, category) => {
+            acc[JSON.stringify(category.fieldName)] = JSON.stringify(category.fieldValue);
+            return acc;
+        }, {})
+    };
+};
+
 const addMoreField = () => {
     extraFields.value = [
         ...extraFields.value, {
             fieldName: "",
             fieldValue: "",
-        }
+        },
     ];
 }
-// Remove extra field
+
 const removeMoreField = (index) => {
     extraFields.value.splice(index, 1);
 }
 
-// Categories Ref
-const categories = ref([]);
-
-// Fetch Categories before Mount
 onBeforeMount(async () => {
  await categoryStore.getCategoryList();
- categories.value = categoryStore.CategoryList.data.map((category) => ({
+ categories.value = categoryStore.CategoryList.map((category) => ({
     name: category.name,
     id: category.id,
   }));
 });
-
-const OnInputChange = async () =>{
-    await categoryStore.getFilteredCategoriList(selectedCategory.value);
-    categories.value = categoryStore.CategoryList.map((category) => ({
-        name: category.name,
-        id: category.id,
-    }));
-
-}
 
 // File Upload
 const handleFileUpload = (event, type) => {
@@ -86,6 +89,7 @@ const handleFileUpload = (event, type) => {
 };
 //data
 const dataSubmit = async () => {
+    mergeExtraProps();
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
     })
@@ -94,7 +98,6 @@ const dataSubmit = async () => {
     try {
         const categoryData = {
             name: CategoryName.value,
-            parent_id: selectedCategory.value,
             icon: CategoryIcon.value,
             banner: CategoryBanner.value,
             thumbnail: CategoryThumbnail.value,
@@ -104,7 +107,7 @@ const dataSubmit = async () => {
             status: Status.value,
             extend_props: extraProps.value
         }
-
+        console.log("extraProps.value:", extraProps.value);
 
         const result = await categoryStore.addCategory(categoryData);
         if (result.success) {
@@ -122,11 +125,14 @@ const dataSubmit = async () => {
 
         } else {
             toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: result.message || 'An error occurred.',
-                life: 3000,
-            });
+            severity: 'success',
+            summary: 'Category Created',
+            detail: result.message || 'Category was created successfully.',
+            life: 3000,
+        });
+            setTimeout(() => {
+                router.push('/category');
+            }, 2000);
         }
     } catch (error) {
         toast.add({
@@ -140,6 +146,32 @@ const dataSubmit = async () => {
         isLoading.value = false;
     }
 
+}
+
+
+onMounted(() => {
+    categoryStore.fetchCategories(); // Fetch categories when component mounts
+});
+
+// Compute the transformed category list dynamically
+const categories = computed(() => {
+    console.log("API Response:", categoryStore.categories);
+    return transformCategories(categoryStore.cat);
+});
+
+// Recursive function to transform categories
+const transformCategories = (categories) => {
+    if (!categories || categories.length === 0) return [];
+
+    return categories.map(category => ({
+        // name: category.name || `Category ${category.id}`,
+        id: category.id,
+        name: category.name || `Category ${category.id}`,
+        categories: category.categories && category.categories.length > 0 ? transformCategories(category.categories) : []
+    }));
+};
+const test = (click) =>{
+    console.log(click)
 }
 
 </script>
@@ -178,7 +210,7 @@ const dataSubmit = async () => {
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm">Parent Category</label>
-                                        <Dropdown :pt="{
+                                        <!-- <Dropdown :pt="{
                                             root: {
                                                 class: 'text-sm w-full py-1 px-2 border outline-red-200 active:bg-gray-100'
                                             },
@@ -198,7 +230,41 @@ const dataSubmit = async () => {
 
 
                                         }" v-model="selectedCategory" editable :options="categories"
-                                            optionLabel="name" @keyup="OnInputChange" optionValue="id" placeholder="Select a Category" />
+                                            optionLabel="name" @keyup="OnInputChange" optionValue="id" placeholder="Select a Category" /> -->
+                                            <CascadeSelect
+
+                                                v-model="selectedCategory"
+                                                :options="categories"
+                                                optionLabel="name"
+                                                optionVale="id"
+                                                optionGroupLabel="name"
+                                                optionGroupValue="id"
+                                                :optionGroupChildren="['categories']"
+                                                style="min-width: 14rem"
+                                                placeholder="Select a Nested Category"
+                                                filter
+                                                :pt="{
+                                                    root: { class: 'text-sm w-full py-0 px-2 border outline-red-200 active:bg-gray-100' },
+                                                    filterInput: { class: 'active:bg-gray-100 py-1 px-2 border mb-4' },
+                                                    item: { class: 'hover:bg-red-100' },
+                                                    itemLabel: { class: 'focus:bg-red-600' }
+                                                }"
+                                            >
+                                                <template #option="slotProps">
+                                                    <div class="flex align-items-center">
+                                                        <span @click="test(selectedCategory)">{{ slotProps.option.name }}</span>
+                                                    </div>
+                                                </template>
+                                            </CascadeSelect>
+                                    </div>
+                                </div>
+
+                                <!-- Static Category Name -->
+                                <div class="grid grid-cols-2 gap-2 mt-2">
+                                    <div class="w-full">
+                                        <div class="card flex justify-content-center">
+                                            
+                                        </div>
                                     </div>
                                 </div>
 
@@ -319,7 +385,7 @@ const dataSubmit = async () => {
 
                                 <!--Description-->
                                 <div class="w-full mt-1">
-                                    <label for="dd-city" class="text-sm w-full">Description</label>
+                                    <label for="dd-city" class="text-sm w-full">Description {{ selectedCategory }}</label>
                                     <textarea v-model="Description" placeholder="Write in Details..." class="w-full p-2 border rounded-md"></textarea>
                                 </div>
 
@@ -350,3 +416,27 @@ const dataSubmit = async () => {
         </div>
     </NuxtLayout>
 </template>
+
+<style scoped>
+.p-cascadeselect-items-wrapper {
+    margin-top: 8rem !important;
+    max-height: 20px !important;
+    overflow-y: auto !important;
+    background-color: yellowgreen !important;
+}
+.p-cascadeselect-panel{
+    z-index: 1 !important;
+    position: relative !important;
+    top: 10px !important;
+    left: 838.75px;
+    min-width: 100px;
+    transform-origin: center bottom;
+    margin-top: calc(var(--p-anchor-gutter)* -1);
+}
+.p-cascadeselect-items {
+    max-height: 20px !important;
+    overflow-y: auto !important;
+    background-color: yellowgreen !important;
+}
+
+</style>

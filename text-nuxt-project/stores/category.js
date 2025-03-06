@@ -3,6 +3,7 @@ export const useCategoryStore = defineStore("category", {
         loading: false,
         CategoryList: [],
         categories: [],
+        cat: [],
         pagination: {
             currentPage: 1,
             totalPages: 1,
@@ -28,7 +29,7 @@ export const useCategoryStore = defineStore("category", {
             const app_token = useTokenStore().getToken;
             const formData = categoryData;
             try {
-                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category`, {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category?nestedLable=4`, {
                     method: "POST",
                     headers: {
                         Accept: "application/json",
@@ -60,7 +61,7 @@ export const useCategoryStore = defineStore("category", {
             const formData = categoryData;
             try {
                 const res = await fetch(`${EndPoint}/admin/${MasterKey}/category/${formData.id}`, {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
@@ -71,7 +72,7 @@ export const useCategoryStore = defineStore("category", {
                 const data = await res.json();
                 console.log(data);
                 if (data && data[0] === "Success") {
-                    return { success: true, message: 'Category Added Successfully' };
+                    return { success: true, message: 'Category Updated Successfully' };
                 } else {
                     return { success: false, message: 'Something is Wrong' };
                 }
@@ -89,7 +90,7 @@ export const useCategoryStore = defineStore("category", {
             const app_token = useTokenStore().getToken;
             this.loading = true;
             try {
-                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category?relative=categories&page=${page}&limit_per_page=${this.pagination.perPage}`, {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category?relative=categories&page=${page}&limit_per_page=${this.pagination.perPage}&nestedLable=4`, {
                     method: 'GET',
                     headers: {
                         Accept: "application/json",
@@ -143,14 +144,14 @@ export const useCategoryStore = defineStore("category", {
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
             try {
-                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?limit_per_page=10`, {
+                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?data=all&nestedLable=4`, {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${app_token}`,
                     },
                 });
-                this.CategoryList = data.data;
+                this.CategoryList = data;
             } catch (error) {
                 console.log(error);
             }
@@ -216,6 +217,29 @@ export const useCategoryStore = defineStore("category", {
               return { success: false, message: 'An error occurred during filtering' };
             }
           },
-    },
+
+            async fetchCategories() {
+                const config = useRuntimeConfig();
+                const EndPoint = config.public.baseURl;
+                const MasterKey = config.public.masterToken;
+                const app_token = useTokenStore().getToken;
+
+                try {
+                    const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?data=all&nestedLable=4`, {
+                        method: 'GET',
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${app_token}`,
+                        },
+                    });
+
+                    this.cat = data || []; // Ensure array format
+                    // console.log("Fetched Categories:", this.cat); 
+                } catch (error) {
+                    console.error("Error fetching categories:", error);
+                }
+            },
+        },
         
 });

@@ -209,10 +209,7 @@ const openDeleteModal = (slideId) => {
                 <!-- Created By -->
                 <td class="p-1 text-center text-xs">{{ slide.created_by == '1' ? "Admin" : "Majedul Islam" }}</td>
                 <!-- Actions -->
-                <td class="p-1 text-center text-xs flex">
-                  <div v-if="visibleAllow(10,1)" class="rounded-md bg-cyan-400 p-1 text-white" title="View">
-                    <Icon name="mdi:eye" width="1.4em" height="1.4em" />
-                  </div>
+                <td class="p-1 text-center text-xs flex justify-center">
                   <div v-if="visibleAllow(10,3)" class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
                     <NuxtLink :to="`/slide/${slide.id}`">
                       <Icon name="subway:pencil" width="1.4em" height="1.4em" />

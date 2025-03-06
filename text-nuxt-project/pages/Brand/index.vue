@@ -219,8 +219,7 @@
                                     <!--Creaeted By-->
                                     <td class="p-1 text-center text-xs">{{ brand.created_by =='1' ? "Admin": "Majedul Islam" }}</td>
                                     <!-- & Other Buttons-->
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" v-if="visibleAllow(3,1)" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                    <td class="p-1 text-center text-xs flex justify-center">
                                         <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" v-if="visibleAllow(3,3)" title="Edit">
                                             <nuxt-link :to="`/brand/${brand.id}`"><Icon name="subway:pencil" width="1.4em" height="1.4em" /></nuxt-link>
                                         </div>

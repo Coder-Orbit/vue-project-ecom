@@ -201,7 +201,7 @@
                                     <th class="p-1 text-left">Status</th>
                                     <th class="p-1 text-left w-24">Created At</th>
                                     <th class="p-1 text-center">Created By</th>
-                                    <th class="p-1 text-center w-24">...</th>
+                                    <th class="p-1 text-center w-24">Actions</th>
                                 </tr>
                             </thead>
                             <!-- Table Body -->
@@ -230,8 +230,7 @@
                                     <!--Created By-->
                                     <td class="p-1 text-center text-xs">{{ coupon.created_by =='1' ? "Admin":"Majedul Islam" }}</td>
                                     <!--& Others Button-->
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
+                                    <td class="p-1 text-center text-xs flex justify-center">
                                         <div v-if="visibleAllow(12, 3)" class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
                                             <NuxtLink :to="`/coupon/${ coupon.id }`">
                                                 <Icon name="subway:pencil" width="1.4em" height="1.4em" />

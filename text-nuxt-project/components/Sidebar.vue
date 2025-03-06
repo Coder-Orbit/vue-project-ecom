@@ -261,14 +261,13 @@ const { accessMenu, allAccess } = storeToRefs(permissionStore);
 const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
 
 const menuAccess = (id) => {
-
-    if (accessMenuKeys.value == ['super_admin'].toString()) {
+    // Check if super_admin is in accessMenuKeys
+    if (accessMenuKeys.value.includes("super_admin")) {
         return true;
     }
-    else{
-        return accessMenuKeys.value.includes(id.toString());
-    }
-}
+    // Check if the given id exists in the keys list
+    return accessMenuKeys.value.includes(id.toString());
+};
 
 const visibleAllow = (menu_id, access_id) => {
     if (accessMenuKeys.value.includes("super_admin")) {

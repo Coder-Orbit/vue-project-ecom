@@ -8,21 +8,14 @@ import { ref } from "vue";
 
 const coreOfUsersData = ref([])
 const name = ref('');
-const startDate = ref(null);
-const endDate = ref(null);
+const email = ref('');
 const filteredCustomers = ref(0);
-const isDropdownVisible = ref(false);
-const currentOrderID = ref(null);
-const UpdateStatusModalVisible = ref(false);
-const updateStatusLoading = ref(false);
+
 const pageNumber = ref(1)
 const customers = ref([]);
 const visibleRight = ref(false);
 const roles = ref([]); // Holds the dropdown options
 const selectedRole = ref(null); // Holds the selected staus ID
-const inlineStatus = ref(null);
-const vendor = ref([]); // Holds the dropdown options
-const selectedVendor = ref(null); // Holds the selected vendor ID
 const orderCounts = ref({}); // Store total orders per user
 const customer_id = ref([]);
 
@@ -34,6 +27,18 @@ const MasterKey = config.public.masterToken;
 const app_token = useTokenStore().getToken;
 const loading = ref('not')
 
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+// Function to check access
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
 
 const headers = ref({
     "Accept": "application/json",
@@ -49,47 +54,60 @@ definePageMeta({
 
 onMounted(async () => {
     getAllCustomersData()
-    getAllCustomersID()
+    // getAllCustomersID()
     getAllRoles()
 });
 
 
-const fetchUserTotalOrders = async (id) => {
-    try {
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/orders?user_id=${id}`, {
-            method: 'get',
-            headers: headers.value,
-        });
-        // console.log("Total Orders for User:", id, response.orders.total);
-        orderCounts.value[id] = response.orders.total; // Store count in reactive object
-    } catch (error) {
-        console.error('Error fetching user orders:', error);
-        orderCounts.value[id] = "Error"; // Handle error gracefully
-    }
-};
+// const fetchUserTotalOrders = async (id) => {
+//     try {
+//         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/orders?user_id=${id}`, {
+//             method: 'get',
+//             headers: headers.value,
+//         });
+//         // console.log("Total Orders for User:", id, response.orders.total);
+//         orderCounts.value[id] = response.orders.total; // Store count in reactive object
+//     } catch (error) {
+//         console.error('Error fetching user orders:', error);
+//         orderCounts.value[id] = "Error";
+//     }
+// };
 
-const getAllCustomersID = async () => {
-    // loading.value = "not";
-    try {
+// const getAllCustomersID = async () => {
+//     // loading.value = "not";
+//     try {
 
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user?data=all`, {
-            method: 'get',
-            headers: headers.value,
-        });
-        customer_id.value = response;
-        customer_id.value.forEach(user => fetchUserTotalOrders(user.id));
-    } catch (err) {
-        console.log(err);
-    }
-}
+//         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user?data=all`, {
+//             method: 'get',
+//             headers: headers.value,
+//         });
+//         customer_id.value = response;
+//         customer_id.value.forEach(user => fetchUserTotalOrders(user.id));
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
 
 const getAllCustomersData = async () => {
     loading.value = "not";
+
     try {
+        // const params = {
+        //     name: name.value || undefined,
+        //     email: email.value || undefined,
+        //     role_id: selectedRole.value || undefined,
+        //     page: pageNumber.value || undefined,
+        // };
+
+        // // Remove keys with undefined values
+        // const filteredParams = Object.fromEntries(
+        //     Object.entries(params).filter(([_, value]) => value !== undefined)
+        // );
 
         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user?orderBy=desc&page=${pageNumber.value}`, {
             method: 'get',
             headers: headers.value,
+            // params: filteredParams,
         });
         coreOfUsersData.value = response;
         console.log("Core",coreOfUsersData.value);
@@ -100,6 +118,7 @@ const getAllCustomersData = async () => {
     }
     loading.value = "success";
 }
+
 const paginate = async (page) => {
     loading.value = "not";
     pageNumber.value = page;
@@ -111,9 +130,21 @@ const paginate = async (page) => {
     }
 
     try {
+        const params = {
+            name: name.value || undefined,
+            email: email.value || undefined,
+            role_id: selectedRole.value || undefined,
+            // page: pageNumber.value || undefined,
+        };
+
+        // Remove keys with undefined values
+        const filteredParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined)
+        );
         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/user?page=${pageNumber.value}`, {
             method: 'get',
             headers: headers.value,
+            params: filteredParams,
         });
         customers.value = response;
         console.log("Response Customer:",response);
@@ -148,7 +179,7 @@ const getRoleNames = (id) => {
     return selected ? selected.name : '';
 };
 
-const email = ref('');
+
 // Implemented the search functionality
 const fetchFilteredOrders = async () => {
     loading.value = "not";
@@ -200,7 +231,7 @@ const fetchFilteredOrders = async () => {
                     <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black text-sm px-4 py-2" @click="visibleRight = true">
                         <Icon name="iconoir:filter-solid"></Icon> Filter
                     </button>
-                    <NuxtLink to="users/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm" >
+                    <NuxtLink v-if="visibleAllow(4, 2)" to="users/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm" >
                             <Icon name="zondicons:add-outline"></Icon> Add
                     </NuxtLink>
                 </div>
@@ -212,10 +243,10 @@ const fetchFilteredOrders = async () => {
                         <tr class="w-full bg-gray-300 text-sm">
                             <th class="p-1 text-left text-sm w-8 pl-6">SL</th>
                             <th class="p-1 text-left text-sm">Name</th>
+                            <th class="p-1 text-left text-sm">Mobile</th>
                             <th class="p-1 text-left text-sm">Email</th>
                             <!-- <th class="p-1 text-left text-sm">Mobile</th> -->
                             <th class="p-1 text-left text-sm">Address</th>
-                            <th class="p-1 text-left text-sm">Total Orders</th>
                             <th class="p-1 text-left text-sm">Register Date</th>
                             <th class="p-1 text-center text-sm">Actions</th>
                         </tr>
@@ -224,14 +255,20 @@ const fetchFilteredOrders = async () => {
                         <tr v-for="(user) in customers" class="bg-white odd:bg-gray-100" :key="user.id">
                             <td class="p-1 text-left text-xs pl-6"> {{ user.id }} </td>
                             <td class="p-1 text-left text-xs">{{ user.name }}</td>
+                            <td class="p-1 text-left text-xs text-gray-500">{{ user?.extend_props?.mobile || ""  }}</td>
                             <td class="p-1 text-left text-xs">{{ user.email }}</td>
                             <!-- <td class="p-1 text-left text-xs">0123456789</td> -->
-                            <td class="p-1 text-left text-xs text-gray-500">{{ user?.extend_props?.address || "No address available"  }}</td>
-                            <td class="p-1 text-left text-xs">{{ orderCounts[user.id] ?? "Loading..." }}</td>
+                            <td class="p-1 text-left text-xs text-gray-500">{{ user?.extend_props?.address || ""  }}</td>
+                            <!-- <td class="p-1 text-left text-xs">{{ orderCounts[user.id] ?? "Loading..." }}</td> -->
                             <td class="p-1 text-left text-xs">{{ dateMonthFunction(user.created_at) }}</td>
-                            <td class="p-1 text-xs grid text-center justify-items-center">
-                                <div class="flex">
-                                    <NuxtLink class="bg-cyan-400 p-1 text-white rounded" :to="`/users/edit/${user.id}`">
+                            <td class="p-1 text-xs flex justify-center">
+                                <div v-if="visibleAllow(4, 1)" class="flex p-1">
+                                    <NuxtLink  class="bg-cyan-400 p-1 text-white rounded" :to="`/users/details/${user.id}`">
+                                        <Icon name="mdi:eye" width="1.4em" height="1.4em" />
+                                    </NuxtLink>
+                                </div>
+                                <div v-if="visibleAllow(4, 3)" class="flex p-1">
+                                    <NuxtLink class="bg-yellow-400 p-1 text-white rounded" :to="`/users/edit/${user.id}`">
                                         <Icon name="mdi:pencil" width="1.4em" height="1.4em" />
                                     </NuxtLink>
                                 </div>
@@ -253,14 +290,14 @@ const fetchFilteredOrders = async () => {
                 </div>
             </div>
             </div>
-            <Sidebar v-model:visible="visibleRight" header="user Filter" position="right">
+            <Sidebar v-model:visible="visibleRight" header="Filter Customer" position="right">
             <div class="w-full">
                 <label for="dd-city" class="text-sm w-full">Name</label>
                 <input type="text" v-model="name" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Enter Name" />
             </div>
             <div class="w-full mt-2">
                 <label for="dd-city" class="text-sm w-full">Email</label>
-                <input type="email" v-model="email" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Enter Name" />
+                <input type="email" v-model="email" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Enter Email" />
             </div>
             <!-- Role -->
             <div class="w-full grid grid-cols-1 mt-2">
