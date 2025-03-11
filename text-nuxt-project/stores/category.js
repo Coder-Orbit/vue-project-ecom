@@ -29,7 +29,7 @@ export const useCategoryStore = defineStore("category", {
             const app_token = useTokenStore().getToken;
             const formData = categoryData;
             try {
-                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category?nestedLable=4`, {
+                const res = await fetch(`${EndPoint}/admin/${MasterKey}/category`, {
                     method: "POST",
                     headers: {
                         Accept: "application/json",
@@ -144,7 +144,7 @@ export const useCategoryStore = defineStore("category", {
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
             try {
-                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?data=all&nestedLable=4`, {
+                const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?parent_id=0&data=all&nestedLable=4`, {
                     headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
@@ -225,7 +225,7 @@ export const useCategoryStore = defineStore("category", {
                 const app_token = useTokenStore().getToken;
 
                 try {
-                    const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?data=all&nestedLable=4`, {
+                    const data = await $fetch(`${EndPoint}/admin/${MasterKey}/category?parent_id=0&data=all&nestedLable=4`, {
                         method: 'GET',
                         headers: {
                             Accept: "application/json",

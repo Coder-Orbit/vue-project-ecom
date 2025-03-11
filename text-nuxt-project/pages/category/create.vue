@@ -28,30 +28,11 @@ const CategoryBanner = ref('');
 const CategoryThumbnail = ref('');
 const Description = ref('');
 const selectedCategory = ref(null);
+const categories = ref([]);
 
-const onlyCategory = computed(() => {
-    return [{
-        fieldName: "categories",
-        fieldValue: selectedCategory.value
-    }];
-});
-
-watch(selectedCategory, (newValue) => {
-    console.log("Updated selectedCategory:", newValue);
-});
 
 const extraProps = ref([]);
 const extraFields = ref([]);
-
-const mergeExtraProps = () => {
-    extraProps.value = {
-        ...extraProps.value,
-        ...onlyCategory.value.reduce((acc, category) => {
-            acc[JSON.stringify(category.fieldName)] = JSON.stringify(category.fieldValue);
-            return acc;
-        }, {})
-    };
-};
 
 const addMoreField = () => {
     extraFields.value = [
@@ -65,14 +46,6 @@ const addMoreField = () => {
 const removeMoreField = (index) => {
     extraFields.value.splice(index, 1);
 }
-
-onBeforeMount(async () => {
- await categoryStore.getCategoryList();
- categories.value = categoryStore.CategoryList.map((category) => ({
-    name: category.name,
-    id: category.id,
-  }));
-});
 
 // File Upload
 const handleFileUpload = (event, type) => {
@@ -89,7 +62,7 @@ const handleFileUpload = (event, type) => {
 };
 //data
 const dataSubmit = async () => {
-    mergeExtraProps();
+
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
     })
@@ -104,10 +77,12 @@ const dataSubmit = async () => {
             description: Description.value,
             commission: Commission.value,
             commission_type: CommissionType.value,
+            parent_categories: selectedCategory.value,
+            parent_id: selectedCategory.value?.id,
             status: Status.value,
             extend_props: extraProps.value
         }
-        console.log("extraProps.value:", extraProps.value);
+        
 
         const result = await categoryStore.addCategory(categoryData);
         if (result.success) {
@@ -150,29 +125,21 @@ const dataSubmit = async () => {
 
 
 onMounted(() => {
-    categoryStore.fetchCategories(); // Fetch categories when component mounts
+    categoryStore.getCategoryList(); // Fetch categories when component mounts
+    categories.value = categoryStore.CategoryList;
+
+    console.log(categories.value);
 });
 
-// Compute the transformed category list dynamically
-const categories = computed(() => {
-    console.log("API Response:", categoryStore.categories);
-    return transformCategories(categoryStore.cat);
-});
 
-// Recursive function to transform categories
-const transformCategories = (categories) => {
-    if (!categories || categories.length === 0) return [];
-
-    return categories.map(category => ({
-        // name: category.name || `Category ${category.id}`,
-        id: category.id,
-        name: category.name || `Category ${category.id}`,
-        categories: category.categories && category.categories.length > 0 ? transformCategories(category.categories) : []
-    }));
-};
-const test = (click) =>{
-    console.log(click)
+const parentCategory = (name, id) => {
+    selectedCategory.value = { name, id };
+    console.log(name);
 }
+
+
+
+
 
 </script>
 <template>
@@ -208,54 +175,14 @@ const test = (click) =>{
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
                                             placeholder="Category Name" />
                                     </div>
-                                    <div class="w-full">
+                                    <div class="w-full position-relative">
                                         <label for="dd-city" class="text-sm">Parent Category</label>
-                                        <!-- <Dropdown :pt="{
-                                            root: {
-                                                class: 'text-sm w-full py-1 px-2 border outline-red-200 active:bg-gray-100'
-                                            },
 
-                                            filterInput: {
-                                                class: 'active:bg-gray-100 py-1 px-2 border mb-2'
-                                            },
+                                        <input  type="text" v-model="selectedCategory" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Select a Category" />
 
-                                            item: {
-                                                class: 'hover:bg-red-100'
-                                            },
-
-                                            itemLabel: {
-                                                class: 'focus:bg-red-600'
-                                            },
-
-
-
-                                        }" v-model="selectedCategory" editable :options="categories"
-                                            optionLabel="name" @keyup="OnInputChange" optionValue="id" placeholder="Select a Category" /> -->
-                                            <CascadeSelect
-
-                                                v-model="selectedCategory"
-                                                :options="categories"
-                                                optionLabel="name"
-                                                optionVale="id"
-                                                optionGroupLabel="name"
-                                                optionGroupValue="id"
-                                                :optionGroupChildren="['categories']"
-                                                style="min-width: 14rem"
-                                                placeholder="Select a Nested Category"
-                                                filter
-                                                :pt="{
-                                                    root: { class: 'text-sm w-full py-0 px-2 border outline-red-200 active:bg-gray-100' },
-                                                    filterInput: { class: 'active:bg-gray-100 py-1 px-2 border mb-4' },
-                                                    item: { class: 'hover:bg-red-100' },
-                                                    itemLabel: { class: 'focus:bg-red-600' }
-                                                }"
-                                            >
-                                                <template #option="slotProps">
-                                                    <div class="flex align-items-center">
-                                                        <span @click="test(selectedCategory)">{{ slotProps.option.name }}</span>
-                                                    </div>
-                                                </template>
-                                            </CascadeSelect>
+                                        <ul name="parent_category" id="parent_category" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md overflow-y-auto h-60 position-absolute z-10">
+                                            <Category v-for="category in categories" :key="category.id" :category="category" :value="category">{{ category.name }}</Category>
+                                        </ul>
                                     </div>
                                 </div>
 
@@ -385,7 +312,7 @@ const test = (click) =>{
 
                                 <!--Description-->
                                 <div class="w-full mt-1">
-                                    <label for="dd-city" class="text-sm w-full">Description {{ selectedCategory }}</label>
+                                    <label for="dd-city" class="text-sm w-full">Description {{ selectedCategory?.id }}</label>
                                     <textarea v-model="Description" placeholder="Write in Details..." class="w-full p-2 border rounded-md"></textarea>
                                 </div>
 

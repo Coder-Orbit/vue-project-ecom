@@ -22,7 +22,11 @@ const extraFields = ref([]);
 const loading = ref('Stop');
 const toast = useToast();
 //cat
-const selectedCategory = ref({})
+const selectedCategory = ref({
+    "id": 4,
+    "name": "Category Four",
+    "categories": []
+});
 // Assume you have a dynamic route with the slide ID
 const Id = router.currentRoute.value.params.id;
 //All Slide data
@@ -30,35 +34,6 @@ const CategoryIcon = ref('');
 const CategoryBanner = ref('');
 const CategoryThumbnail = ref('');
 
-const onlyCategory = computed(() => {
-    return [{
-        fieldName: "categories",
-        fieldValue: JSON.stringify(selectedCategory.value)
-    }];
-});
-
-watch(selectedCategory, (newValue) => {
-    console.log("Updated selectedCategory:", newValue);
-    updateCategoryField();
-});
-
-
-const updateCategoryField = () => {
-    extraProps.value = {
-        ...extraProps.value,
-        categories: Array.isArray(selectedCategory.value) ? selectedCategory.value : [selectedCategory.value] 
-    };
-};
-
-const mergeExtraProps = () => {
-    extraProps.value = {
-        ...extraProps.value,
-        ...onlyCategory.value.reduce((acc, category) => {
-            acc[JSON.stringify(category.fieldName)] = JSON.stringify(category.fieldValue);
-            return acc;
-        }, {})
-    };
-};
 
 // Fetch Categories before Mount
 onBeforeMount(async () => {
@@ -104,52 +79,11 @@ onMounted(async () => {
         // Fetch category data
         const data = await CategoryStore.getSingleCategory(Id);
         Category.value = data.data;
-        console.log(Category.value)
 
-        // Check if extend_props exists and is a string
-        if (data.data.extend_props) {
-            // If extend_props is a string, parse it into an object
-            if (typeof data.data.extend_props === "string") {
-                try {
-                    data.data.extend_props = data.data.extend_props; // Parse string to object
-                } catch (error) {
-                    console.error("Error parsing extend_props string:", error);
-                    data.data.extend_props = {}; // Fallback to an empty object if parsing fails
-                }
-            }
+        // selectedCategory.value = data.data?.parent_categories;
 
-            // Map extend_props to extraFields
-            extraFields.value = Object.entries(data.data.extend_props).map(([key, value]) => ({
-                fieldName: key,
-                fieldValue: value,
-            }));
 
-            // Optionally, you can convert extend_props back to string if you're sending it somewhere
-            data.data.extend_props = data.data.extend_props;  // Convert object back to string
-        }
-
-        // Process categories field from extraFields if available
-        if (extraFields.value.length > 0) {
-            let categoryField = extraFields.value.find(item => item.fieldName === "categories");
-
-            if (categoryField && categoryField.fieldValue) {
-                // If it's an array, select the first category
-                if (Array.isArray(categoryField.fieldValue)) {
-                    selectedCategory.value = categoryField.fieldValue.length > 0 ? categoryField.fieldValue[0] : {};
-                }
-                // If it's an object, set it as selected category
-                else if (typeof categoryField.fieldValue === "object") {
-                    selectedCategory.value = categoryField.fieldValue;
-                }
-                // Fallback to an empty object if no valid value found
-                else {
-                    selectedCategory.value = {};
-                    selectedCategory.value = JSON.parse(categoryField.fieldValue);
-                }
-            }
-        }
-
-        console.log("Selected Category:", selectedCategory.value);
+        console.log(Category);
 
     } catch (error) {
         console.error("Error fetching category:", error);
@@ -166,7 +100,7 @@ onMounted(async () => {
 
 //Data Submit
 const dataSubmit = async () => {
-    mergeExtraProps();
+
     
     loading.value = 'Success';
     extraFields.value.forEach((item, index) => {
@@ -179,7 +113,8 @@ const dataSubmit = async () => {
         commission_type: Category.value.commission_type,
         description: Category.value.description,
         status: Category.value.status,
-        // parent_id:selectedCategory.value,
+        parent_id: selectedCategory.value?.id,
+        parent_categories: selectedCategory?.value,
         icon: CategoryIcon.value,
         banner: CategoryBanner.value,
         thumbnail: CategoryThumbnail.value,
@@ -240,7 +175,17 @@ const transformCategories = (categories) => {
         categories: category.categories && category.categories.length > 0 ? transformCategories(category.categories) : []
     }));
 };
+
+
+
+const test = (click) =>{
+    console.log(click)
+}
+
 </script>
+
+
+
 <template>
     <NuxtLayout :name="layout">
         <Toast />
@@ -315,7 +260,7 @@ const transformCategories = (categories) => {
                                                 >
                                                 <template #option="slotProps">
                                                     <div class="flex align-items-center">
-                                                        <span>{{ slotProps.option.name }}</span>
+                                                        <span @click="test(selectedCategory)">{{ slotProps.option.name }}</span>
                                                     </div>
                                                 </template>
                                             </CascadeSelect>
@@ -436,7 +381,7 @@ const transformCategories = (categories) => {
 
 
                                 <div class="w-full mt-1">
-                                    <label for="dd-city" class="text-sm w-full">Description</label>
+                                    <label for="dd-city" class="text-sm w-full">Description {{ selectedCategory }}</label>
                                     <textarea v-model="Category.description" class="w-full border rounded-md"></textarea>
                                 </div>
 
