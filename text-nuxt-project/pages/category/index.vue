@@ -183,8 +183,8 @@ const openDeleteModal = (CategoryId) => {
                             <tr class="w-full bg-gray-300 text-sm">
                                 <th class="p-1 text-left text-sm w-8">SL</th>
                                 <th class="p-1 text-left text-sm w-12">Icon</th>
-                                <th class="p-1 text-left text-sm">Category Name</th>
-                                <th class="p-1 text-left text-sm">Child Category</th>
+                                <th class="p-1 text-left text-sm">Title</th>
+                                <th class="p-1 text-left text-sm">Category</th>
                                 <th class="p-1 text-left text-sm w-48">Description</th>
                                 <th class="p-1 text-left text-sm">Comission</th>
                                 <th class="p-1 text-left">Status</th>
