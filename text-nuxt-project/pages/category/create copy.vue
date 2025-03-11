@@ -3,11 +3,6 @@ import Dropdown from 'primevue/dropdown';
 import FileUpload from 'primevue/fileupload';
 import Fieldset from 'primevue/fieldset';
 
-const config = useRuntimeConfig();
-const EndPoint = config.public.baseURl;
-const MasterKey = config.public.masterToken;
-const app_token = useTokenStore().getToken;
-
 
 //Define Router
 const router = useRouter();
@@ -18,7 +13,8 @@ definePageMeta({
     layout: "dashboard",
     middleware: ['auth'],
 })
-
+//Get Category Store
+const categoryStore = useCategoryStore();
 //Loading State
 const isLoading = ref(false);
 
@@ -66,16 +62,15 @@ const handleFileUpload = (event, type) => {
         reader.readAsDataURL(file);
     }
 };
-
-//submit data
+//data
 const dataSubmit = async () => {
+
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
     })
 
     isLoading.value = true;
     try {
-
         const categoryData = {
             name: CategoryName.value,
             icon: CategoryIcon.value,
@@ -91,27 +86,41 @@ const dataSubmit = async () => {
             extend_props: extraProps.value
         }
 
-        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/category`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${app_token}`,
-            },
-            body: JSON.stringify(categoryData)
-        });
 
-     
-        getCategoryList();
+        const result = await categoryStore.addCategory(categoryData);
+        if (result.success) {
+            toast.add({
+                severity: 'success',
+                summary: 'Category Created',
+                detail: result.message || 'Category was created successfully.',
+                life: 3000,
+            });
 
-        setTimeout(() => {
+            setTimeout(() => {
                 router.push('/category');
             }, 2000);
 
 
+        } else {
+            toast.add({
+                severity: 'success',
+                summary: 'Category Created',
+                detail: result.message || 'Category was created successfully.',
+                life: 3000,
+            });
+            setTimeout(() => {
+                router.push('/category');
+            }, 2000);
+        }
     } catch (error) {
-        
-        console.log(error);
-    } finally{
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'An unexpected error occurred.',
+            life: 3000,
+        });
+        console.error(error);
+    } finally {
         isLoading.value = false;
     }
 
@@ -119,25 +128,12 @@ const dataSubmit = async () => {
 
 
 onMounted(() => {
-   
-    getCategoryList();
+    categoryStore.getCategoryList(); // Fetch categories when component mounts
+    categories.value = categoryStore.CategoryList;
+
+    console.log(categories.value);
 });
 
-
-const getCategoryList = async () => {
-    const res = await $fetch(`${EndPoint}/admin/${MasterKey}/category?parent_id=0&data=all&nestedLable=4`, {
-        method: 'GET',
-        headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${app_token}`
-        },
-    });
-
-    console.log("ca",res);
-    categories.value = res;
-
-
-}
 
 
 
@@ -145,12 +141,12 @@ const handleCategorySelected = (categoryInfo) => {
     selectedCat.value = categoryInfo;
     selectedCategory.value = selectedCat.value.name;
     selectedCategoryItem.value = false;
-
+    
 };
 
 const handleClick = () => {
-    selectedCategoryItem.value = true;
-
+  selectedCategoryItem.value = true;
+  
 };
 
 
@@ -189,15 +185,15 @@ const handleClick = () => {
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
                                             placeholder="Category Name" />
                                     </div>
-                                    <div class="w-full relative">
+                                    <div class="w-full position-relative">
                                         <label for="dd-city" class="text-sm">Parent Category</label>
 
                                         <input type="text" v-model="selectedCategory"
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                            placeholder="Select a Category" @click="handleClick" />
+                                            placeholder="Select a Category" @click="handleClick"/>
 
                                         <ul v-if="selectedCategoryItem" name="parent_category" id="parent_category"
-                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md overflow-y-auto h-60 absolute bg-white z-10">
+                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md overflow-y-auto h-60 position-absolute z-10">
                                             <!-- <Category v-for="category in categories" :key="category.id" :category="category" :value="category">{{ category.name }}</Category> -->
                                             <Category v-for="category in categories" :key="category.id"
                                                 :category="category" @category-clicked="handleCategorySelected" />
