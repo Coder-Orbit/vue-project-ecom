@@ -3,6 +3,11 @@ import Dropdown from 'primevue/dropdown';
 import FileUpload from 'primevue/fileupload';
 import Fieldset from 'primevue/fieldset';
 
+const config = useRuntimeConfig();
+const EndPoint = config.public.baseURl;
+const MasterKey = config.public.masterToken;
+const app_token = useTokenStore().getToken;
+
 
 //Define Router
 const router = useRouter();
@@ -13,8 +18,7 @@ definePageMeta({
     layout: "dashboard",
     middleware: ['auth'],
 })
-//Get Category Store
-const categoryStore = useCategoryStore();
+
 //Loading State
 const isLoading = ref(false);
 
@@ -27,48 +31,26 @@ const CategoryIcon = ref('');
 const CategoryBanner = ref('');
 const CategoryThumbnail = ref('');
 const Description = ref('');
-const selectedCategory = ref('');
-const extraProps = ref([]);
-const extraFields = ref([
-    {
-        fieldName: "",
-        fieldValue: "",
-    },
-]);
+const selectedCategory = ref(null);
+const categories = ref([]);
+const selectedCat = ref({ name: '', id: null });
+const selectedCategoryItem = ref(false);
 
-// Add extra field function goes here
+
+const extraProps = ref([]);
+const extraFields = ref([]);
+
 const addMoreField = () => {
     extraFields.value = [
         ...extraFields.value, {
             fieldName: "",
             fieldValue: "",
-        }
+        },
     ];
 }
-// Remove extra field
+
 const removeMoreField = (index) => {
     extraFields.value.splice(index, 1);
-}
-
-// Categories Ref
-const categories = ref([]);
-
-// Fetch Categories before Mount
-onBeforeMount(async () => {
- await categoryStore.getCategoryList();
- categories.value = categoryStore.CategoryList.data.map((category) => ({
-    name: category.name,
-    id: category.id,
-  }));
-});
-
-const OnInputChange = async () =>{
-    await categoryStore.getFilteredCategoriList(selectedCategory.value);
-    categories.value = categoryStore.CategoryList.map((category) => ({
-        name: category.name,
-        id: category.id,
-    }));
-
 }
 
 // File Upload
@@ -84,7 +66,8 @@ const handleFileUpload = (event, type) => {
         reader.readAsDataURL(file);
     }
 };
-//data
+
+//submit data
 const dataSubmit = async () => {
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
@@ -92,55 +75,85 @@ const dataSubmit = async () => {
 
     isLoading.value = true;
     try {
+
         const categoryData = {
             name: CategoryName.value,
-            parent_id: selectedCategory.value,
             icon: CategoryIcon.value,
             banner: CategoryBanner.value,
             thumbnail: CategoryThumbnail.value,
             description: Description.value,
             commission: Commission.value,
             commission_type: CommissionType.value,
+            parent_categories: selectedCategory.value,
+            // parent_id: selectedCategory.value?.id,
+            parent_id: selectedCat.value?.id,
             status: Status.value,
             extend_props: extraProps.value
         }
 
+        const res = await $fetch(`${EndPoint}/admin/${MasterKey}/category`, {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${app_token}`,
+            },
+            body: JSON.stringify(categoryData)
+        });
 
-        const result = await categoryStore.addCategory(categoryData);
-        if (result.success) {
-            toast.add({
-                severity: 'success',
-                summary: 'Category Created',
-                detail: result.message || 'Category was created successfully.',
-                life: 3000,
-            });
+     
+        getCategoryList();
 
-            setTimeout(() => {
+        setTimeout(() => {
                 router.push('/category');
             }, 2000);
 
 
-        } else {
-            toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: result.message || 'An error occurred.',
-                life: 3000,
-            });
-        }
     } catch (error) {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'An unexpected error occurred.',
-            life: 3000,
-        });
-        console.error(error);
-    } finally {
+        
+        console.log(error);
+    } finally{
         isLoading.value = false;
     }
 
 }
+
+
+onMounted(() => {
+   
+    getCategoryList();
+});
+
+
+const getCategoryList = async () => {
+    const res = await $fetch(`${EndPoint}/admin/${MasterKey}/category?parent_id=0&data=all&nestedLable=4`, {
+        method: 'GET',
+        headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${app_token}`
+        },
+    });
+
+    console.log("ca",res);
+    categories.value = res;
+
+
+}
+
+
+
+const handleCategorySelected = (categoryInfo) => {
+    selectedCat.value = categoryInfo;
+    selectedCategory.value = selectedCat.value.name;
+    selectedCategoryItem.value = false;
+
+};
+
+const handleClick = () => {
+    selectedCategoryItem.value = true;
+
+};
+
+
 
 </script>
 <template>
@@ -176,29 +189,28 @@ const dataSubmit = async () => {
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
                                             placeholder="Category Name" />
                                     </div>
-                                    <div class="w-full">
+                                    <div class="w-full relative">
                                         <label for="dd-city" class="text-sm">Parent Category</label>
-                                        <Dropdown :pt="{
-                                            root: {
-                                                class: 'text-sm w-full py-1 px-2 border outline-red-200 active:bg-gray-100'
-                                            },
 
-                                            filterInput: {
-                                                class: 'active:bg-gray-100 py-1 px-2 border mb-2'
-                                            },
+                                        <input type="text" v-model="selectedCategory"
+                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+                                            placeholder="Select a Category" @click="handleClick" />
 
-                                            item: {
-                                                class: 'hover:bg-red-100'
-                                            },
+                                        <ul v-if="selectedCategoryItem" name="parent_category" id="parent_category"
+                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md overflow-y-auto h-60 absolute bg-white z-10">
+                                            <!-- <Category v-for="category in categories" :key="category.id" :category="category" :value="category">{{ category.name }}</Category> -->
+                                            <Category v-for="category in categories" :key="category.id"
+                                                :category="category" @category-clicked="handleCategorySelected" />
+                                        </ul>
+                                    </div>
+                                </div>
 
-                                            itemLabel: {
-                                                class: 'focus:bg-red-600'
-                                            },
+                                <!-- Static Category Name -->
+                                <div class="grid grid-cols-2 gap-2 mt-2">
+                                    <div class="w-full">
+                                        <div class="card flex justify-content-center">
 
-
-
-                                        }" v-model="selectedCategory" editable :options="categories"
-                                            optionLabel="name" @keyup="OnInputChange" optionValue="id" placeholder="Select a Category" />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -319,8 +331,10 @@ const dataSubmit = async () => {
 
                                 <!--Description-->
                                 <div class="w-full mt-1">
-                                    <label for="dd-city" class="text-sm w-full">Description</label>
-                                    <textarea v-model="Description" placeholder="Write in Details..." class="w-full p-2 border rounded-md"></textarea>
+                                    <label for="dd-city" class="text-sm w-full">Description {{ selectedCategory?.id
+                                        }}</label>
+                                    <textarea v-model="Description" placeholder="Write in Details..."
+                                        class="w-full p-2 border rounded-md"></textarea>
                                 </div>
 
                                 <!--Submit Button-->
@@ -350,3 +364,28 @@ const dataSubmit = async () => {
         </div>
     </NuxtLayout>
 </template>
+
+<style scoped>
+.p-cascadeselect-items-wrapper {
+    margin-top: 8rem !important;
+    max-height: 20px !important;
+    overflow-y: auto !important;
+    background-color: yellowgreen !important;
+}
+
+.p-cascadeselect-panel {
+    z-index: 1 !important;
+    position: relative !important;
+    top: 10px !important;
+    left: 838.75px;
+    min-width: 100px;
+    transform-origin: center bottom;
+    margin-top: calc(var(--p-anchor-gutter)* -1);
+}
+
+.p-cascadeselect-items {
+    max-height: 20px !important;
+    overflow-y: auto !important;
+    background-color: yellowgreen !important;
+}
+</style>

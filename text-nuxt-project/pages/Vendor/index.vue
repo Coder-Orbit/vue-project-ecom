@@ -10,6 +10,24 @@
         layout: "dashboard",
         middleware: ['auth'],
     })
+    const permissionStore = usePermissionStore();
+    const { accessMenu, allAccess } = storeToRefs(permissionStore);
+    // console.log("Category Fetch Result accessMenu:", accessMenu.value);
+    const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+    // console.log("Category Fetch Result accessMenuKeys:", accessMenuKeys.value);
+    console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+    // Function to check access
+    const visibleAllow = (menu_id, access_id) => {
+        // If user has "super_admin" access, return true
+        if (accessMenuKeys.value.includes("super_admin")) {
+            return true;
+        }
+        // Otherwise, check if the ID exists in allAccess
+        return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]);
+    };
+    // console.log(allAccess.value[7][2])
+
     // Vendors Row data And Pagination From Store
     const store = useVendorStore();
     const vendorData = computed(() => store.Vendors);
@@ -146,7 +164,7 @@ const applyFilter = async () => {
                                 <Icon name="iconoir:filter-solid"></Icon>
                                 Filter
                             </button>
-                            <NuxtLink to="Vendor/create" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
+                            <NuxtLink to="Vendor/create" v-if="visibleAllow(7,2)" class="bg-cyan-600 hover:bg-cyan-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-rt-sm">
                                 <Icon name="zondicons:add-outline"></Icon>
                                 Add
                             </NuxtLink>
@@ -190,14 +208,13 @@ const applyFilter = async () => {
                                     <!--Created By-->
                                     <td class="p-1 text-center text-xs">{{ vendor.created_by =='1' ? "Admin":"Majedul Islam" }}</td>
                                     <!--& Others Button-->
-                                    <td class="p-1 text-center text-xs flex">
-                                        <div class=" rounded-md bg-cyan-400 p-1 text-white" title="View"><Icon name="mdi:eye" width="1.4em" height="1.4em"/></div>
-                                        <div class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
+                                    <td class="p-1 text-center text-xs flex justify-center">
+                                        <div v-if="visibleAllow(7,3)" class="rounded-md mx-1 bg-yellow-500 p-1 text-white" title="Edit">
                                             <NuxtLink :to="`/vendor/${vendor.id}`">
                                                 <Icon name="subway:pencil" width="1.4em" height="1.4em" />
                                             </NuxtLink>
                                         </div>
-                                        <button @click="openDeleteModal(vendor.id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
+                                        <button v-if="visibleAllow(7,4)" @click="openDeleteModal(vendor.id)" class="rounded-md bg-red-600 p-1 text-white" title="Delete"><Icon name="bxs:trash" width="1.4em" height="1.4em" /></button>
                                     </td>
                                 </tr>
                             </tbody>

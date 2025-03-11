@@ -256,23 +256,40 @@ const toggle = (index) => {
     activeMenu.value = index;
 
 }
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
 
+const menuAccess = (id) => {
+    // Check if super_admin is in accessMenuKeys
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true;
+    }
+    // Check if the given id exists in the keys list
+    return accessMenuKeys.value.includes(id.toString());
+};
 
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
+
+// console.log("Access Keys:", accessMenuKeys.value);
 </script>
 <template>
   <div class="sidebar_menu w-full left-0 max-h-[calc(100vh-3rem)]">
-
-
     <ul class="mt-2">
 
-        <li class="relative cursor-pointer">
+        <li v-if="menuAccess(1)" class="relative cursor-pointer" id="1">
             <NuxtLink to="/dashboard" exact class="flex border-b py-1" >
-                <Icon name="mage:dashboard-fill" width="1em" height="1em" class="ml-3" /> 
-                <div class="text-left text-sm ml-1 -mt-[2px]">Dashboard </div> 
+            <Icon name="mage:dashboard-fill" width="1em" height="1em" class="ml-3" /> 
+            <div class="text-left text-sm ml-1 -mt-[2px]">Dashboard </div> 
             </NuxtLink>
         </li>
 
-        <li class="relative cursor-pointer" @click="toggle('category')">
+        <li v-if="menuAccess(2)"  class="relative cursor-pointer" @click="toggle('category')">
             <div exact class="flex border-b py-1" >
                 <Icon name="heroicons:square-3-stack-3d-20-solid" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Category </div> 
@@ -281,14 +298,13 @@ const toggle = (index) => {
 
             <ul :class="`${ activeMenu == 'category' || currentPath == '/category' || currentPath == '/category/create' ? 'block' : 'hidden'}`">
                 
-                <li class="relative">
+                <li v-if="visibleAllow(2,1)" class="relative">
                     <NuxtLink exact to="/category" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
                     </NuxtLink>
                 </li>
-
-                <li class="relative">
+                <li v-if="visibleAllow(2,2)" class="relative">
                     <NuxtLink exact to="/category/create" class="flex border-b py-1 pl-4">
                         <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">Add</div>
@@ -300,7 +316,7 @@ const toggle = (index) => {
         </li>
 
         <!-- Product -->
-        <li class="relative cursor-pointer" @click="toggle('product')">
+        <li v-if="menuAccess(8)"  class="relative cursor-pointer" @click="toggle('product')">
             <div exact class="flex border-b py-1">
                 <Icon name="fluent:box-16-filled" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Product </div> 
@@ -308,15 +324,40 @@ const toggle = (index) => {
             </div>
 
             <ul :class="`${ activeMenu == 'product' || currentPath == '/product' || currentPath == '/product/create' || currentPath == '/product/*/edit' ? 'block' : 'hidden'}`">
-                <li class="relative">
+                <li v-if="visibleAllow(8,1)" class="relative">
                     <NuxtLink exact to="/product" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
                     </NuxtLink>
                 </li>
 
-                <li class="relative">
+                <li v-if="visibleAllow(8,2)" class="relative">
                     <NuxtLink exact to="/product/create" class="flex border-b py-1 pl-4">
+                        <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 
+                        <div class="text-left text-sm ml-1 -mt-[2px]">Add</div>
+                    </NuxtLink>
+                </li>
+            </ul>
+        </li>
+
+        <!-- Page -->
+        <li v-if="menuAccess(19)"  class="relative cursor-pointer" @click="toggle('page')">
+            <div exact class="flex border-b py-1">
+                <Icon name="fluent:document-16-filled" width="1em" height="1em" class="ml-3" /> 
+                <div class="text-left text-sm ml-1 -mt-[2px]"> Page</div> 
+                <Icon name="ic:round-keyboard-arrow-right" :class="`${ activeMenu == 'page' || currentPath == '/page' || currentPath == '/page/create' || currentPath == '/page/*/edit' ? 'rotate-90' : ''}`" class="absolute right-0 ease-in duration-300" width="1.2em" height="1.2em"/>
+            </div>
+
+            <ul :class="`${ activeMenu == 'page' || currentPath == '/page' || currentPath == '/page/create' || currentPath == '/page/*/edit' ? 'block' : 'hidden'}`">
+                <li v-if="visibleAllow(19,1)" class="relative">
+                    <NuxtLink exact to="/page" class="flex border-b py-1 pl-4">
+                        <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
+                        <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
+                    </NuxtLink>
+                </li>
+
+                <li v-if="visibleAllow(19,2)" class="relative">
+                    <NuxtLink exact to="/page/create" class="flex border-b py-1 pl-4">
                         <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">Add</div>
                     </NuxtLink>
@@ -326,14 +367,14 @@ const toggle = (index) => {
 
 
         <!-- Orders -->
-        <li class="relative cursor-pointer" @click="toggle('order')">
+        <li v-if="menuAccess(9)"  class="relative cursor-pointer" @click="toggle('order')">
             <div exact class="flex border-b py-1">
                 <Icon name="fa-solid:shopping-basket" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Orders </div> 
                 <Icon name="ic:round-keyboard-arrow-right" :class="`${ activeMenu == 'order' || currentPath == '/order' || currentPath == '/order/*' ? 'rotate-90' : ''}`" class="absolute right-0 ease-in duration-300" width="1.2em" height="1.2em"/>
             </div>
 
-            <ul :class="`${ activeMenu == 'order' || currentPath == '/order' || currentPath == '/order/*' ? 'block' : 'hidden'}`">
+            <ul v-if="visibleAllow(9,1)" :class="`${ activeMenu == 'order' || currentPath == '/order' || currentPath == '/order/*' ? 'block' : 'hidden'}`">
                 <li class="relative">
                     <NuxtLink exact to="/order" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
@@ -353,7 +394,7 @@ const toggle = (index) => {
 
 
         <!-- Slide -->
-        <li class="relative cursor-pointer" @click="toggle('slide')">
+        <li v-if="menuAccess(10)"  class="relative cursor-pointer" @click="toggle('slide')">
             <div exact class="flex border-b py-1">
                 <Icon name="material-symbols:transition-slide" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Slide </div> 
@@ -361,14 +402,14 @@ const toggle = (index) => {
             </div>
 
             <ul :class="`${ activeMenu == 'slide' || currentPath == '/slide' || currentPath == '/slide/create' ? 'block' : 'hidden'}`">
-                <li class="relative">
+                <li v-if="visibleAllow(10,1)" class="relative">
                     <NuxtLink exact to="/slide" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
                     </NuxtLink>
                 </li>
 
-                <li class="relative">
+                <li v-if="visibleAllow(10,2)" class="relative">
                     <NuxtLink exact to="/slide/create" class="flex border-b py-1 pl-4">
                         <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">Add</div>
@@ -379,7 +420,7 @@ const toggle = (index) => {
 
 
         <!-- Brand -->
-        <li class="relative cursor-pointer" @click="toggle('brand')">
+        <li v-if="menuAccess(3)"  class="relative cursor-pointer" @click="toggle('brand')">
             <div exact class="flex border-b py-1">
                 <Icon name="pajamas:labels" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Brand </div> 
@@ -387,14 +428,14 @@ const toggle = (index) => {
             </div>
 
             <ul :class="`${ activeMenu == 'brand' || currentPath == '/brand' || currentPath == '/brand/create' ? 'block' : 'hidden'}`">
-                <li class="relative">
+                <li v-if="visibleAllow(3,1)" class="relative">
                     <NuxtLink exact to="/brand" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
                     </NuxtLink>
                 </li>
 
-                <li class="relative">
+                <li v-if="visibleAllow(3,2)" class="relative">
                     <NuxtLink exact to="/brand/create" class="flex border-b py-1 pl-4">
                         <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">Add</div>
@@ -405,7 +446,7 @@ const toggle = (index) => {
 
 
         <!-- Coupon -->
-        <li class="relative cursor-pointer" @click="toggle('coupon')">
+        <li v-if="menuAccess(12)"  class="relative cursor-pointer" @click="toggle('coupon')">
             <div exact class="flex border-b py-1">
                 <Icon name="mingcute:coupon-fill" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Coupon </div> 
@@ -413,14 +454,14 @@ const toggle = (index) => {
             </div>
 
             <ul :class="`${ activeMenu == 'coupon' || currentPath == '/coupon' || currentPath == '/coupon/create' ? 'block' : 'hidden'}`">
-                <li class="relative">
+                <li v-if="visibleAllow(10,1)" class="relative">
                     <NuxtLink exact to="/coupon" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
                     </NuxtLink>
                 </li>
 
-                <li class="relative">
+                <li v-if="visibleAllow(10,2)" class="relative">
                     <NuxtLink exact to="/coupon/create" class="flex border-b py-1 pl-4">
                         <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">Add</div>
@@ -431,7 +472,7 @@ const toggle = (index) => {
 
 
         <!-- Vendor -->
-        <li class="relative cursor-pointer" @click="toggle('vendor')">
+        <li v-if="menuAccess(7)"  class="relative cursor-pointer" @click="toggle('vendor')">
             <div exact class="flex border-b py-1">
                 <Icon name="teenyicons:shop-solid" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Vendor </div> 
@@ -439,14 +480,14 @@ const toggle = (index) => {
             </div>
 
             <ul :class="`${ activeMenu == 'vendor' || currentPath == '/vendor' || currentPath == '/vendor/create' ? 'block' : 'hidden'}`">
-                <li class="relative">
+                <li v-if="visibleAllow(7,1)" class="relative">
                     <NuxtLink exact to="/vendor" class="flex border-b py-1 pl-4">
                         <Icon name="mingcute:menu-line" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">List</div>
                     </NuxtLink>
                 </li>
 
-                <li class="relative">
+                <li v-if="visibleAllow(7,2)" class="relative">
                     <NuxtLink exact to="/vendor/create" class="flex border-b py-1 pl-4">
                         <Icon name="ph:list-plus-bold" width="1em" height="1em" class="ml-3" /> 
                         <div class="text-left text-sm ml-1 -mt-[2px]">Add</div>
@@ -456,7 +497,7 @@ const toggle = (index) => {
         </li>
 
         <!-- Feedback -->
-        <li class="relative cursor-pointer" @click="toggle('feedback')">
+        <li v-if="menuAccess(17)"  class="relative cursor-pointer" @click="toggle('feedback')">
             <div exact class="flex border-b py-1">
                 <Icon name="material-symbols:reviews-rounded" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Feedback </div> 
@@ -475,7 +516,7 @@ const toggle = (index) => {
 
 
         <!-- Permission -->
-        <li class="relative cursor-pointer" @click="toggle('permission')">
+        <li v-if="menuAccess(6)"  class="relative cursor-pointer" @click="toggle('permission')">
             <div exact class="flex border-b py-1">
                 <Icon name="teenyicons:password-solid" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Permission </div> 
@@ -506,48 +547,32 @@ const toggle = (index) => {
             </ul>
         </li>
 
-        <li class="relative cursor-pointer">
+        <li v-if="menuAccess(16)"  class="relative cursor-pointer">
             <NuxtLink to="/mail" exact class="flex border-b py-1" >
                 <Icon name="fluent:mail-settings-16-filled" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Mail Configuration </div> 
             </NuxtLink>
         </li>
 
-        <li class="relative cursor-pointer">
+        <li v-if="menuAccess(18)"  class="relative cursor-pointer">
             <NuxtLink to="/settings" exact class="flex border-b py-1" >
                 <Icon name="mingcute:settings-6-fill" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Web Settings </div> 
             </NuxtLink>
         </li>
 
-        <li class="relative cursor-pointer">
+        <li v-if="menuAccess(15)"  class="relative cursor-pointer">
             <NuxtLink to="/transaction" exact class="flex border-b py-1" >
                 <Icon name="tdesign:money" width="1em" height="1em" class="ml-3" /> 
                 <div class="text-left text-sm ml-1 -mt-[2px]">Transactions </div> 
             </NuxtLink>
         </li>
-
-
-
-        <!-- <li v-for="( item, index ) in items" :key="index" class="relative cursor-pointer" @click="toggle(index)">
-            <NuxtLink :to="item.route" exact class="flex border-b py-1" >
-                <Icon :name="item.icon" width="1em" height="1em" class="ml-3" /> 
-                <div class="text-left text-sm ml-1 -mt-[2px]">{{ item.label }} </div> 
-                <Icon v-if="item.items" name="ic:round-keyboard-arrow-right" :class="`${item.opened ? 'rotate-90' : ''}`" class="absolute right-0 ease-in duration-300" width="1.2em" height="1.2em"/>
+        <li v-if="menuAccess(4)" >
+            <NuxtLink to="/users" exact class="flex border-b py-1" >
+                <Icon name="fluent:people-16-filled" width="1em" height="1em" class="ml-3" /> 
+                <div class="text-left text-sm ml-1 -mt-[2px]">Customer </div> 
             </NuxtLink>
-
-            <ul v-if="item.items" :class="`${item.opened ? 'block' : 'hidden'}`">
-                
-                <li v-for="( subItem, index ) in item.items" @click="currentUrl(subItem.route)" :key="index" class="relative">
-                    <NuxtLink v-if="subItem.route" exact :to="subItem.route" class="flex border-b py-1 pl-4">
-                        <Icon :name="subItem.icon" width="1em" height="1em" class="ml-3" /> 
-                        <div class="text-left text-sm ml-1 -mt-[2px]">{{ subItem.label }}</div>
-                    </NuxtLink>
-                </li>
-                
-            </ul>
-
-        </li> -->
+        </li>
     </ul>
 
     <!-- <PanelMenu unstyled :model="items">

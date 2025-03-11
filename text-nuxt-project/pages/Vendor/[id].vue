@@ -13,10 +13,10 @@ const VendorStore = useVendorStore();
 const Vendor = ref({});
 // Initialize router and route
 const router = useRouter();
-    // Extra fields
-    const extraProps = ref([]);
-    const extraFields = ref([]);
-    //Loading And Toast
+// Extra fields
+const extraProps = ref([]);
+const extraFields = ref([]);
+//Loading And Toast
 const loading = ref('Stop');
 const toast = useToast();
 // Assume you have a dynamic route with the slide ID
@@ -25,20 +25,20 @@ const Id = router.currentRoute.value.params.id;
 const VendorIcon = ref('');
 const VendorBanner = ref('');
 
-    // Add extra field function goes here
-    const addMoreField = () => {
-        extraFields.value = [
-            ...extraFields.value, {
-                fieldName: "",
-                fieldValue: "",
-            }
-        ];
-    }
+// Add extra field function goes here
+const addMoreField = () => {
+    extraFields.value = [
+        ...extraFields.value, {
+            fieldName: "",
+            fieldValue: "",
+        }
+    ];
+}
 
-    // Remove extra field
-    const removeMoreField = (index) => {
-        extraFields.value.splice(index, 1);
-    }
+// Remove extra field
+const removeMoreField = (index) => {
+    extraFields.value.splice(index, 1);
+}
 //Handle File Upload
 const handleFileUpload = (event, type) => {
   const file = event.files[0];
@@ -80,50 +80,50 @@ onMounted(async () => {
 });
 
 
-    const dataSubmit = async() => {
-        try {
-            extraFields.value.forEach((item, index) => {
-            extraProps.value = {...extraProps.value, [item.fieldName] : item.fieldValue};
-        });
-        const vendorData = {
-            name: Vendor.value.name,
-            icon: VendorIcon.value,
-            banner: VendorBanner.value,
-            description: Vendor.value.description,
-            status: Vendor.value.status,
-            extend_props: extraProps.value,
-        };
-        loading.value = 'Success';
-        const result = await VendorStore.updateVendor(vendorData, Id);
-        if (result) {
-        toast.add({
-            severity: 'success',
-            summary: 'Vendor Updated',
-            detail: result.message || 'Vendor updated successfully.',
-            life: 3000,
-        });
-        // router.push('/vendor');
-        } else {
-        toast.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: result.message || 'Failed to update slide.',
-            life: 3000,
-        });
-        }
-        } catch (error) {
-            console.log(error);
-            toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'An unexpected error occurred.',
-      life: 3000,
+const dataSubmit = async() => {
+    try {
+        extraFields.value.forEach((item, index) => {
+        extraProps.value = {...extraProps.value, [item.fieldName] : item.fieldValue};
     });
-        } finally {
-    loading.value = 'Stop';
-  }
-
+    const vendorData = {
+        name: Vendor.value.name,
+        icon: VendorIcon.value,
+        banner: VendorBanner.value,
+        description: Vendor.value.description,
+        status: Vendor.value.status,
+        extend_props: extraProps.value,
+    };
+    loading.value = 'Success';
+    const result = await VendorStore.updateVendor(vendorData, Id);
+    if (result) {
+    toast.add({
+        severity: 'success',
+        summary: 'Vendor Updated',
+        detail: result.message || 'Vendor updated successfully.',
+        life: 3000,
+    });
+    // router.push('/vendor');
+    } else {
+    toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: result.message || 'Failed to update slide.',
+        life: 3000,
+        });
     }
+    } catch (error) {
+        console.log(error);
+        toast.add({
+    severity: 'error',
+    summary: 'Error',
+    detail: 'An unexpected error occurred.',
+    life: 3000,
+});
+    } finally {
+        loading.value = 'Stop';
+    }
+
+}
 
 </script>
 <template>

@@ -27,12 +27,7 @@ const BrandIcon = ref('');
 const BrandBanner = ref('');
 const BrandThumbnail = ref('');
 const extraProps = ref([]);
-const extraFields = ref([
-    {
-        fieldName: "",
-        fieldValue: "",
-    },
-]);
+const extraFields = ref([]);
 
 // Add extra field function goes here
 const addMoreField = () => {

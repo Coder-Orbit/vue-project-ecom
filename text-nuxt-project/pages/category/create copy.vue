@@ -1,10 +1,10 @@
 <script setup>
+import Dropdown from 'primevue/dropdown';
 import FileUpload from 'primevue/fileupload';
 import Fieldset from 'primevue/fieldset';
-import { useVendorStore } from '~/stores/vendor';
 
 
-//Get Router From useRouter
+//Define Router
 const router = useRouter();
 //Get Toast
 const toast = useToast();
@@ -13,30 +13,38 @@ definePageMeta({
     layout: "dashboard",
     middleware: ['auth'],
 })
-//Get Vendor Store
-const vendorStore = useVendorStore();
+//Get Category Store
+const categoryStore = useCategoryStore();
 //Loading State
 const isLoading = ref(false);
+
 //Get Reactive Data
-const VendorName = ref('');
+const CategoryName = ref('');
+const Commission = ref('');
+const CommissionType = ref('fixed');
 const Status = ref(1);
-const VendorIcon = ref('');
-const VendorBanner = ref('');
+const CategoryIcon = ref('');
+const CategoryBanner = ref('');
+const CategoryThumbnail = ref('');
 const Description = ref('');
+const selectedCategory = ref(null);
+const categories = ref([]);
+const selectedCat = ref({ name: '', id: null });
+const selectedCategoryItem = ref(false);
+
+
 const extraProps = ref([]);
 const extraFields = ref([]);
 
-// Add extra field function goes here
 const addMoreField = () => {
     extraFields.value = [
         ...extraFields.value, {
             fieldName: "",
             fieldValue: "",
-        }
+        },
     ];
 }
 
-// Remove extra field
 const removeMoreField = (index) => {
     extraFields.value.splice(index, 1);
 }
@@ -47,58 +55,69 @@ const handleFileUpload = (event, type) => {
     if (file) {
         const reader = new FileReader();
         reader.onload = () => {
-            if (type === 'icon') VendorIcon.value = reader.result;
-            if (type === 'banner') VendorBanner.value = reader.result;
+            if (type === 'icon') CategoryIcon.value = reader.result;
+            if (type === 'banner') CategoryBanner.value = reader.result;
+            if (type === 'thumbnail') CategoryThumbnail.value = reader.result;
         };
         reader.readAsDataURL(file);
     }
 };
-
+//data
 const dataSubmit = async () => {
 
     extraFields.value.forEach((item, index) => {
         extraProps.value = { ...extraProps.value, [item.fieldName]: item.fieldValue };
     })
 
-
     isLoading.value = true;
     try {
-        const data = {
-            name: VendorName.value,
-            icon: VendorIcon.value,
-            banner: VendorBanner.value,
+        const categoryData = {
+            name: CategoryName.value,
+            icon: CategoryIcon.value,
+            banner: CategoryBanner.value,
+            thumbnail: CategoryThumbnail.value,
             description: Description.value,
+            commission: Commission.value,
+            commission_type: CommissionType.value,
+            parent_categories: selectedCategory.value,
+            // parent_id: selectedCategory.value?.id,
+            parent_id: selectedCat.value?.id,
             status: Status.value,
-            extra_props: extraProps.value
+            extend_props: extraProps.value
         }
-        const result = await vendorStore.addVendor(data);
-        console.log(result);
+
+
+        const result = await categoryStore.addCategory(categoryData);
         if (result.success) {
             toast.add({
                 severity: 'success',
-                summary: 'Vendor Created',
-                detail: result.message || 'Vendor was created successfully.',
-                life: 2000,
+                summary: 'Category Created',
+                detail: result.message || 'Category was created successfully.',
+                life: 3000,
             });
 
             setTimeout(() => {
-                router.push('/Vendor');
+                router.push('/category');
             }, 2000);
+
 
         } else {
             toast.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: result.message || 'An error occurred.',
-                life: 2000,
+                severity: 'success',
+                summary: 'Category Created',
+                detail: result.message || 'Category was created successfully.',
+                life: 3000,
             });
+            setTimeout(() => {
+                router.push('/category');
+            }, 2000);
         }
     } catch (error) {
         toast.add({
             severity: 'error',
             summary: 'Error',
             detail: 'An unexpected error occurred.',
-            life: 2000,
+            life: 3000,
         });
         console.error(error);
     } finally {
@@ -106,6 +125,31 @@ const dataSubmit = async () => {
     }
 
 }
+
+
+onMounted(() => {
+    categoryStore.getCategoryList(); // Fetch categories when component mounts
+    categories.value = categoryStore.CategoryList;
+
+    console.log(categories.value);
+});
+
+
+
+
+const handleCategorySelected = (categoryInfo) => {
+    selectedCat.value = categoryInfo;
+    selectedCategory.value = selectedCat.value.name;
+    selectedCategoryItem.value = false;
+    
+};
+
+const handleClick = () => {
+  selectedCategoryItem.value = true;
+  
+};
+
+
 
 </script>
 <template>
@@ -117,7 +161,7 @@ const dataSubmit = async () => {
             <div class="shadow-md bg-white w-full h-[calc(100vh-6rem)] overflow-hidden rounded-md">
                 <div class="flex w-full justify-between  bg-gray-400 text-white">
 
-                    <div class="font-semibold mt-1 ml-3">Create Vendor</div>
+                    <div class="font-semibold mt-1 ml-3">Create Category</div>
                     <div class="font-semibold ml-1 flex">
                         <button @click="$router.back()"
                             class="bg-[#800] hover:bg-red-500 text-gray-100 hover:text-black px-4 py-2 text-sm rounded-tr-sm">
@@ -132,13 +176,92 @@ const dataSubmit = async () => {
                     <div class="flex w-full justify-center">
                         <div class="w-1/2">
                             <form @submit.prevent="dataSubmit">
-                                <!--Name And Status-->
+
+                                <!-- Category Name -->
                                 <div class="grid grid-cols-2 gap-2">
                                     <div class="w-full">
-                                        <label for="dd-city" class="text-sm w-full">Vendor Name</label>
-                                        <input type="text" v-model="VendorName"
+                                        <label for="dd-city" class="text-sm w-full">Category Name</label>
+                                        <input type="text" v-model="CategoryName"
                                             class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
-                                            placeholder="Vendor Name" />
+                                            placeholder="Category Name" />
+                                    </div>
+                                    <div class="w-full position-relative">
+                                        <label for="dd-city" class="text-sm">Parent Category</label>
+
+                                        <input type="text" v-model="selectedCategory"
+                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+                                            placeholder="Select a Category" @click="handleClick"/>
+
+                                        <ul v-if="selectedCategoryItem" name="parent_category" id="parent_category"
+                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md overflow-y-auto h-60 position-absolute z-10">
+                                            <!-- <Category v-for="category in categories" :key="category.id" :category="category" :value="category">{{ category.name }}</Category> -->
+                                            <Category v-for="category in categories" :key="category.id"
+                                                :category="category" @category-clicked="handleCategorySelected" />
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Static Category Name -->
+                                <div class="grid grid-cols-2 gap-2 mt-2">
+                                    <div class="w-full">
+                                        <div class="card flex justify-content-center">
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- File Upload -->
+                                <div class="grid grid-cols-3 gap-2 mt-2">
+                                    <div class="w-full">
+                                        <label for="dd-city" class="text-sm w-full">Category Icon</label>
+                                        <FileUpload :pt="{
+                                            chooseButton: {
+                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                            },
+
+
+                                        }" mode="basic" name="icon" accept="image/*"
+                                            @select="(event) => handleFileUpload(event, 'icon')" />
+                                    </div>
+                                    <div class="w-full">
+                                        <label for="dd-city" class="text-sm w-full">Category Banner</label>
+                                        <FileUpload :pt="{
+                                            chooseButton: {
+                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                            },
+
+
+                                        }" mode="basic" name="banner" accept="image/*"
+                                            @select="(event) => handleFileUpload(event, 'banner')" />
+                                    </div>
+                                    <div class="w-full">
+                                        <label for="dd-city" class="text-sm w-full">Category Thumbnail</label>
+                                        <FileUpload :pt="{
+                                            chooseButton: {
+                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
+                                            },
+
+
+                                        }" mode="basic" name="thumbnail" accept="image/*"
+                                            @select="(event) => handleFileUpload(event, 'thumbnail')" />
+                                    </div>
+                                </div>
+
+                                <!-- comission tab -->
+                                <div class="grid grid-cols-3 gap-2 mt-2">
+                                    <div class="w-full">
+                                        <label for="dd-city" class="text-sm w-full">Commission</label>
+                                        <input type="number" v-model="Commission"
+                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md"
+                                            placeholder="Commission" />
+                                    </div>
+                                    <div class="w-full">
+                                        <label for="dd-city" class="text-sm w-full">Commission Type</label>
+                                        <select v-model="CommissionType" name="commission_type" id="commission_type"
+                                            class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md">
+                                            <option value="fixed"> Fixed</option>
+                                            <option value="parcentage"> Parcentage</option>
+                                        </select>
                                     </div>
                                     <div class="w-full">
                                         <label for="dd-city" class="text-sm w-full">Status</label>
@@ -149,31 +272,7 @@ const dataSubmit = async () => {
                                         </select>
                                     </div>
                                 </div>
-                                <!--File Upload-->
-                                <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <div class="w-full">
-                                        <label for="dd-city" class="text-sm w-full">Vendor Icon</label>
-                                        <FileUpload :pt="{
-                                            chooseButton: {
-                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                            },
 
-
-                                        }" @select="(event) => handleFileUpload(event, 'icon')" mode="basic" name="icon"
-                                            accept="image/*" />
-                                    </div>
-                                    <div class="w-full">
-                                        <label for="dd-city" class="text-sm w-full">Vendor Banner</label>
-                                        <FileUpload :pt="{
-                                            chooseButton: {
-                                                class: 'py-1 h-8 overflow-hidden w-full bg-gray-400',
-                                            },
-
-
-                                        }" @select="(event) => handleFileUpload(event, 'banner')" mode="basic" name="banner"
-                                            accept="image/*" />
-                                    </div>
-                                </div>
                                 <!-- dynamic field -->
                                 <div class="grid grid-col gap-2 mt-2">
                                     <Fieldset legend="Extra Props" :pt="{
@@ -225,11 +324,15 @@ const dataSubmit = async () => {
                                     </Fieldset>
 
                                 </div>
+
                                 <!--Description-->
                                 <div class="w-full mt-1">
-                                    <label for="dd-city" class="text-sm w-full">Description</label>
-                                    <textarea v-model="Description" class="w-full border rounded-md"></textarea>
+                                    <label for="dd-city" class="text-sm w-full">Description {{ selectedCategory?.id
+                                        }}</label>
+                                    <textarea v-model="Description" placeholder="Write in Details..."
+                                        class="w-full p-2 border rounded-md"></textarea>
                                 </div>
+
                                 <!--Submit Button-->
                                 <div class="place-content-end flex w-full">
                                     <button :disabled="isLoading === true"
@@ -243,6 +346,7 @@ const dataSubmit = async () => {
                                         </div>
                                     </button>
                                 </div>
+
                             </form>
                         </div>
 
@@ -256,3 +360,28 @@ const dataSubmit = async () => {
         </div>
     </NuxtLayout>
 </template>
+
+<style scoped>
+.p-cascadeselect-items-wrapper {
+    margin-top: 8rem !important;
+    max-height: 20px !important;
+    overflow-y: auto !important;
+    background-color: yellowgreen !important;
+}
+
+.p-cascadeselect-panel {
+    z-index: 1 !important;
+    position: relative !important;
+    top: 10px !important;
+    left: 838.75px;
+    min-width: 100px;
+    transform-origin: center bottom;
+    margin-top: calc(var(--p-anchor-gutter)* -1);
+}
+
+.p-cascadeselect-items {
+    max-height: 20px !important;
+    overflow-y: auto !important;
+    background-color: yellowgreen !important;
+}
+</style>

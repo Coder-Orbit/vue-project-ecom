@@ -3,6 +3,20 @@ import Menu from 'primevue/menu';
 import { ref } from "vue";
 const  store = useTokenStore();
 const loginStore = useLoginStore();
+
+const store2 = usePermissionStore();
+// console.log("Store2", store2);
+const permissions = ref(null); // Store API response
+async function fetchPermissions() {
+    const response = store2.getPermissions();
+    // const remove = await store2.removePermissions();
+    // console.log("Permissions:", response);
+    if (response.success) {
+        permissions.value = response; // Save the permissions data
+    }
+}
+fetchPermissions();
+
 const username = computed(() => loginStore.userData.name);
 const email = computed(() => loginStore.userData.email);
 const pin = computed(() => loginStore.userData.otp);
@@ -44,7 +58,9 @@ const items = ref([
                 icon: 'pi pi-sign-out',
                 command: () => {
                     store.removeToken();
-                }
+                    store2.removePermissions()
+                    
+                },
             }
         ]
     }

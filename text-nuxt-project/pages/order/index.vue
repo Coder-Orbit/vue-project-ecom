@@ -6,21 +6,21 @@ import Calendar from "primevue/calendar";
 import Dropdown from "primevue/dropdown";
 import { ref } from "vue";
 
+const coreofOrders = ref([])
 const searchQuery = ref('');
 const startDate = ref(null);
 const endDate = ref(null);
 const totalOrders = ref(0);
-const statusValue = ref("")
 const isDropdownVisible = ref(false);
-const idChecker = ref(null);
 const currentOrderID = ref(null);
-const deleteModalVisible = ref(false);
-const deleteLoading = ref(false);
+const UpdateStatusModalVisible = ref(false);
+const updateStatusLoading = ref(false);
 const pageNumber = ref(1)
 const orders = ref([]);
 const visibleRight = ref(false);
 const status = ref([]); // Holds the dropdown options
 const selectedStatus = ref(null); // Holds the selected staus ID
+const inlineStatus = ref(null);
 const vendor = ref([]); // Holds the dropdown options
 const selectedVendor = ref(null); // Holds the selected vendor ID
 
@@ -43,32 +43,72 @@ definePageMeta({
   middleware: 'auth',
 });
 
-const coreofOrders = ref([])
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+// Function to check access
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
+
 onMounted(async () => {
-  try {
-        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/orders?orderBy=desc&page=1`, {
-        method: 'get',
-        headers: headers.value,
-        });
-        coreofOrders.value = response.orders;
-        // console.log(response.orders);
-        orders.value = response.orders.data;
-        loading.value = "success";
-        // console.table(orders.value);
-    } catch (err) {
-    console.log(err);
-  }
+    getOrderData()
+    getAllStatus()
+    getAllVendors()
 });
 
+const getOrderData = async () => {
+    loading.value = "not";
+    try {
+        const stDateParams = startDate.value ? startDate.value.toISOString().split('T')[0] : '';
+        const enDateParams = endDate.value ? endDate.value.toISOString().split('T')[0] : '';
+        
+        // Create the parameters object and remove any null, undefined, or empty values
+        const params = {
+            name: searchQuery.value || undefined,
+            status: inlineStatus.value || undefined,
+            vendor_id: selectedVendor.value || undefined,
+            from_date: stDateParams || undefined,
+            to_date: enDateParams || undefined,
+        };
+
+        // Remove keys with undefined values
+        const filteredParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined)
+        );
+
+        const response = await $fetch(`${EndPoint}/admin/${MasterKey}/orders?orderBy=desc&page=${pageNumber.value}`, {
+            method: 'get',
+            headers: headers.value,
+            params: filteredParams
+        });
+        // console.log("Response:",response)
+        coreofOrders.value = response.orders;
+        console.log("Core",coreofOrders.value);
+        orders.value = response.orders.data;
+        loading.value = "success";
+
+        // console.table(orders.value)
+        // console.log("Page Number:",pageNumber.value)
+        // console.table(orders.value);
+    } catch (err) {
+        console.log(err);
+    }
+    loading.value = "success";
+}
 const paginate = async (page) => {
     loading.value = "not";
+    pageNumber.value = page;
 
     if (page === "&laquo; Previous") {
-        pageNumber.value = coreofOrders.value.current_page;
+        pageNumber.value  = ((coreofOrders.value.current_page-1) == 0 ? 1 : (coreofOrders.value.current_page-1));
     } else if (page === "Next &raquo;") {
-        pageNumber.value = coreofOrders.value.current_page + 1;
-    } else {
-        pageNumber.value = page;
+        pageNumber.value  = ((coreofOrders.value.current_page+1) == coreofOrders.value.last_page ? coreofOrders.value.last_page : (coreofOrders.value.current_page+1));
     }
 
     try {
@@ -77,8 +117,9 @@ const paginate = async (page) => {
             headers: headers.value,
         });
         orders.value = response;
-        // console.log("Response PAge:",response);
+        console.log("Response PAge:",response);
         orders.value = response.orders.data;
+
     } catch (error) {
         console.log(error);
     }
@@ -86,8 +127,7 @@ const paginate = async (page) => {
     loading.value = "success";
 }
 
-
-onMounted(async () => {
+const getAllStatus = async () => {
     try {
         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/status?`, {
             method: 'GET',
@@ -98,11 +138,10 @@ onMounted(async () => {
             name: b.name, // Dropdown label
             id: b.id, // Dropdown value
         }));
-            // console.log('Status:', status.value);
     } catch (error) {
         console.error('Error fetching Status:', error);
     }
-});
+}
         
 // Utility function to get the name of the selected status
 const getStatusName = (id) => {
@@ -110,7 +149,7 @@ const getStatusName = (id) => {
     return selected ? selected.name : '';
 };
 
-onMounted(async () => {
+const getAllVendors = async () => {
     try {
         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/vendor?`, {
             method: 'GET',
@@ -121,22 +160,19 @@ onMounted(async () => {
             name: b.name, // Dropdown label
             id: b.id, // Dropdown value
         }));
-        //console.log('Vendor:', vendor.value);
     } catch (error) {
         console.error('Error fetching vendor:', error);
     }
-});
+};
 
-        // Utility function to get the name of the selected vendor
+// Utility function to get the name of the selected vendor
 const getVendorName = (id) => {
     const selected = vendor.value.find(b => b.id === id);
     return selected ? selected.name : '';
 };
 
 // Implemented the search functionality
-
-
-const fetchFilteredProducts = async () => {
+const fetchFilteredOrders = async () => {
     loading.value = "not";
     try {
         const stDateParams = startDate.value ? startDate.value.toISOString().split('T')[0] : '';
@@ -171,34 +207,28 @@ const fetchFilteredProducts = async () => {
     }
 };
 
-
-
-// const toggleDropdown = (orderID) => {
-//   idChecker.value = orderID;
-//   console.log(idChecker.value);
-//   isDropdownVisible.value = isDropdownVisible.value === orderID ? null : orderID;
-// };
-
 const updateStatus = async () => {
   loading.value = "not";
   try {
-        deleteLoading.value = true;
+        updateStatusLoading.value = true;
         isDropdownVisible.value = false;
-        // selectedStatus.value = id;
-        // currentOrderID.value = orderID;
+
         // Perform the API call to update the status
         const response = await $fetch(`${EndPoint}/admin/${MasterKey}/order_status`,
         {
             method: "POST",
             headers: headers.value,
-            body: JSON.stringify({ confirm_id: selectedStatus.value, order_id: currentOrderID.value }),
+            body: JSON.stringify({ confirm_id: inlineStatus.value, order_id: currentOrderID.value }),
         }
         );
         console.log(status.value)
         console.log("Status updated successfully:", response);
-        deleteLoading.value = false;
-        deleteModalVisible.value = false;
+        updateStatusLoading.value = false;
+        UpdateStatusModalVisible.value = false;
         loading.value = "success";
+        console.log("page",pageNumber.value)
+        // getOrderData()
+        fetchFilteredOrders()
 
     } catch (error) {
     console.error("Error updating Status:", error);
@@ -206,63 +236,20 @@ const updateStatus = async () => {
 };
 
 // Open the confirm modal for the specific slide
-const openDeleteModal = (id, orderID) => {
-    selectedStatus.value = id;
+const openStatusUpdateModal = (id, orderID) => {
+    inlineStatus.value = id;
     currentOrderID.value = orderID;
     console.log("OpenModal ID: ",id)
-    // deleteModalVisible.value = true;
-    deleteModalVisible.value = deleteModalVisible.value === null ? orderID : orderID;
+    // UpdateStatusModalVisible.value = true;
+    UpdateStatusModalVisible.value = UpdateStatusModalVisible.value === null ? orderID : orderID;
+    // updateStatus()
 };
-
-
-const testFunc = () => {
-    statusValue.value = `
-
-            ${status.value.map((option) => `
-            <ul class="py-2 text-xs text-gray-700 dark:text-gray-200">
-                <li class="cursor-pointer">
-                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">${option.name}</a>
-                </li>
-            </ul>`).join("")}
-            `;
-    console.log(statusValue.value);
-};
-
-// Props for reusability
-
-
-// Reactive variables
-// const statusValue = ref("");
-// const isDropdownVisible = ref(null);
 
 // Toggle dropdown visibility
 const toggleDropdown = (uniqueId) => {
-  console.log("Unique ID:", uniqueId);
-
-  // Toggle dropdown visibility
-  isDropdownVisible.value =
+    console.log("Unique ID:", uniqueId);
+    // Toggle dropdown visibility
     isDropdownVisible.value === uniqueId ? null : uniqueId;
-
-  // Generate the dynamic HTML for the dropdown
-  statusValue.value = `
-    <ul class="py-2 text-xs text-gray-700 dark:text-gray-200">
-      ${status.value
-        .map(
-          (option) => `
-          <li class="cursor-pointer">
-            <a
-              href="#"
-              class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-              @click.prevent=openDeleteModal(${option.id}, '${uniqueId}')"
-            >
-              ${option.name}
-            </a>
-          </li>
-        `
-        )
-        .join("")}
-    </ul>
-  `;
 };
 
 </script>
@@ -302,7 +289,7 @@ const toggleDropdown = (uniqueId) => {
                             <th class="p-1 text-left text-sm">Advance</th>
                             <th class="p-1 text-left text-sm">Due</th>
                             <th class="p-1 text-left text-sm">Status</th>
-                            <th class="p-1 text-center text-sm">...</th>
+                            <th class="p-1 text-center text-sm">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -322,18 +309,27 @@ const toggleDropdown = (uniqueId) => {
                             <td class="p-1 text-left text-xs">{{ order.advance }}</td>
                             <td class="p-1 text-left text-xs">{{ order.due }}</td>
                             <td class="p-1">
-                                <!-- Button to toggle dropdown -->
-                                <button @click="toggleDropdown(order.unique_id)" class="text-dark rounded-lg text-xs px-2 py-1 text-left inline-flex items-center" type="button">
-                                    {{ order.status.name }} <Icon name="material-symbols-light:keyboard-arrow-down-rounded" width="2em" height="2em"/>
-                                </button>
-                                <!-- Dropdown menu -->
-                                <div class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700" ref="dropdownContainer" v-show="isDropdownVisible === order.unique_id">
-                                    <div v-html="statusValue" />
+                                <div class="w-7/12">
+                                    <Dropdown v-model="inlineStatus" :options="status" optionLabel="name" optionValue="id" filter :placeholder="`${order.status.name}`" class="w-full" @change="toggleDropdown(order.unique_id)">
+                                        
+                                        <template #value="slotProps">
+                                            <div v-if="slotProps.value && isDropdownVisible === order.unique_id" class="flex align-items-center" >
+                                                <div>{{ getStatusName(slotProps.value) }}</div>
+                                            </div>
+                                            <span v-else>{{ slotProps.placeholder }}</span>
+                                        </template>
+                                        
+                                        <template #option="slotProps">
+                                            <div class="flex align-items-center cursor-pointer" @click.prevent="openStatusUpdateModal(slotProps.option.id, order.unique_id)">
+                                                <div>{{ slotProps.option.name }}</div>
+                                            </div>
+                                        </template>
+                                    
+                                    </Dropdown>
                                 </div>
-                                
                             </td>
                             <td class="p-1 text-xs grid text-center justify-items-center">
-                                <div class="flex">
+                                <div v-if="visibleAllow(9,1)" class="flex">
                                     <NuxtLink class="bg-cyan-400 p-1 text-white rounded" :to="`/order/details/${order.unique_id}`">
                                         <Icon name="mdi:eye" width="1.4em" height="1.4em" />
                                     </NuxtLink>
@@ -355,11 +351,11 @@ const toggleDropdown = (uniqueId) => {
                     </InputGroup>
                 </div>
                 <div class="flex -mt-1 h-dvh">
-                <a v-for="(page, index) in coreofOrders?.links" :key="index" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500': page.active}" class="px-2 pt-2 mt-1 block text-black" href="#" />
+                <a v-for="(page, index) in coreofOrders?.links" :key="index" @click="paginate(page.label)" v-html="page.label" :class="{'border-t-4 px-2 border-red-500 text-red-500': page.label == pageNumber}" class="px-2 pt-2 mt-1 block text-black" href="#" />
                 </div>
             </div>
             </div>
-            <Sidebar v-model:visible="visibleRight" header="Transaction Filter" position="right">
+            <Sidebar v-model:visible="visibleRight" header="Order Filter" position="right">
             <div class="w-full">
                 <label for="dd-city" class="text-sm w-full">Name</label>
                 <input type="text" v-model="searchQuery" class="w-full text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" placeholder="Enter Name" />
@@ -374,7 +370,7 @@ const toggleDropdown = (uniqueId) => {
             </div>
             
             <!-- Status & Vendor-->
-                <div class="w-full grid grid-cols-2 gap-2 mt-2">
+            <div class="w-full grid grid-cols-2 gap-2 mt-2">
                 <div>
                     <label for="dd-city" class="text-sm w-full">Status</label>
                     <Dropdown v-model="selectedStatus" :options="status" optionLabel="name" optionValue="id" filter placeholder="Select a Status" class="w-full md:w-14rem">
@@ -394,39 +390,39 @@ const toggleDropdown = (uniqueId) => {
                 <div>
                     <label for="dd-city" class="text-sm w-full">Vendor</label>
                     <Dropdown v-model="selectedVendor" :options="vendor" optionLabel="name" optionValue="id" filter placeholder="Select a Vendor" class="w-full md:w-14rem">
-                    <template #value="slotProps">
-                        <div v-if="slotProps.value" class="flex align-items-center">
-                            <div>{{ getVendorName(slotProps.value) }}</div>
-                        </div>
-                        <span v-else>{{ slotProps.placeholder }}</span>
-                    </template>
-                    <template #option="slotProps">
-                        <div class="flex align-items-center">
-                            <div>{{ slotProps.option.name }}</div>
-                        </div>
-                    </template>
+                        <template #value="slotProps">
+                            <div v-if="slotProps.value" class="flex align-items-center">
+                                <div>{{ getVendorName(slotProps.value) }}</div>
+                            </div>
+                            <span v-else>{{ slotProps.placeholder }}</span>
+                        </template>
+                        <template #option="slotProps">
+                            <div class="flex align-items-center">
+                                <div>{{ slotProps.option.name }}</div>
+                            </div>
+                        </template>
                     </Dropdown>
                 </div>
-                </div>
-                <div class="font-semibold flex mt-2 place-content-end">
-                    <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md" @click="fetchFilteredProducts">
-                        <Icon name="fluent:search-12-filled"></Icon> Search
-                    </button>
-                </div>
+            </div>
+            <div class="font-semibold flex mt-2 place-content-end">
+                <button class="bg-blue-600 hover:bg-blue-500 text-gray-100 transform hover:text-black px-4 py-1 text-sm rounded-md" @click="fetchFilteredOrders">
+                    <Icon name="fluent:search-12-filled"></Icon> Search
+                </button>
+            </div>
 
-                <div class="mt-2 text-sm text-gray-600">
-                    <span v-if="totalOrders">Showing {{ totalOrders }} results</span>
-                    <span v-else>No results found</span>
-                </div>
+            <div class="mt-2 text-sm text-gray-600">
+                <span v-if="totalOrders">Showing {{ totalOrders }} results</span>
+                <span v-else>No results found</span>
+            </div>
         </Sidebar>
 
-        <Dialog v-model:visible="deleteModalVisible" modal header="Delete Slide" :style="{ width: '25rem' }">
+        <Dialog v-model:visible="UpdateStatusModalVisible" modal header="Update Status" :style="{ width: '25rem' }">
             <span class="p-text-secondary flex items-center justify-center flex-col mb-5">
-                <Icon name="material-symbols:delete-sweep-rounded" width="120px" height="120px" class="mr-2 text-red-500" /> Are you sure you want to delete this slide?
+                <Icon name="material-symbols:playlist-add-check-rounded" width="120px" height="120px" class="mr-2 text-red-500" /> Are you sure you want to update status?
             </span>
             <div class="flex justify-around">
-                <Button class="bg-yellow-600 text-red-100 px-4 py-2" type="button" label="Cancel" severity="secondary" @click="deleteModalVisible = false"></Button>
-                <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Delete" @click="updateStatus" :loading="deleteLoading"></Button>
+                <Button class="bg-yellow-600 text-red-100 px-4 py-2" type="button" label="Cancel" severity="secondary" @click="UpdateStatusModalVisible = false"></Button>
+                <Button class="bg-red-600 text-red-100 px-4 py-2" type="button" label="Update" @click="updateStatus" :loading="updateStatusLoading"></Button>
             </div>
         </Dialog>
 
