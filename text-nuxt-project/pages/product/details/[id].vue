@@ -79,7 +79,7 @@
             police_station.value = product.value.data.police_station;
             data.value = product.value.data.description;
 
-            console.log(product.value.data);
+            console.log("Single Product>>>>",product.value.data);
 
         } catch (err) {
             console.log(err)

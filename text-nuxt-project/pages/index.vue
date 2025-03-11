@@ -4,6 +4,19 @@ import { useToast } from "primevue/usetoast";
 
 const router = useRouter();
 const store = useLoginStore();
+
+const store2 = usePermissionStore();
+const permissions = ref(null); // Store API response
+
+async function fetchPermissions() {
+    const response = await store2.getPermissions();
+    // console.log("Permissions:", response);
+    if (response.success) {
+        permissions.value = response; // Save the permissions data
+    }
+}
+
+
 const toast = useToast();
 const form = reactive({
     email:"majadul.dev@gmail.com",
@@ -15,8 +28,9 @@ definePageMeta({
 })
 
 async function handleLogin() {
-    console.log("hello");
+    // console.log("hello");
   const result = await store.login(form);
+  fetchPermissions();
   if (result.success) {
     router.push('/dashboard');
   } else {
@@ -27,6 +41,7 @@ async function handleLogin() {
       life: 3000,
     });
   }
+
 }
 
 </script>

@@ -127,16 +127,16 @@ function printPage() {
                 <div class="w-6/12 text-right">
                     <table class="inline-table">
                         <tbody>
-                      <tr>
-                          <th scope="row" colspan="3"
-                              class="hidden pl-4 pr-3 pt-6 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">
-                              Subtotal:
-                          </th>
-                          <th scope="row"
-                              class="pl-6 pr-3 pt-6 text-right text-sm font-normal text-gray-500 sm:hidden">Subtotal:
-                          </th>
-                          <td class="pl-3 pr-6 pt-6 text-right text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.total"/></td>
-                      </tr>
+                        <tr>
+                            <th scope="row" colspan="3"
+                                class="hidden pl-4 pr-3 pt-6 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">
+                                Subtotal:
+                            </th>
+                            <th scope="row"
+                                class="pl-6 pr-3 pt-6 text-right text-sm font-normal text-gray-500 sm:hidden">Subtotal:
+                            </th>
+                            <td class="pl-3 pr-6 pt-6 text-right text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.total"/></td>
+                        </tr>
                         <tr>
                           <th scope="row" colspan="3" class="hidden pl-4 pr-3 pt-4 text-right text-sm font-normal text-gray-500 sm:table-cell sm:pl-0">Tax:</th>
                           <td class="pl-3 pr-6 pt-4 text-right text-sm text-gray-500 sm:pr-0"><Currency :amount="details?.order_items.reduce((total, item) => total + item.extend_props.tax, 0)"/></td>

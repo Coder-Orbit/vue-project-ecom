@@ -6,6 +6,18 @@ definePageMeta({
   layout: "dashboard",
   middleware: ["auth"],
 });
+const permissionStore = usePermissionStore();
+const { accessMenu, allAccess } = storeToRefs(permissionStore);
+const accessMenuKeys = computed(() => Object.keys(accessMenu.value));
+console.log("Permission Fetch Result allAccess:", allAccess.value);
+
+// Function to check access
+const visibleAllow = (menu_id, access_id) => {
+    if (accessMenuKeys.value.includes("super_admin")) {
+        return true; // If user has "super_admin" access, return true
+    }
+    return !!(allAccess.value && allAccess.value[menu_id] && allAccess.value[menu_id][access_id]); // Otherwise, check if the ID exists in allAccess
+};
 
 //Define Store
 const store = useFeedbackStore();
@@ -209,26 +221,26 @@ console.log("")
                 <td class="p-1 text-left text-xs">
                   <StarRating :rating="review.rattings" />
                 </td>
-    <!-- Feedback Status -->
-    <td class="p-1 text-left text-xs">
-      <label class="relative inline-flex cursor-pointer items-center">
-        <input
-          id="switch"
-          type="checkbox"
-          class="peer sr-only"
-          :checked="review.status === 1"
-          @change="() => {
-            const newStatus = review.status === 1 ? 0 : 1;
-            updateStatus(review.id, newStatus, review.rattings, review.comments);
-          }"
-        />
-        <div
-          class="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-red-800 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"
-        ></div>
-      </label>
-    </td>
+                <!-- Feedback Status -->
+                <td class="p-1 text-left text-xs">
+                  <label class="relative inline-flex cursor-pointer items-center">
+                    <input
+                      id="switch"
+                      type="checkbox"
+                      class="peer sr-only"
+                      :checked="review.status === 1"
+                      @change="() => {
+                        const newStatus = review.status === 1 ? 0 : 1;
+                        updateStatus(review.id, newStatus, review.rattings, review.comments);
+                      }"
+                    />
+                    <div
+                      class="peer h-6 w-11 rounded-full border bg-slate-200 after:absolute after:left-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-red-800 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-green-300"
+                    ></div>
+                  </label>
+                </td>
                 <!--Feedback Others-->
-                <td class="p-1 text-center text-xs flex justify-center">
+                <td v-if="visibleAllow(17,3)" class="p-1 text-center text-xs flex justify-center">
                   <div
                     class="rounded-md mx-1 bg-green-500 p-1 cursor-pointer text-white"
                     title="Edit"

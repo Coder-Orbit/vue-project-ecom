@@ -11,9 +11,7 @@ definePageMeta({
 const toast = useToast();
 //Extra Props
 const extraProps = ref([]);
-const extraFields = ref([
-  { fieldName: '', fieldValue: '' },
-]);
+const extraFields = ref([]);
 //Reactive Varrialbes
 const slideName = ref('');
 const status = ref('1');

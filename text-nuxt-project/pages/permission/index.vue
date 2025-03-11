@@ -5,8 +5,6 @@
     import { useDataDate } from '~/composables/useDataDate';
 
     const { dateMonthFunction } = useDataDate();
-
-
     const router = useRouter();
     definePageMeta({
         layout: "dashboard",

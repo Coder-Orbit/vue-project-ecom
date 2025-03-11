@@ -47,6 +47,7 @@ const selectedLayout = ref();
 
 
 const active = ref(0);
+const router = useRouter();
 const route = useRoute();
 const productId = route.params.id;
 
@@ -205,12 +206,7 @@ const getDataEditor = () => {
 
 
 
-const extraFields = ref([
-    {
-        field_name: "",
-        value: "",
-    }
-]);
+const extraFields = ref([]);
 
 // Add extra field function goes here
 const addMoreField = () => {
@@ -258,7 +254,7 @@ const submitData = async () => {
     )
 
     console.table(resp);
-    // router.push('/product');
+    router.push('/page');
     loading.value = "success";
 
 }

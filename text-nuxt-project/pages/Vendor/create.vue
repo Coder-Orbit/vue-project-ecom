@@ -24,12 +24,7 @@ const VendorIcon = ref('');
 const VendorBanner = ref('');
 const Description = ref('');
 const extraProps = ref([]);
-const extraFields = ref([
-    {
-        fieldName: "",
-        fieldValue: "",
-    },
-]);
+const extraFields = ref([]);
 
 // Add extra field function goes here
 const addMoreField = () => {

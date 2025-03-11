@@ -31,12 +31,7 @@ const Status = ref(1);
 const Description = ref('');
 const CommissionType = ref("fixed");
 const extraProps = ref([]);
-const extraFields = ref([
-    {
-        fieldName: "",
-        fieldValue: "",
-    },
-]);
+const extraFields = ref([]);
 
 // Add extra field function goes here
 const addMoreField = () => {

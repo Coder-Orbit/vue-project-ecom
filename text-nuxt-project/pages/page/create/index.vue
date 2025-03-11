@@ -169,12 +169,7 @@ const getDataEditor = () => {
 
 
 
-const extraFields = ref([
-    {
-        field_name: "",
-        value: "",
-    }
-]);
+const extraFields = ref([]);
 
 // Add extra field function goes here
 const addMoreField = () => {
@@ -216,7 +211,7 @@ const submitData = async () => {
     )
 
     console.table(resp);
-    // router.push('/product');
+    router.push('/page');
     loading.value = "success";
 
 }
