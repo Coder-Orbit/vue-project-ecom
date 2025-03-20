@@ -28,11 +28,12 @@
     import Calendar from 'primevue/calendar';
     
     import RadioButton from 'primevue/radiobutton';
-
+    // import Toast from 'primevue/toast';
 
     import MultiSelect from 'primevue/multiselect';
     
     const { dateMonthFunction, dateFunction } = useDataDate();
+    // import { useToast } from 'primevue/usetoast';
 
     const uploadEditorJS = () => import('@editorjs/editorjs')
     const ImageTool = window.ImageTool;
@@ -40,7 +41,7 @@
     const Editor = ref(null)
     const editorOldData = ref(null)
 
-
+    const toast = useToast();
     const productName = ref('');
     const flat_rate = ref('');
     const regular_price = ref('');
@@ -108,7 +109,7 @@
             countries.value = await $fetch(`${EndPoint}/countries?data=all`, {headers:headers.value});
             // console.log(countries);
 
-            getDistrict(selectedCountry);
+            getDistrict(selectedCountry.value);
 
             loading.value = "success";
         
@@ -191,17 +192,20 @@
 
     // Get district by country id
     const getDistrict = async (countryId) => {
-        loading.value = "not";
-        districts.value = await $fetch(`${EndPoint}/district/${countryId.value}`, {headers:headers.value});
-        loading.value = "success"
+        console.log(countryId);
+        
+        districts.value = await $fetch(`${EndPoint}/district/${countryId}`, {headers:headers.value});
+
+        console.log(districts.value);
+       
     }
 
 
     // Get district by country id
     const getThana = async (districtId) => {
-        loading.value = "not";
+        
         polices.value = await $fetch(`${EndPoint}/police_station/${districtId.value}`, {headers:headers.value});
-        loading.value = "success"
+        
     }
 
     const selectedShipping = ref('area');
@@ -355,24 +359,62 @@
         }
 
 
-        const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/product`,
-            {
-                method: 'POST',
-                headers:headers.value,
-                body: data
-            }
-        )
+        // const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/product`,
+        //     {
+        //         method: 'POST',
+        //         headers:headers.value,
+        //         body: data
+        //     }
+        // )
 
-        console.log("Response>>>",resp);
-        console.log("Sended Data>>>",data)
-        // router.push('/product');
-        loading.value = "success";
+        // console.log("Response>>>",resp);
+        // console.log("Sended Data>>>",data)
+        // // router.push('/product');
+        // loading.value = "success";
+
+
+        try {
+            const resp = await $fetch(`${EndPoint}/admin/${MasterKey}/product`, {
+                method: 'POST',
+                headers: headers.value,
+                body: JSON.stringify(data),
+            });
+
+            if (resp && resp.status === "Success") {
+                console.log("hii");
+                toast.add({
+                    severity: 'success',
+                    summary: 'Product Created',
+                    detail: 'Product was created successfully.',
+                    life: 2000,
+                });
+                loading.value = "success";
+            } else {
+                toast.add({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: resp.message || 'An error occurred.',
+                    life: 2000,
+                });
+            }
+        } catch (error) {
+            toast.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'An unexpected error occurred.',
+                life: 2000,
+            });
+            console.error(error);
+        }
+
+       
 
     }
     
 </script>
 <template>
     <NuxtLayout :name="layout">
+        <Toast />
             <div class="w-full px-3 mt-1">
 
                 <div v-if="loading !== 'success' " class="min-h-screen w-full top-0 left-0 z-30 flex items-center fixed">

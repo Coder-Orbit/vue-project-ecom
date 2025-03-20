@@ -38,6 +38,7 @@ export const useBrandStore = defineStore("brand", {
                     body: JSON.stringify(formData),
                 });
                 const data = await res.json();
+                console.log('api',data);
                 if (data && data[0] === "Success") {
                     return { success: true, message: 'Brand Added Successfully' };
                 } else {

@@ -126,6 +126,7 @@ const applyFilter = async () => {
         const result = await store.deleteVendor(selectedVendorId.value);
         deleteLoading.value = false;
         deleteModalVisible.value = false;
+        
         toast.add({
             severity: result.success ? 'success' : 'error',
             summary: result.success ? 'Success' : 'Error',
