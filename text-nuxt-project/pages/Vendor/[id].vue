@@ -99,7 +99,7 @@ const dataSubmit = async() => {
     toast.add({
         severity: 'success',
         summary: 'Vendor Updated',
-        detail: result.message || 'Vendor updated successfully.',
+        detail: 'Vendor updated successfully.',
         life: 3000,
     });
     // router.push('/vendor');

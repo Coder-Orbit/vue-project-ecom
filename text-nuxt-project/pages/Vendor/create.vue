@@ -72,7 +72,7 @@ const dataSubmit = async () => {
             extra_props: extraProps.value
         }
         const result = await vendorStore.addVendor(data);
-        console.log(result);
+        console.log("vendor",result);
         if (result.success) {
             toast.add({
                 severity: 'success',
@@ -84,6 +84,8 @@ const dataSubmit = async () => {
             setTimeout(() => {
                 router.push('/Vendor');
             }, 2000);
+
+            
 
         } else {
             toast.add({

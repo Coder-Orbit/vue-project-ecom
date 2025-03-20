@@ -27,7 +27,9 @@ export const useVendorStore = defineStore("vendor", {
             const MasterKey = config.public.masterToken;
             const app_token = useTokenStore().getToken;
             const formData = VendorData;
+        
             try {
+                
                 const res = await fetch(`${EndPoint}/admin/${MasterKey}/vendor`, {
                     method: "POST",
                     headers: {
@@ -37,14 +39,18 @@ export const useVendorStore = defineStore("vendor", {
                     },
                     body: JSON.stringify(formData),
                 });
+        
                 const data = await res.json();
-                if (data && data[0] === "Success") {
+        
+                if (res.ok) {
                     return { success: true, message: 'Vendor Added Successfully' };
                 } else {
+                    
                     return { success: false, message: 'Something is Wrong!' };
                 }
             } catch (error) {
-                console.log(error);
+               
+                console.error('Error during API call:', error);
                 return { success: false, message: 'An error Occurred During Add Vendor' };
             }
         },
@@ -92,15 +98,17 @@ export const useVendorStore = defineStore("vendor", {
                         Authorization: `Bearer ${app_token}`,
                     },
                 });
-                const data = await res.json();
-                if (data === "Success") {
+        
+                
+                console.log("api",res);
+                if (res && res.status === "Success" ) {
                     return { success: true, message: 'Vendor Deleted Successfully' };
                 } else {
-                    return { success: false, message: 'Somthing Wrong on Request' };
+                    return { success: false, message: 'Something went wrong on the request' };
                 }
             } catch (error) {
                 console.log(error);
-                return { success: false, message: 'An error occurred during Api Call' };
+                return { success: false, message: 'An error occurred during the API call' };
             }
         },
         // Get Vendor List In "/Vendor/" Page
@@ -161,6 +169,8 @@ export const useVendorStore = defineStore("vendor", {
                     },
                     body: JSON.stringify(formData),
                 });
+
+                console.log('updated',res);
                 if (res === "Success") {
                     return { success: true, message: 'Vendor Updated Successfully' };
                 } else {

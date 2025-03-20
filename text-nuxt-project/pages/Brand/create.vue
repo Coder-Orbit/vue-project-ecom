@@ -81,6 +81,7 @@ const dataSubmit = async () => {
         }
         console.log(data);
         const result = await brandStore.addBrand(data);
+        console.log(result);
         if (result.success) {
             toast.add({
                 severity: 'success',
