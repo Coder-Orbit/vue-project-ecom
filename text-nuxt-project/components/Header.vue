@@ -17,6 +17,8 @@ async function fetchPermissions() {
 }
 fetchPermissions();
 
+console.log('login store',loginStore);
+
 const username = computed(() => loginStore.userData.name);
 const email = computed(() => loginStore.userData.email);
 const pin = computed(() => loginStore.userData.otp);
@@ -50,7 +52,8 @@ const items = ref([
             },
             {
                 label: 'Change Password',
-                icon: 'pi pi-upload'
+                icon: 'pi pi-upload',
+                url: '/users/changePassword'
             
             },
             {
@@ -107,7 +110,7 @@ const getNotice = (event) => {
                 <Menu ref="notice" id="overlay_menu" :model="noteces" :popup="true" />
                 
                 <img alt="logo" src="/logo.png" class="w-8 h-8 border rounded-full cursor-pointer" @click="toggle" aria-haspopup="true" aria-controls="overlay_menu">
-                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" />
+                <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" ></Menu>
             </div>
         
     </div>
