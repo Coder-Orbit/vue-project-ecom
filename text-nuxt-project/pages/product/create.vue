@@ -126,7 +126,8 @@
                         shortcut: 'CMD+SHIFT+M',
                     },
 
-                    Embed: Embed,
+                    // Embed: Embed,
+                    embed: Embed,
                     CodeTool: CodeTool,
                     RawTool: RawTool,
                     Delimiter: Delimiter,
@@ -542,8 +543,9 @@
                                                 </div>  
 
                                                 <div class="w-full mt-2">
-                                                    <label for="dd-city" class="text-sm w-full">Product Description</label>
+                                                    <label for="dd-city" class="text-sm w-full">Product Description (<span class="text-red-600">If are you add video link,must be fill up caption.</span>)</label>
                                                     <div id="editorjs" @keyup="getDataEditor()" class="w-full bg-white text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" ></div>
+                                                    
                                                 </div>
                                             </TabPanel> 
                                             <!-- Basic Information -->

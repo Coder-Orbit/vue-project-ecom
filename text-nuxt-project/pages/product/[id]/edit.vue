@@ -173,16 +173,7 @@
                         shortcut: 'CMD+SHIFT+M',
                     },
 
-                    embed: {
-                    class: Embed,
-                        config: {
-                            services: {
-                                youtube: true,
-                                coub: true
-                            },
-                        }
-                    },
-
+                    embed: Embed,
                     CodeTool: CodeTool,
                     RawTool: RawTool,
                     Delimiter: Delimiter,
@@ -283,14 +274,24 @@
     ]);
 
 
-    const getDataEditor = () => {
+    // const getDataEditor = () => {
 
-        Editor.value.save().then((outputData) => {
-            editorOldData.value = outputData;
-        }).catch((error) => {
-            console.log('Saving failed: ', error)
-        });
-    }
+    //     Editor.value.save().then((outputData) => {
+    //         editorOldData.value = outputData;
+    //     }).catch((error) => {
+    //         console.log('Saving failed: ', error)
+    //     });
+    // }
+
+    const getDataEditor = () => {
+    Editor.value.save().then((outputData) => {
+        console.log("Editor data:", outputData);  // Check the structure of the output data
+        editorOldData.value = outputData;
+    }).catch((error) => {
+        console.log('Saving failed: ', error);
+    });
+}
+
 
 
 
@@ -551,8 +552,9 @@
                                                 </div>  
 
                                                 <div class="w-full mt-2">
-                                                    <label for="dd-city" class="text-sm w-full">Product Description</label>
+                                                    <label for="dd-city" class="text-sm w-full">Product Description (<span class="text-red-600">If are you add video link,must be fill up caption.</span>)</label>
                                                     <div id="editorjs" @keyup="getDataEditor()" class="w-full bg-white text-sm border py-1 px-2 outline-none focus:border-red-200 rounded-md" ></div>
+                                                    
                                                 </div>
                                             </TabPanel> 
                                             <!-- Basic Information -->
